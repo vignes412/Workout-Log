@@ -12,7 +12,7 @@ import "./index.css";
 
 // Define basename dynamically
 const basename = process.env.NODE_ENV === "production" ? "/Workout-Log" : "/";
-
+console.log(process.env.NODE_ENV);
 const Main = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(
     !!localStorage.getItem("authToken")
