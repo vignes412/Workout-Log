@@ -2,7 +2,12 @@
 import React, { useState } from "react";
 import { createRoot } from "react-dom/client";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
 import App from "./App";
 import Login from "./pages/Login";
 import Dashboard from "./components/Dashboard";
@@ -42,6 +47,7 @@ const Main = () => {
             />
           }
         />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
   );
