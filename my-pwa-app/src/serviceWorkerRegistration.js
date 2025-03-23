@@ -2,7 +2,7 @@
 export function register(config) {
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      const swUrl = `/docs/service-worker.js`;
+      const swUrl = `./docs/service-worker.js`;
 
       navigator.serviceWorker
         .register(swUrl)
