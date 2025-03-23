@@ -2,6 +2,7 @@
   "name": "my-pwa-app",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://vignes412.github.io/workout-log/",
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
@@ -22,9 +23,9 @@
     "workbox-routing": "^7.3.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build && cp -r build/* docs/",
-    "test": "react-scripts test",
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build && ncp build docs",
+    "test": "react-app-rewired test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -44,5 +45,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "customize-cra": "^1.0.0",
+    "ncp": "^2.0.0",
+    "react-app-rewired": "^2.2.1"
   }
 }
