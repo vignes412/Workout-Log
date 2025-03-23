@@ -1,0 +1,73 @@
+/* Dashboard Styles */
+.dashboard-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.dashboard-content {
+    padding: 20px;
+    flex-grow: 1;
+}
+
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.fab {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+}
+
+/* Charts Styles */
+.charts-container {
+    margin-top: 2rem;
+}
+
+.chart-wrapper {
+    height: 350px;
+    width: 100%;
+    border: 1px solid #ccc;
+    overflow: hidden;
+}
+
+/* Responsive Design */
+@media (max-width: 960px) {
+    .dashboard-content {
+        padding: 15px;
+    }
+
+    .chart-wrapper {
+        height: 300px;
+    }
+}
+
+@media (max-width: 600px) {
+    .dashboard-content {
+        padding: 10px;
+    }
+
+    .fab {
+        bottom: 10px;
+        right: 10px;
+    }
+
+    .chart-wrapper {
+        height: 250px;
+    }
+}
+
+/* Tooltip Styles (for D3 charts) */
+.tooltip {
+    position: absolute;
+    background: #f9f9f9;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    pointer-events: none;
+    opacity: 0;
+}

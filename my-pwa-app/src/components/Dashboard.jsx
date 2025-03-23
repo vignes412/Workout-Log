@@ -17,6 +17,7 @@ import { Add } from "@mui/icons-material";
 import WorkoutLogsTable from "./WorkoutLogsTable";
 import WorkoutSummaryTable from "./WorkoutSummaryTable";
 import Charts from "./Charts";
+import "../styles.css"; // Single CSS file import
 
 const Dashboard = ({ isAuthenticated, setIsAuthenticated, accessToken }) => {
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
@@ -74,13 +75,11 @@ const Dashboard = ({ isAuthenticated, setIsAuthenticated, accessToken }) => {
   }
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="loading">Loading...</div>;
   }
 
   return (
-    <div
-      style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}
-    >
+    <div className="dashboard-container">
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
@@ -92,7 +91,7 @@ const Dashboard = ({ isAuthenticated, setIsAuthenticated, accessToken }) => {
         </Toolbar>
       </AppBar>
 
-      <div style={{ padding: "20px", flexGrow: 1 }}>
+      <div className="dashboard-content">
         <Typography variant="body1" sx={{ mb: 2 }}>
           Status: {isOffline ? "Offline" : "Online"}
         </Typography>
@@ -109,11 +108,7 @@ const Dashboard = ({ isAuthenticated, setIsAuthenticated, accessToken }) => {
         <Charts logs={logs} />
       </div>
 
-      <Fab
-        color="primary"
-        onClick={handleMenuOpen}
-        sx={{ position: "fixed", bottom: 20, right: 20 }}
-      >
+      <Fab color="primary" onClick={handleMenuOpen} className="fab">
         <Add />
       </Fab>
       <Menu

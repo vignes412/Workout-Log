@@ -8,30 +8,26 @@ import StackedBarChart from "./charts/StackedBarChart";
 import ScatterPlot from "./charts/ScatterPlot";
 import GroupedBarChart from "./charts/GroupedBarChart";
 import MultiLineChart from "./charts/MultiLineChart";
+import "../styles.css"; // Single CSS file import
 
 const Charts = ({ logs }) => {
   const dailyMetrics = computeDailyMetrics(logs);
-  console.log("Daily Metrics for Charts:", dailyMetrics);
 
   if (!dailyMetrics || dailyMetrics.length === 0) {
     return <Typography>No data available for charts</Typography>;
   }
 
   return (
-    <>
-      <Typography variant="h5" gutterBottom sx={{ mt: 6, mb: 4 }}>
+    <div className="charts-container">
+      <Typography variant="h5" gutterBottom>
         Workout Summary Charts
       </Typography>
       <Grid container spacing={4}>
-        {" "}
-        {/* Increased spacing */}
         <Grid item xs={12} sm={6} md={4}>
           <Typography variant="subtitle1" gutterBottom>
             Total Volume Over Time
           </Typography>
-          <div style={{ height: 350, width: "100%", border: "1px solid #ccc" }}>
-            {" "}
-            {/* Larger height */}
+          <div className="chart-wrapper">
             <LineChart
               data={dailyMetrics}
               field="totalVolume"
@@ -43,7 +39,7 @@ const Charts = ({ logs }) => {
           <Typography variant="subtitle1" gutterBottom>
             Total Reps Over Time
           </Typography>
-          <div style={{ height: 350, width: "100%", border: "1px solid #ccc" }}>
+          <div className="chart-wrapper">
             <AreaChart
               data={dailyMetrics}
               field="totalReps"
@@ -55,7 +51,7 @@ const Charts = ({ logs }) => {
           <Typography variant="subtitle1" gutterBottom>
             Total Sets per Date
           </Typography>
-          <div style={{ height: 350, width: "100%", border: "1px solid #ccc" }}>
+          <div className="chart-wrapper">
             <BarChart
               data={dailyMetrics}
               field="totalSets"
@@ -67,7 +63,7 @@ const Charts = ({ logs }) => {
           <Typography variant="subtitle1" gutterBottom>
             Avg Reps and Weight (Stacked)
           </Typography>
-          <div style={{ height: 350, width: "100%", border: "1px solid #ccc" }}>
+          <div className="chart-wrapper">
             <StackedBarChart data={dailyMetrics} />
           </div>
         </Grid>
@@ -75,7 +71,7 @@ const Charts = ({ logs }) => {
           <Typography variant="subtitle1" gutterBottom>
             Max Weight vs Avg Fatigue
           </Typography>
-          <div style={{ height: 350, width: "100%", border: "1px solid #ccc" }}>
+          <div className="chart-wrapper">
             <ScatterPlot data={dailyMetrics} />
           </div>
         </Grid>
@@ -83,7 +79,7 @@ const Charts = ({ logs }) => {
           <Typography variant="subtitle1" gutterBottom>
             Total Volume by Muscle Group
           </Typography>
-          <div style={{ height: 350, width: "100%", border: "1px solid #ccc" }}>
+          <div className="chart-wrapper">
             <GroupedBarChart data={dailyMetrics} />
           </div>
         </Grid>
@@ -91,12 +87,12 @@ const Charts = ({ logs }) => {
           <Typography variant="subtitle1" gutterBottom>
             Progression Rate Over Time
           </Typography>
-          <div style={{ height: 350, width: "100%", border: "1px solid #ccc" }}>
+          <div className="chart-wrapper">
             <MultiLineChart data={dailyMetrics} />
           </div>
         </Grid>
       </Grid>
-    </>
+    </div>
   );
 };
 
