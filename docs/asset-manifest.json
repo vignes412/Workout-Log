@@ -2,7 +2,7 @@
   "files": {
     "main.css": "/static/css/main.d6329173.css",
     "main.js": "/static/js/main.d9400c82.js",
-    "service-worker.js": "/service-worker.js",
+    "service-worker.js": "/docs/service-worker.js",
     "index.html": "/index.html",
     "main.d6329173.css.map": "/static/css/main.d6329173.css.map",
     "main.d9400c82.js.map": "/static/js/main.d9400c82.js.map"
