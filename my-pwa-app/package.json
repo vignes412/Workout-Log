@@ -2,7 +2,7 @@
   "name": "my-pwa-app",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://vignes412.github.io/",
+  "homepage": "https://vignes412.github.io/Workout-Log",
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
