@@ -17,7 +17,7 @@ import { Add } from "@mui/icons-material";
 import WorkoutLogsTable from "./WorkoutLogsTable";
 import WorkoutSummaryTable from "./WorkoutSummaryTable";
 import Charts from "./Charts";
-import "../styles.css"; // Single CSS file import
+import "../styles.css";
 
 const Dashboard = ({ isAuthenticated, setIsAuthenticated, accessToken }) => {
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
@@ -108,7 +108,12 @@ const Dashboard = ({ isAuthenticated, setIsAuthenticated, accessToken }) => {
         <Charts logs={logs} />
       </div>
 
-      <Fab color="primary" onClick={handleMenuOpen} className="fab">
+      <Fab
+        color="primary"
+        onClick={handleMenuOpen}
+        className="fab-add"
+        aria-label="add"
+      >
         <Add />
       </Fab>
       <Menu

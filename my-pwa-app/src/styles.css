@@ -17,10 +17,17 @@
     height: 100vh;
 }
 
-.fab {
-    position: fixed;
+.fab-add {
+    position: fixed !important;
+    /* Ensures it floats on scroll */
     bottom: 20px;
+    /* Distance from bottom of viewport */
     right: 20px;
+    /* Distance from right of viewport */
+    z-index: 1000;
+    /* Keeps it above other content */
+    transition: all 0.3s ease;
+    /* Smooth transition for size/position changes */
 }
 
 /* Charts Styles */
@@ -44,6 +51,11 @@
     .chart-wrapper {
         height: 300px;
     }
+
+    .fab-add {
+        bottom: 15px;
+        right: 15px;
+    }
 }
 
 @media (max-width: 600px) {
@@ -51,9 +63,12 @@
         padding: 10px;
     }
 
-    .fab {
+    .fab-add {
         bottom: 10px;
         right: 10px;
+        width: 48px;
+        /* Slightly smaller for small screens */
+        height: 48px;
     }
 
     .chart-wrapper {
