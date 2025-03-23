@@ -2,13 +2,16 @@
 import React, { useState } from "react";
 import { createRoot } from "react-dom/client";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom"; // BrowserRouter, not Router alias
 import App from "./App";
 import Login from "./pages/Login";
 import Dashboard from "./components/Dashboard";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import config from "./config";
 import "./index.css";
+
+// Define basename dynamically
+const basename = process.env.NODE_ENV === "production" ? "/Workout-Log" : "/";
 
 const Main = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(
@@ -17,15 +20,12 @@ const Main = () => {
   const [accessToken, setAccessToken] = useState(
     localStorage.getItem("authToken")
   );
-const basename =
-  process.env.NODE_ENV === "production"
-    ? "/Workout-Log" // GitHub Pages base path
-    : "/";
+
   return (
-    <Router>
+    <BrowserRouter basename={basename}>
       <Routes>
         <Route
-          path="/Workout-Log/"
+          path="/"
           element={
             <Login
               setIsAuthenticated={setIsAuthenticated}
@@ -35,7 +35,7 @@ const basename =
         />
         <Route path="/app" element={<App />} />
         <Route
-          path="/Workout-Log/dashboard"
+          path="/dashboard"
           element={
             <Dashboard
               isAuthenticated={isAuthenticated}
@@ -44,8 +44,17 @@ const basename =
             />
           }
         />
+        {/* Fallback route for unmatched paths */}
+        <Route
+          path="*"
+          element={
+            <div>
+              <h1>404 - Not Found</h1>
+            </div>
+          }
+        />
       </Routes>
-    </Router>
+    </BrowserRouter>
   );
 };
 
