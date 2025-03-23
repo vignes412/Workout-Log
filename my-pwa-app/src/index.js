@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { createRoot } from "react-dom/client";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import {
-  BrowserRouter as Router,
+  HashRouter as Router,
   Route,
   Routes,
   Navigate,
@@ -22,10 +22,10 @@ const Main = () => {
   const [accessToken, setAccessToken] = useState(
     localStorage.getItem("authToken")
   );
-  const basename = process.env.NODE_ENV === "production" ? "/Workout-Log" : "/";
+  // const basename = process.env.NODE_ENV === "production" ? "/Workout-Log" : "/";
 
   return (
-    <Router basename={basename}>
+    <Router>
       <Routes>
         <Route
           path="/"
