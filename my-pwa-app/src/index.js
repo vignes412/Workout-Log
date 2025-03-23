@@ -48,7 +48,6 @@ const Main = () => {
 
 const container = document.getElementById("root");
 const root = createRoot(container);
-
 root.render(
   <React.StrictMode>
     <GoogleOAuthProvider clientId={config.google.CLIENT_ID}>
