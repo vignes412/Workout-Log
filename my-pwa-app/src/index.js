@@ -17,12 +17,15 @@ const Main = () => {
   const [accessToken, setAccessToken] = useState(
     localStorage.getItem("authToken")
   );
-
+const basename =
+  process.env.NODE_ENV === "production"
+    ? "/Workout-Log" // GitHub Pages base path
+    : "/";
   return (
     <Router>
       <Routes>
         <Route
-          path="/"
+          path="/Workout-Log/"
           element={
             <Login
               setIsAuthenticated={setIsAuthenticated}
@@ -32,7 +35,7 @@ const Main = () => {
         />
         <Route path="/app" element={<App />} />
         <Route
-          path="/dashboard"
+          path="/Workout-Log/dashboard"
           element={
             <Dashboard
               isAuthenticated={isAuthenticated}
@@ -46,7 +49,12 @@ const Main = () => {
   );
 };
 
+console.log("index.js running");
 const container = document.getElementById("root");
+console.log("Root element:", container);
+if (!container) {
+  console.error("Root element not found");
+}
 const root = createRoot(container);
 root.render(
   <React.StrictMode>
