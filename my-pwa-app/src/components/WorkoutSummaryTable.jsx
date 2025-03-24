@@ -10,40 +10,18 @@ const WorkoutSummaryTable = ({ logs }) => {
   const sanitizedRows = useMemo(() => {
     return dailyMetrics.map((row) => ({
       ...row,
-      totalVolume: isNaN(parseFloat(row.totalVolume))
-        ? 0
-        : parseFloat(row.totalVolume),
-      totalSets: isNaN(parseFloat(row.totalSets))
-        ? 0
-        : parseFloat(row.totalSets),
-      totalReps: isNaN(parseFloat(row.totalReps))
-        ? 0
-        : parseFloat(row.totalReps),
-      averageReps: isNaN(parseFloat(row.averageReps))
-        ? 0
-        : parseFloat(row.averageReps),
-      averageWeight: isNaN(parseFloat(row.averageWeight))
-        ? 0
-        : parseFloat(row.averageWeight),
-      averageFatigue: isNaN(parseFloat(row.averageFatigue))
-        ? 0
-        : parseFloat(row.averageFatigue),
-      maxWeight: isNaN(parseFloat(row.maxWeight))
-        ? 0
-        : parseFloat(row.maxWeight),
-      intensity:
-        row.intensity === "N/A"
-          ? "N/A"
-          : isNaN(parseFloat(row.intensity))
-          ? 0
-          : parseFloat(row.intensity), // New field
-      howIFeel: row.howIFeel || "N/A", // New field
+      totalVolume: parseFloat(row.totalVolume),
+      totalSets: parseFloat(row.totalSets),
+      totalReps: parseFloat(row.totalReps),
+      averageReps: parseFloat(row.averageReps),
+      averageWeight: parseFloat(row.averageWeight),
+      averageFatigue: parseFloat(row.averageFatigue),
+      maxWeight: parseFloat(row.maxWeight),
+      intensity: parseFloat(row.intensity), // Intensity as percentage
+      fatigue: parseFloat(row.fatigue), // Cumulative fatigue as percentage
+      howIFeel: row.howIFeel || "N/A",
       progressionRate:
-        row.progressionRate === "N/A"
-          ? "N/A"
-          : isNaN(parseFloat(row.progressionRate))
-          ? 0
-          : parseFloat(row.progressionRate),
+        row.progressionRate === "N/A" ? "N/A" : parseFloat(row.progressionRate),
     }));
   }, [dailyMetrics]);
 
@@ -103,8 +81,9 @@ const WorkoutSummaryTable = ({ logs }) => {
       headerName: "Intensity (%)",
       width: 120,
       sortable: true,
-    }, // New column
-    { field: "howIFeel", headerName: "How I Feel", width: 120, sortable: true }, // New column
+    },
+    { field: "fatigue", headerName: "Fatigue (%)", width: 120, sortable: true },
+    { field: "howIFeel", headerName: "How I Feel", width: 120, sortable: true },
     {
       field: "progressionRate",
       headerName: "Progression Rate (%)",
@@ -148,7 +127,7 @@ const WorkoutSummaryTable = ({ logs }) => {
       <Typography variant="h6" gutterBottom>
         Workout Summary by Date, Muscle Group, and Exercise
       </Typography>
-      <div style={{ height: 400, width: "100%" }}>
+      <div style={{ height: "50vh", width: "100%" }}>
         <DataGrid
           rows={sanitizedRows}
           columns={summaryColumns}

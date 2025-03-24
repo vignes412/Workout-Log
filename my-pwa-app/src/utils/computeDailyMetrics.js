@@ -1,71 +1,72 @@
+// src/utils/computeDailyMetrics.js
 export const computeDailyMetrics = (logs) => {
   if (!logs || !Array.isArray(logs) || logs.length === 0) return [];
 
+  // Constants for intensity and fatigue calculation
+  const MAX_POSSIBLE_EFFORT = 200 * 20 * 10; // 200 lbs × 20 reps × RPE 10 = 40000 (adjustable)
+  const FATIGUE_FACTOR = 0.2; // Scales intensity to fatigue contribution (e.g., 50% intensity → 5% fatigue)
+
+  // Group logs by date, muscle group, and exercise
   const grouped = {};
   logs.forEach((log) => {
-    const key = `${log[0]}_${log[1]}_${log[2]}`;
+    const key = `${log[0]}_${log[1]}_${log[2]}`; // date_muscleGroup_exercise
     if (!grouped[key]) grouped[key] = [];
     grouped[key].push(log);
   });
 
+  // Process each group into initial metrics
   const sortedGroups = Object.entries(grouped)
     .map(([key, sessionLogs], index) => {
       const [date, muscleGroup, exercise] = key.split("_");
+
+      // Parse log data (unchanged)
       const totalVolume = sessionLogs
-        .reduce(
-          (sum, log) =>
-            sum +
-            (isNaN(parseFloat(log[3])) ? 0 : parseFloat(log[3])) *
-              (isNaN(parseFloat(log[4])) ? 0 : parseFloat(log[4])),
-          0
-        )
+        .reduce((sum, log) => sum + parseReps(log[3]) * parseWeight(log[4]), 0)
         .toFixed(2);
       const totalSets = sessionLogs.length;
       const totalReps = sessionLogs
-        .reduce(
-          (sum, log) =>
-            sum + (isNaN(parseFloat(log[3])) ? 0 : parseFloat(log[3])),
-          0
-        )
+        .reduce((sum, log) => sum + parseReps(log[3]), 0)
         .toFixed(2);
       const averageReps = totalSets
         ? (totalReps / totalSets).toFixed(2)
         : "0.00";
       const averageWeight = totalSets
         ? (
-            sessionLogs.reduce(
-              (sum, log) =>
-                sum + (isNaN(parseFloat(log[4])) ? 0 : parseFloat(log[4])),
-              0
-            ) / totalSets
+            sessionLogs.reduce((sum, log) => sum + parseWeight(log[4]), 0) /
+            totalSets
           ).toFixed(2)
         : "0.00";
       const averageFatigue = totalSets
         ? (
-            sessionLogs.reduce(
-              (sum, log) =>
-                sum + (isNaN(parseFloat(log[5])) ? 0 : parseFloat(log[5])),
-              0
-            ) / totalSets
+            sessionLogs.reduce((sum, log) => sum + parseRating(log[5]), 0) /
+            totalSets
           ).toFixed(2)
         : "0.00";
       const maxWeight = Math.max(
-        ...sessionLogs.map(
-          (log) => (isNaN(parseFloat(log[4])) ? 0 : parseFloat(log[4])),
-          0
-        )
+        ...sessionLogs.map((log) => parseWeight(log[4]))
       );
 
-      // Consolidate "How I Feel" (most frequent value)
-      const feelCounts = {};
-      sessionLogs.forEach((log) => {
+      // Consolidate "How I Feel" (unchanged)
+      const feelCounts = sessionLogs.reduce((counts, log) => {
         const feel = log[5] || "N/A";
-        feelCounts[feel] = (feelCounts[feel] || 0) + 1;
-      });
+        counts[feel] = (counts[feel] || 0) + 1;
+        return counts;
+      }, {});
       const howIFeel = Object.entries(feelCounts).reduce(
-        (a, b) => (b[1] > a[1] ? b : a),
+        (max, current) => (current[1] > max[1] ? current : max),
         ["N/A", 0]
       )[0];
+
+      // Calculate intensity as percentage: (Weight × Reps × Rating) / Max Effort × 100
+      const totalIntensity = sessionLogs
+        .reduce((sum, log) => {
+          const reps = parseReps(log[3]);
+          const weight = parseWeight(log[4]);
+          const rating = parseRating(log[5]);
+          const effort = weight * reps * rating;
+          return sum + (effort / MAX_POSSIBLE_EFFORT) * 100;
+        }, 0)
+        .toFixed(2);
 
       return {
         id: index + 1,
@@ -79,36 +80,49 @@ export const computeDailyMetrics = (logs) => {
         averageWeight,
         averageFatigue,
         maxWeight,
-        howIFeel, // Consolidated from logs
+        howIFeel,
+        intensity: totalIntensity, // Intensity as percentage
+        fatigue: 0, // Placeholder, will be updated below
       };
     })
-    .sort((a, b) => new Date(a.date) - new Date(b.date));
+    .sort((a, b) => new Date(a.date) - new Date(b.date)); // Sort by date
 
-  // Add intensity based on volume change from previous workout
+  // Calculate cumulative daily fatigue
+  const dailyFatigueMap = {};
+  sortedGroups.forEach((entry) => {
+    const date = entry.date;
+    if (!dailyFatigueMap[date]) dailyFatigueMap[date] = 0;
+    const fatigueContribution = (
+      parseFloat(entry.intensity) * FATIGUE_FACTOR
+    ).toFixed(2);
+    dailyFatigueMap[date] = (
+      parseFloat(dailyFatigueMap[date]) + parseFloat(fatigueContribution)
+    ).toFixed(2);
+    entry.fatigue = dailyFatigueMap[date]; // Cumulative fatigue up to this exercise
+  });
+
+  // Add progression rate (unchanged)
   const muscleExerciseMap = {};
   sortedGroups.forEach((current, index) => {
     const key = `${current.muscleGroup}_${current.exercise}`;
-    let intensity = "N/A";
+    let progressionRate = "N/A";
     if (muscleExerciseMap[key]) {
-      const prevVolume = isNaN(parseFloat(muscleExerciseMap[key].totalVolume))
-        ? 0
-        : parseFloat(muscleExerciseMap[key].totalVolume);
-      const currentVolume = isNaN(parseFloat(current.totalVolume))
-        ? 0
-        : parseFloat(current.totalVolume);
-      intensity = prevVolume
+      const prevVolume = parseFloat(muscleExerciseMap[key].totalVolume);
+      const currentVolume = parseFloat(current.totalVolume);
+      progressionRate = prevVolume
         ? (((currentVolume - prevVolume) / prevVolume) * 100).toFixed(2)
         : "0.00";
-      const progressionRate = prevVolume
-        ? (((currentVolume - prevVolume) / prevVolume) * 100).toFixed(2)
-        : "N/A";
-      sortedGroups[index].progressionRate = progressionRate;
-    } else {
-      sortedGroups[index].progressionRate = "N/A";
     }
-    sortedGroups[index].intensity = intensity; // New field
+    sortedGroups[index].progressionRate = progressionRate;
     muscleExerciseMap[key] = current;
   });
 
   return sortedGroups;
 };
+
+// Helper functions for parsing with defaults
+const parseReps = (value) => (isNaN(parseFloat(value)) ? 0 : parseFloat(value));
+const parseWeight = (value) =>
+  isNaN(parseFloat(value)) ? 0 : parseFloat(value);
+const parseRating = (value) =>
+  isNaN(parseFloat(value)) ? 7 : Math.min(Math.max(parseFloat(value), 1), 10); // Default to 7, clamp 1-10
