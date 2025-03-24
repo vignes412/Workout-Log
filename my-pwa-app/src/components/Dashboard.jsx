@@ -1,12 +1,12 @@
+// src/components/Dashboard.jsx
 import React, { useState, useEffect } from "react";
 import { googleLogout } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
 import { initClient, syncData, useOnlineStatus } from "../utils/sheetsApi";
-import WorkoutLogModal from "../WorkoutLogModal";
+import WorkoutLogModal from "../pages/WorkoutLogModal";
 import {
   Button,
   Typography,
-  Grid,
   Fab,
   Menu,
   MenuItem,
@@ -96,14 +96,16 @@ const Dashboard = ({ isAuthenticated, setIsAuthenticated, accessToken }) => {
           Status: {isOffline ? "Offline" : "Online"}
         </Typography>
 
-        <Grid container spacing={2}>
-          <Grid item xs={12} md={6}>
-            <WorkoutLogsTable logs={logs} />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <WorkoutSummaryTable logs={logs} />
-          </Grid>
-        </Grid>
+        {/* Workout Logs Table (Top) */}
+        <WorkoutLogsTable
+          logs={logs}
+          setLogs={setLogs}
+          isOffline={isOffline}
+          exercises={exercises}
+        />
+
+        {/* Workout Summary Table (Bottom) */}
+        <WorkoutSummaryTable logs={logs} />
 
         <Charts logs={logs} />
       </div>

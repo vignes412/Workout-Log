@@ -1,3 +1,4 @@
+// src/components/WorkoutSummaryTable/WorkoutSummaryTable.jsx
 import React, { useMemo } from "react";
 import { Typography } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
@@ -17,8 +18,8 @@ const WorkoutSummaryTable = ({ logs }) => {
       averageWeight: parseFloat(row.averageWeight),
       averageFatigue: parseFloat(row.averageFatigue),
       maxWeight: parseFloat(row.maxWeight),
-      intensity: parseFloat(row.intensity), // Intensity as percentage
-      fatigue: parseFloat(row.fatigue), // Cumulative fatigue as percentage
+      intensity: parseFloat(row.intensity),
+      fatigue: parseFloat(row.fatigue),
       howIFeel: row.howIFeel || "N/A",
       progressionRate:
         row.progressionRate === "N/A" ? "N/A" : parseFloat(row.progressionRate),

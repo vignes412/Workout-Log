@@ -7,8 +7,14 @@ const { SPREADSHEET_ID, API_KEY, CLIENT_ID, DISCOVERY_DOCS, SCOPES } =
   config.google;
 const { DATA_CACHE_NAME } = config.cache;
 
+let isInitialized = false;
+
 export const initClient = (accessToken) => {
   return new Promise((resolve, reject) => {
+    if (isInitialized) {
+      resolve();
+      return;
+    }
     gapi.load("client", () => {
       gapi.client
         .init({
@@ -19,38 +25,105 @@ export const initClient = (accessToken) => {
         })
         .then(() => {
           gapi.client.setToken({ access_token: accessToken });
+          console.log(
+            "GAPI Client Initialized with Spreadsheet ID:",
+            SPREADSHEET_ID
+          );
+          isInitialized = true;
           resolve();
         })
-        .catch(reject);
+        .catch((error) => {
+          console.error("GAPI Initialization Error:", error);
+          reject(error);
+        });
     });
   });
 };
 
 export const fetchData = async (range, mapFn = (row) => row) => {
-  const response = await gapi.client.sheets.spreadsheets.values.get({
-    spreadsheetId: SPREADSHEET_ID,
-    range,
-  });
-  return (response.result.values || []).map(mapFn);
+  try {
+    const response = await gapi.client.sheets.spreadsheets.values.get({
+      spreadsheetId: SPREADSHEET_ID,
+      range,
+    });
+    return (response.result.values || []).map(mapFn);
+  } catch (error) {
+    console.error(
+      `Fetch Error for range ${range}:`,
+      error.result?.error || error
+    );
+    throw error;
+  }
 };
 
 export const appendData = async (range, values) => {
-  await gapi.client.sheets.spreadsheets.values.append({
-    spreadsheetId: SPREADSHEET_ID,
-    range,
-    valueInputOption: "RAW",
-    resource: { values: [values] },
-  });
+  try {
+    await gapi.client.sheets.spreadsheets.values.append({
+      spreadsheetId: SPREADSHEET_ID,
+      range,
+      valueInputOption: "RAW",
+      resource: { values: [values] },
+    });
+  } catch (error) {
+    console.error(
+      `Append Error for range ${range}:`,
+      error.result?.error || error
+    );
+    throw error;
+  }
+};
+
+export const clearSheet = async (range) => {
+  try {
+    await gapi.client.sheets.spreadsheets.values.clear({
+      spreadsheetId: SPREADSHEET_ID,
+      range,
+    });
+    console.log(`Cleared range ${range} successfully`);
+  } catch (error) {
+    console.error(
+      `Clear Error for range ${range}:`,
+      error.result?.error || error
+    );
+    throw error;
+  }
+};
+
+export const updateData = async (range, values) => {
+  try {
+    await gapi.client.sheets.spreadsheets.values.update({
+      spreadsheetId: SPREADSHEET_ID,
+      range,
+      valueInputOption: "RAW",
+      resource: { values },
+    });
+    console.log(`Updated range ${range} successfully`);
+  } catch (error) {
+    console.error(
+      `Update Error for range ${range}:`,
+      error.result?.error || error
+    );
+    throw error;
+  }
 };
 
 export const cacheData = async (cacheKey, data) => {
-  const cache = await caches.open(DATA_CACHE_NAME);
-  await cache.put(cacheKey, new Response(JSON.stringify(data)));
+  try {
+    const cache = await caches.open(DATA_CACHE_NAME);
+    await cache.put(cacheKey, new Response(JSON.stringify(data)));
+  } catch (error) {
+    console.error(`Cache Error for ${cacheKey}:`, error);
+  }
 };
 
 export const loadCachedData = async (cacheKey) => {
-  const cachedData = await caches.match(cacheKey);
-  return cachedData ? await cachedData.json() : null;
+  try {
+    const cache = await caches.match(cacheKey);
+    return cache ? await cache.json() : null;
+  } catch (error) {
+    console.error(`Load Cache Error for ${cacheKey}:`, error);
+    return null;
+  }
 };
 
 export const useOnlineStatus = (setIsOffline) => {

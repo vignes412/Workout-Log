@@ -1,11 +1,5 @@
-// src/pages/WorkoutLogModal.js
-import React, { useState } from "react";
-import {
-  appendData,
-  cacheData,
-  fetchData,
-  loadCachedData,
-} from "./utils/sheetsApi";
+import React, { useState, useEffect } from "react";
+import { appendData, cacheData, loadCachedData } from "./utils/sheetsApi";
 import {
   Dialog,
   DialogTitle,
@@ -21,7 +15,14 @@ import {
   MenuItem,
 } from "@mui/material";
 
-const WorkoutLogModal = ({ open, onClose, exercises, isOffline }) => {
+const WorkoutLogModal = ({
+  open,
+  onClose,
+  exercises,
+  isOffline,
+  editLog,
+  onSave,
+}) => {
   const [log, setLog] = useState({
     date: "",
     muscleGroup: "",
@@ -32,12 +33,64 @@ const WorkoutLogModal = ({ open, onClose, exercises, isOffline }) => {
   });
   const [message, setMessage] = useState(null);
 
-  // Extract unique muscle groups
+  useEffect(() => {
+    if (editLog) {
+      setLog({
+        date: editLog.date || "",
+        muscleGroup: editLog.muscleGroup || "",
+        exercise: editLog.exercise || "",
+        reps: editLog.reps.toString() || "",
+        weight: editLog.weight.toString() || "",
+        rating: editLog.howIFeel || "",
+      });
+    } else {
+      setLog({
+        date: "",
+        muscleGroup: "",
+        exercise: "",
+        reps: "",
+        weight: "",
+        rating: "",
+      });
+    }
+  }, [editLog, open]);
+
   const muscleGroups = [...new Set(exercises.map((e) => e.muscleGroup))];
-  // Filter exercises based on selected muscle group
-  const exerciseOptions = exercises
-    .filter((e) => e.muscleGroup === log.muscleGroup)
-    .map((e) => e.exercise);
+  const allExercises = [...new Set(exercises.map((e) => e.exercise))];
+
+  const filteredMuscleGroups = log.exercise
+    ? [
+        ...new Set(
+          exercises
+            .filter((e) => e.exercise === log.exercise)
+            .map((e) => e.muscleGroup)
+        ),
+      ]
+    : muscleGroups;
+
+  const filteredExercises = log.muscleGroup
+    ? [
+        ...new Set(
+          exercises
+            .filter((e) => e.muscleGroup === log.muscleGroup)
+            .map((e) => e.exercise)
+        ),
+      ]
+    : allExercises;
+
+  const handleMuscleGroupChange = (event, newValue) => {
+    setLog((prev) => ({
+      ...prev,
+      muscleGroup: newValue || "",
+    }));
+  };
+
+  const handleExerciseChange = (event, newValue) => {
+    setLog((prev) => ({
+      ...prev,
+      exercise: newValue || "",
+    }));
+  };
 
   const handleSubmit = async () => {
     const { date, muscleGroup, exercise, reps, weight, rating } = log;
@@ -46,33 +99,46 @@ const WorkoutLogModal = ({ open, onClose, exercises, isOffline }) => {
       return;
     }
     if (isOffline) {
-      setMessage({ type: "error", text: "Cannot log workout offline" });
+      setMessage({ type: "error", text: "Cannot save workout offline" });
       return;
     }
 
+    const row = [date, muscleGroup, exercise, reps, weight, rating];
+
     try {
-      // Check if muscle group and exercise exist in Exercises sheet; add if not
-      if (
-        !muscleGroups.includes(muscleGroup) ||
-        !exerciseOptions.includes(exercise)
-      ) {
-        await appendData("Exercises!A:B", [muscleGroup, exercise]);
-        await cacheData("/api/exercises", [
-          ...((await loadCachedData("/api/exercises")) || []),
-          { muscleGroup, exercise },
-        ]);
-        setMessage({ type: "success", text: "New exercise added to list" });
+      if (editLog && onSave) {
+        console.log(
+          "Updating workout log:",
+          row,
+          "at index:",
+          editLog.originalIndex
+        );
+        await onSave(row, editLog.originalIndex);
+        setMessage({ type: "success", text: "Workout updated successfully" });
+      } else {
+        console.log("Appending new workout log:", row);
+        await appendData("Workout_Logs!A:F", [row]);
+        const cachedData = (await loadCachedData("/api/workout")) || [];
+        await cacheData("/api/workout", [...cachedData, row]);
+        setMessage({ type: "success", text: "Workout logged successfully" });
       }
 
-      // Log the workout
-      const row = [date, muscleGroup, exercise, reps, weight, rating];
-      await appendData("Workout_Logs!A:F", row);
-      await cacheData("/api/workout", [
-        ...((await loadCachedData("/api/workout")) || []),
-        row,
-      ]);
+      if (
+        !muscleGroups.includes(muscleGroup) ||
+        !allExercises.includes(exercise)
+      ) {
+        console.log("Adding new exercise to Exercises sheet:", [
+          muscleGroup,
+          exercise,
+        ]);
+        await appendData("Exercises!A:B", [[muscleGroup, exercise]]);
+        const cachedExercises = (await loadCachedData("/api/exercises")) || [];
+        await cacheData("/api/exercises", [
+          ...cachedExercises,
+          { muscleGroup, exercise },
+        ]);
+      }
 
-      setMessage({ type: "success", text: "Workout logged successfully" });
       setTimeout(() => {
         setLog({
           date: "",
@@ -82,14 +148,17 @@ const WorkoutLogModal = ({ open, onClose, exercises, isOffline }) => {
           weight: "",
           rating: "",
         });
+        setMessage(null);
         onClose();
       }, 1000);
     } catch (error) {
+      console.error("Error in handleSubmit:", error.message, error.stack);
       setMessage({
         type: "error",
-        text: "Error logging workout or adding exercise",
+        text: editLog
+          ? `Error updating workout: ${error.message}`
+          : `Error logging workout: ${error.message}`,
       });
-      console.error(error);
     }
   };
 
@@ -97,7 +166,7 @@ const WorkoutLogModal = ({ open, onClose, exercises, isOffline }) => {
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>
         <Typography variant="h6" color="primary">
-          Add Workout Log
+          {editLog ? "Edit Workout Log" : "Add Workout Log"}
         </Typography>
       </DialogTitle>
       <DialogContent>
@@ -119,15 +188,10 @@ const WorkoutLogModal = ({ open, onClose, exercises, isOffline }) => {
           InputLabelProps={{ shrink: true }}
         />
         <Autocomplete
-          freeSolo
-          options={muscleGroups}
+          options={filteredMuscleGroups}
           value={log.muscleGroup}
-          onChange={(e, newValue) =>
-            setLog({ ...log, muscleGroup: newValue || "", exercise: "" })
-          }
-          onInputChange={(e, newInputValue) =>
-            setLog({ ...log, muscleGroup: newInputValue, exercise: "" })
-          }
+          onChange={handleMuscleGroupChange}
+          freeSolo
           renderInput={(params) => (
             <TextField
               {...params}
@@ -139,16 +203,10 @@ const WorkoutLogModal = ({ open, onClose, exercises, isOffline }) => {
           )}
         />
         <Autocomplete
-          freeSolo
-          options={exerciseOptions}
+          options={filteredExercises}
           value={log.exercise}
-          onChange={(e, newValue) =>
-            setLog({ ...log, exercise: newValue || "" })
-          }
-          onInputChange={(e, newInputValue) =>
-            setLog({ ...log, exercise: newInputValue })
-          }
-          disabled={!log.muscleGroup}
+          onChange={handleExerciseChange}
+          freeSolo
           renderInput={(params) => (
             <TextField
               {...params}
@@ -203,7 +261,7 @@ const WorkoutLogModal = ({ open, onClose, exercises, isOffline }) => {
           variant="contained"
           disabled={isOffline}
         >
-          Submit
+          {editLog ? "Save" : "Submit"}
         </Button>
       </DialogActions>
     </Dialog>
