@@ -1,10 +1,9 @@
-// src/App.js
 import React, { useState, useEffect } from "react";
 import { useGoogleLogin, googleLogout } from "@react-oauth/google";
 import { gapi } from "gapi-script";
 import config from "./config";
 
-const App = () => {
+const App = ({ onNavigate }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [data, setData] = useState([]);
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
@@ -170,6 +169,7 @@ const App = () => {
     googleLogout();
     setIsAuthenticated(false);
     setData([]);
+    onNavigate("login");
   };
 
   return (

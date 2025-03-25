@@ -1,13 +1,6 @@
-// src/index.js
 import React, { useState } from "react";
 import { createRoot } from "react-dom/client";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import {
-  HashRouter as Router,
-  Route,
-  Routes,
-  Navigate,
-} from "react-router-dom";
 import App from "./App";
 import Login from "./pages/Login";
 import Dashboard from "./components/Dashboard";
@@ -22,35 +15,43 @@ const Main = () => {
   const [accessToken, setAccessToken] = useState(
     localStorage.getItem("authToken")
   );
-  // const basename = process.env.NODE_ENV === "production" ? "/Workout-Log" : "/";
-
-  return (
-    <Router>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <Login
-              setIsAuthenticated={setIsAuthenticated}
-              setAccessToken={setAccessToken}
-            />
-          }
-        />
-        <Route path="/app" element={<App />} />
-        <Route
-          path="/dashboard"
-          element={
-            <Dashboard
-              isAuthenticated={isAuthenticated}
-              setIsAuthenticated={setIsAuthenticated}
-              accessToken={accessToken}
-            />
-          }
-        />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </Router>
+  const [currentPage, setCurrentPage] = useState(
+    isAuthenticated ? "dashboard" : "login"
   );
+
+  const renderPage = () => {
+    switch (currentPage) {
+      case "login":
+        return (
+          <Login
+            setIsAuthenticated={setIsAuthenticated}
+            setAccessToken={setAccessToken}
+            onNavigate={setCurrentPage}
+          />
+        );
+      case "app":
+        return <App onNavigate={setCurrentPage} />;
+      case "dashboard":
+        return (
+          <Dashboard
+            isAuthenticated={isAuthenticated}
+            setIsAuthenticated={setIsAuthenticated}
+            accessToken={accessToken}
+            onNavigate={setCurrentPage}
+          />
+        );
+      default:
+        return (
+          <Login
+            setIsAuthenticated={setIsAuthenticated}
+            setAccessToken={setAccessToken}
+            onNavigate={setCurrentPage}
+          />
+        );
+    }
+  };
+
+  return <div>{renderPage()}</div>;
 };
 
 const container = document.getElementById("root");

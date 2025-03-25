@@ -1,16 +1,13 @@
-// src/pages/Login.js
 import React from "react";
 import { useGoogleLogin } from "@react-oauth/google";
-import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
 
-const Login = ({ setIsAuthenticated, setAccessToken }) => {
-  const navigate = useNavigate();
+const Login = ({ setIsAuthenticated, setAccessToken, onNavigate }) => {
   const token = localStorage.getItem("authToken");
 
   React.useEffect(() => {
-    if (token) navigate("/dashboard");
-  }, [token, navigate]);
+    if (token) onNavigate("dashboard");
+  }, [token, onNavigate]);
 
   const login = useGoogleLogin({
     onSuccess: (tokenResponse) => {
@@ -18,7 +15,7 @@ const Login = ({ setIsAuthenticated, setAccessToken }) => {
       localStorage.setItem("authToken", token);
       setAccessToken(token);
       setIsAuthenticated(true);
-      navigate("/dashboard");
+      onNavigate("dashboard");
     },
     onError: (error) => console.error("Login Failed:", error),
     scope:

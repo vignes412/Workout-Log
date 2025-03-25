@@ -1,7 +1,5 @@
-// src/components/Dashboard.jsx
 import React, { useState, useEffect } from "react";
 import { googleLogout } from "@react-oauth/google";
-import { useNavigate } from "react-router-dom";
 import { initClient, syncData, useOnlineStatus } from "../utils/sheetsApi";
 import WorkoutLogModal from "../pages/WorkoutLogModal";
 import {
@@ -19,14 +17,18 @@ import WorkoutSummaryTable from "./WorkoutSummaryTable";
 import Charts from "./Charts";
 import "../styles.css";
 
-const Dashboard = ({ isAuthenticated, setIsAuthenticated, accessToken }) => {
+const Dashboard = ({
+  isAuthenticated,
+  setIsAuthenticated,
+  accessToken,
+  onNavigate,
+}) => {
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
   const [logs, setLogs] = useState(null);
   const [exercises, setExercises] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
 
   useOnlineStatus(setIsOffline);
 
@@ -63,14 +65,14 @@ const Dashboard = ({ isAuthenticated, setIsAuthenticated, accessToken }) => {
     googleLogout();
     localStorage.removeItem("authToken");
     setIsAuthenticated(false);
-    navigate("/");
+    onNavigate("login");
   };
 
   const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
   const handleMenuClose = () => setAnchorEl(null);
 
   if (!isAuthenticated) {
-    navigate("/");
+    onNavigate("login");
     return null;
   }
 
@@ -100,7 +102,7 @@ const Dashboard = ({ isAuthenticated, setIsAuthenticated, accessToken }) => {
         <WorkoutLogsTable
           logs={logs}
           setLogs={setLogs}
-          isOffline={isOffline}
+          BarryOffline={isOffline}
           exercises={exercises}
         />
 
