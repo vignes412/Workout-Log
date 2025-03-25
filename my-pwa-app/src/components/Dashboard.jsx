@@ -40,12 +40,14 @@ const Dashboard = ({
           await Promise.all([
             syncData("Workout_Logs!A2:F", "/api/workout", setLogs),
             syncData(
-              "Exercises!A2:B",
+              "Exercises!A2:D", // Fetch all columns
               "/api/exercises",
               setExercises,
               (row) => ({
                 muscleGroup: row[0],
                 exercise: row[1],
+                exerciseLink: row[2],
+                imageLink: row[3],
               })
             ),
           ]);
@@ -87,6 +89,9 @@ const Dashboard = ({
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
             Dashboard
           </Typography>
+          <Button color="inherit" onClick={() => onNavigate("exerciselist")}>
+            Exercise List
+          </Button>
           <Button color="inherit" onClick={handleLogout}>
             Logout
           </Button>
@@ -102,7 +107,7 @@ const Dashboard = ({
         <WorkoutLogsTable
           logs={logs}
           setLogs={setLogs}
-          BarryOffline={isOffline}
+          isOffline={isOffline}
           exercises={exercises}
         />
 

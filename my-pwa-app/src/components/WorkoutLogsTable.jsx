@@ -2,7 +2,7 @@ import React, { useMemo, useState } from "react";
 import { Typography, Button } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { appendData, cacheData } from "../utils/sheetsApi";
-import WorkoutLogModal from "../WorkoutLogModal";
+import WorkoutLogModal from "../pages/WorkoutLogModal";
 import config from "../config";
 
 const SPREADSHEET_ID = config.google.SPREADSHEET_ID; // Replace with your spreadsheet ID

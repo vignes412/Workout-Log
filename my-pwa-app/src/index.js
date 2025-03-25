@@ -4,6 +4,7 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import App from "./App";
 import Login from "./pages/Login";
 import Dashboard from "./components/Dashboard";
+import ExerciseList from "./pages/ExerciseList"; // New component
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import config from "./config";
 import "./index.css";
@@ -39,6 +40,10 @@ const Main = () => {
             accessToken={accessToken}
             onNavigate={setCurrentPage}
           />
+        );
+      case "exerciselist": // New page
+        return (
+          <ExerciseList accessToken={accessToken} onNavigate={setCurrentPage} />
         );
       default:
         return (

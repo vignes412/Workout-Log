@@ -86,3 +86,20 @@
     pointer-events: none;
     opacity: 0;
 }
+
+.exercise-list-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.exercise-list-content {
+    padding: 20px;
+}
+
+.card {
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: scale(1.05);
+}
