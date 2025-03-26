@@ -13,14 +13,16 @@ import {
   Autocomplete,
   TextField,
   Box,
+  IconButton,
 } from "@mui/material";
+import { Brightness4, Brightness7 } from "@mui/icons-material";
 import "../styles.css";
 
-const ExerciseList = ({ accessToken, onNavigate }) => {
+const ExerciseList = ({ accessToken, onNavigate, toggleTheme, themeMode }) => {
   const [exercises, setExercises] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [muscleGroupFilter, setMuscleGroupFilter] = useState(null); // Autocomplete for muscle group
-  const [exerciseFilter, setExerciseFilter] = useState(""); // Text input for exercise name
+  const [muscleGroupFilter, setMuscleGroupFilter] = useState(null);
+  const [exerciseFilter, setExerciseFilter] = useState("");
 
   useEffect(() => {
     if (accessToken) {
@@ -28,7 +30,7 @@ const ExerciseList = ({ accessToken, onNavigate }) => {
         try {
           await initClient(accessToken);
           await syncData(
-            "Exercises!A2:D", // Muscle_Group, Exercise, exercise_link, image_link
+            "Exercises!A2:D",
             "/api/exercises",
             setExercises,
             (row) => ({
@@ -48,7 +50,6 @@ const ExerciseList = ({ accessToken, onNavigate }) => {
     }
   }, [accessToken]);
 
-  // Group exercises and prepare filter options
   const groupedExercises = exercises.reduce((acc, exercise) => {
     if (!acc[exercise.muscleGroup]) {
       acc[exercise.muscleGroup] = [];
@@ -57,10 +58,8 @@ const ExerciseList = ({ accessToken, onNavigate }) => {
     return acc;
   }, {});
 
-  // Unique muscle groups for autocomplete
   const muscleGroups = Object.keys(groupedExercises).sort();
 
-  // Filtered exercises based on selected filters
   const filteredExercises = exercises.filter((exercise) => {
     const matchesMuscleGroup =
       !muscleGroupFilter || exercise.muscleGroup === muscleGroupFilter;
@@ -92,18 +91,20 @@ const ExerciseList = ({ accessToken, onNavigate }) => {
           <Button color="inherit" onClick={() => onNavigate("dashboard")}>
             Back to Dashboard
           </Button>
+          <IconButton color="inherit" onClick={toggleTheme}>
+            {themeMode === "light" ? <Brightness4 /> : <Brightness7 />}
+          </IconButton>
         </Toolbar>
       </AppBar>
 
       <div className="exercise-list-content" style={{ padding: "20px" }}>
-        {/* Filters */}
         <Box
           sx={{
             mb: 4,
             display: "flex",
-            flexDirection: { xs: "column", sm: "row" }, // Stack on mobile, row on larger screens
-            gap: 2, // Space between filters
-            alignItems: "stretch", // Consistent height
+            flexDirection: { xs: "column", sm: "row" },
+            gap: 2,
+            alignItems: "stretch",
           }}
         >
           <Autocomplete
@@ -111,8 +112,6 @@ const ExerciseList = ({ accessToken, onNavigate }) => {
             value={muscleGroupFilter}
             onChange={(event, newValue) => {
               setMuscleGroupFilter(newValue);
-              // Reset exercise filter when muscle group changes (optional, comment out if not desired)
-              // if (newValue && exerciseFilter) setExerciseFilter("");
             }}
             renderInput={(params) => (
               <TextField
@@ -122,20 +121,18 @@ const ExerciseList = ({ accessToken, onNavigate }) => {
                 fullWidth
               />
             )}
-            sx={{ flex: 1, minWidth: 0 }} // Flex grow, prevent shrinking
+            sx={{ flex: 1, minWidth: 0 }}
           />
-
           <TextField
             label="Search Exercise"
             variant="outlined"
             value={exerciseFilter}
             onChange={(e) => setExerciseFilter(e.target.value)}
             fullWidth
-            sx={{ flex: 1, minWidth: 0 }} // Flex grow, prevent shrinking
+            sx={{ flex: 1, minWidth: 0 }}
           />
         </Box>
 
-        {/* Exercise List */}
         {Object.keys(filteredGroupedExercises).length > 0 ? (
           Object.keys(filteredGroupedExercises).map((muscleGroup) => (
             <div key={muscleGroup} style={{ marginBottom: "30px" }}>

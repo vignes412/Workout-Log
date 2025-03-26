@@ -1,13 +1,34 @@
 import React, { useState } from "react";
 import { createRoot } from "react-dom/client";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline"; // Ensures consistent baseline styles
 import App from "./App";
 import Login from "./pages/Login";
 import Dashboard from "./components/Dashboard";
-import ExerciseList from "./pages/ExerciseList"; // New component
+import ExerciseList from "./pages/ExerciseList";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import config from "./config";
 import "./index.css";
+
+// Define light and dark themes
+const lightTheme = createTheme({
+  palette: {
+    mode: "light",
+    primary: { main: "#1976d2" },
+    secondary: { main: "#dc004e" },
+    background: { default: "#fff", paper: "#f5f5f5" },
+  },
+});
+
+const darkTheme = createTheme({
+  palette: {
+    mode: "dark",
+    primary: { main: "#90caf9" },
+    secondary: { main: "#f48fb1" },
+    background: { default: "#121212", paper: "#424242" },
+  },
+});
 
 const Main = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(
@@ -19,6 +40,13 @@ const Main = () => {
   const [currentPage, setCurrentPage] = useState(
     isAuthenticated ? "dashboard" : "login"
   );
+  const [themeMode, setThemeMode] = useState("light"); // Default to light theme
+
+  const theme = themeMode === "light" ? lightTheme : darkTheme;
+
+  const toggleTheme = () => {
+    setThemeMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
+  };
 
   const renderPage = () => {
     switch (currentPage) {
@@ -39,11 +67,18 @@ const Main = () => {
             setIsAuthenticated={setIsAuthenticated}
             accessToken={accessToken}
             onNavigate={setCurrentPage}
+            toggleTheme={toggleTheme} // Pass toggle function
+            themeMode={themeMode} // Pass current theme mode
           />
         );
-      case "exerciselist": // New page
+      case "exerciselist":
         return (
-          <ExerciseList accessToken={accessToken} onNavigate={setCurrentPage} />
+          <ExerciseList
+            accessToken={accessToken}
+            onNavigate={setCurrentPage}
+            toggleTheme={toggleTheme} // Pass toggle function
+            themeMode={themeMode} // Pass current theme mode
+          />
         );
       default:
         return (
@@ -56,7 +91,12 @@ const Main = () => {
     }
   };
 
-  return <div>{renderPage()}</div>;
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline /> {/* Ensures consistent styling across themes */}
+      {renderPage()}
+    </ThemeProvider>
+  );
 };
 
 const container = document.getElementById("root");

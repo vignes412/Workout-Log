@@ -11,7 +11,7 @@ import {
   Legend,
 } from "chart.js";
 import { Line, Bar } from "react-chartjs-2";
-import { Typography, Box, Paper } from "@mui/material";
+import { Typography, Box, Paper, useTheme, Grid } from "@mui/material";
 
 // Register Chart.js components
 ChartJS.register(
@@ -25,7 +25,9 @@ ChartJS.register(
   Legend
 );
 
-const Charts = ({ logs }) => {
+const Charts = ({ logs, themeMode }) => {
+  const theme = useTheme(); // Access the current theme
+
   // Memoized data processing for all charts
   const processedData = useMemo(() => {
     if (!logs || logs.length === 0) return {};
@@ -34,7 +36,6 @@ const Charts = ({ logs }) => {
     const muscleGroups = [...new Set(logs.map((log) => log[1]))];
     const exercises = [...new Set(logs.map((log) => log[2]))];
 
-    // Progress over time (volume, reps, weight)
     const volumeData = dates.map((date) =>
       logs
         .filter((log) => log[0] === date)
@@ -60,21 +61,18 @@ const Charts = ({ logs }) => {
         logs.filter((log) => log[0] === date).length
     );
 
-    // Volume by muscle group
     const volumeByMuscle = muscleGroups.map((group) =>
       logs
         .filter((log) => log[1] === group)
         .reduce((sum, log) => sum + parseFloat(log[3]) * parseFloat(log[4]), 0)
     );
 
-    // Reps by muscle group
     const repsByMuscle = muscleGroups.map((group) =>
       logs
         .filter((log) => log[1] === group)
         .reduce((sum, log) => sum + parseFloat(log[3]), 0)
     );
 
-    // Max weight by exercise
     const maxWeightByExercise = exercises.map((exercise) =>
       Math.max(
         ...logs
@@ -83,7 +81,6 @@ const Charts = ({ logs }) => {
       )
     );
 
-    // Stacked volume by muscle group and exercise
     const volumeByMuscleAndExercise = muscleGroups.map((group) => ({
       label: group,
       data: exercises.map((exercise) =>
@@ -94,12 +91,16 @@ const Charts = ({ logs }) => {
             0
           )
       ),
-      backgroundColor: `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(
-        Math.random() * 255
-      )}, ${Math.floor(Math.random() * 255)}, 0.6)`,
+      backgroundColor:
+        themeMode === "light"
+          ? `rgba(${Math.floor(Math.random() * 200)}, ${Math.floor(
+              Math.random() * 200
+            )}, ${Math.floor(Math.random() * 200)}, 0.6)`
+          : `rgba(${Math.floor(Math.random() * 200) + 55}, ${
+              Math.floor(Math.random() * 200) + 55
+            }, ${Math.floor(Math.random() * 200) + 55}, 0.6)`,
     }));
 
-    // Reps and weight trends per muscle group over time
     const repsByMuscleOverTime = muscleGroups.map((group) => ({
       label: `${group} Reps`,
       data: dates.map((date) =>
@@ -107,9 +108,14 @@ const Charts = ({ logs }) => {
           .filter((log) => log[0] === date && log[1] === group)
           .reduce((sum, log) => sum + parseFloat(log[3]), 0)
       ),
-      borderColor: `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(
-        Math.random() * 255
-      )}, ${Math.floor(Math.random() * 255)}, 1)`,
+      borderColor:
+        themeMode === "light"
+          ? `rgba(${Math.floor(Math.random() * 200)}, ${Math.floor(
+              Math.random() * 200
+            )}, ${Math.floor(Math.random() * 200)}, 1)`
+          : `rgba(${Math.floor(Math.random() * 200) + 55}, ${
+              Math.floor(Math.random() * 200) + 55
+            }, ${Math.floor(Math.random() * 200) + 55}, 1)`,
       backgroundColor: "rgba(0, 0, 0, 0)",
       tension: 0.3,
       yAxisID: "y1",
@@ -124,9 +130,14 @@ const Charts = ({ logs }) => {
           (logs.filter((log) => log[0] === date && log[1] === group).length ||
             1)
       ),
-      borderColor: `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(
-        Math.random() * 255
-      )}, ${Math.floor(Math.random() * 255)}, 1)`,
+      borderColor:
+        themeMode === "light"
+          ? `rgba(${Math.floor(Math.random() * 200)}, ${Math.floor(
+              Math.random() * 200
+            )}, ${Math.floor(Math.random() * 200)}, 1)`
+          : `rgba(${Math.floor(Math.random() * 200) + 55}, ${
+              Math.floor(Math.random() * 200) + 55
+            }, ${Math.floor(Math.random() * 200) + 55}, 1)`,
       backgroundColor: "rgba(0, 0, 0, 0)",
       tension: 0.3,
       yAxisID: "y",
@@ -147,33 +158,33 @@ const Charts = ({ logs }) => {
       repsByMuscleOverTime,
       weightByMuscleOverTime,
     };
-  }, [logs]);
+  }, [logs, themeMode]);
 
-  // Chart data configurations
+  // Chart data configurations with theme-aware colors
   const progressOverTimeData = {
     labels: processedData.dates || [],
     datasets: [
       {
         label: "Total Volume (Reps x Weight)",
         data: processedData.volumeData || [],
-        borderColor: "rgba(75, 192, 192, 1)",
-        backgroundColor: "rgba(75, 192, 192, 0.2)",
+        borderColor: theme.palette.primary.main,
+        backgroundColor: `${theme.palette.primary.main}33`, // 20% opacity
         tension: 0.3,
         yAxisID: "y",
       },
       {
         label: "Total Reps",
         data: processedData.repsData || [],
-        borderColor: "rgba(255, 99, 132, 1)",
-        backgroundColor: "rgba(255, 99, 132, 0.2)",
+        borderColor: theme.palette.secondary.main,
+        backgroundColor: `${theme.palette.secondary.main}33`,
         tension: 0.3,
         yAxisID: "y1",
       },
       {
         label: "Average Weight (lbs)",
         data: processedData.weightData || [],
-        borderColor: "rgba(54, 162, 235, 1)",
-        backgroundColor: "rgba(54, 162, 235, 0.2)",
+        borderColor: theme.palette.info.main,
+        backgroundColor: `${theme.palette.info.main}33`,
         tension: 0.3,
         yAxisID: "y",
       },
@@ -186,8 +197,8 @@ const Charts = ({ logs }) => {
       {
         label: "Volume by Muscle Group",
         data: processedData.volumeByMuscle || [],
-        backgroundColor: "rgba(153, 102, 255, 0.6)",
-        borderColor: "rgba(153, 102, 255, 1)",
+        backgroundColor: `${theme.palette.primary.main}99`, // 60% opacity
+        borderColor: theme.palette.primary.main,
         borderWidth: 1,
       },
     ],
@@ -199,8 +210,8 @@ const Charts = ({ logs }) => {
       {
         label: "Total Reps by Muscle Group",
         data: processedData.repsByMuscle || [],
-        backgroundColor: "rgba(255, 159, 64, 0.6)",
-        borderColor: "rgba(255, 159, 64, 1)",
+        backgroundColor: `${theme.palette.secondary.main}99`,
+        borderColor: theme.palette.secondary.main,
         borderWidth: 1,
       },
     ],
@@ -212,8 +223,8 @@ const Charts = ({ logs }) => {
       {
         label: "Average Rating (1-10)",
         data: processedData.ratingData || [],
-        borderColor: "rgba(255, 206, 86, 1)",
-        backgroundColor: "rgba(255, 206, 86, 0.2)",
+        borderColor: theme.palette.warning.main,
+        backgroundColor: `${theme.palette.warning.main}33`,
         tension: 0.3,
       },
     ],
@@ -225,8 +236,8 @@ const Charts = ({ logs }) => {
       {
         label: "Max Weight by Exercise",
         data: processedData.maxWeightByExercise || [],
-        backgroundColor: "rgba(54, 162, 235, 0.6)",
-        borderColor: "rgba(54, 162, 235, 1)",
+        backgroundColor: `${theme.palette.info.main}99`,
+        borderColor: theme.palette.info.main,
         borderWidth: 1,
       },
     ],
@@ -245,28 +256,52 @@ const Charts = ({ logs }) => {
     ],
   };
 
-  // Chart options
+  // Chart options with theme-aware text colors
   const lineOptions = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      legend: { position: "top" },
-      title: { display: true, text: "Workout Progress Over Time" },
+      legend: {
+        position: "top",
+        labels: { color: theme.palette.text.primary },
+      },
+      title: {
+        display: true,
+        text: "Workout Progress Over Time",
+        color: theme.palette.text.primary,
+      },
       tooltip: { mode: "index", intersect: false },
     },
     scales: {
-      x: { title: { display: true, text: "Date" } },
+      x: {
+        title: {
+          display: true,
+          text: "Date",
+          color: theme.palette.text.primary,
+        },
+        ticks: { color: theme.palette.text.secondary },
+      },
       y: {
         type: "linear",
         display: true,
         position: "left",
-        title: { display: true, text: "Volume / Weight" },
+        title: {
+          display: true,
+          text: "Volume / Weight",
+          color: theme.palette.text.primary,
+        },
+        ticks: { color: theme.palette.text.secondary },
       },
       y1: {
         type: "linear",
         display: true,
         position: "right",
-        title: { display: true, text: "Reps" },
+        title: {
+          display: true,
+          text: "Reps",
+          color: theme.palette.text.primary,
+        },
+        ticks: { color: theme.palette.text.secondary },
         grid: { drawOnChartArea: false },
       },
     },
@@ -277,12 +312,33 @@ const Charts = ({ logs }) => {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      legend: { position: "top" },
-      title: { display: true, text: "Volume by Muscle Group" },
+      legend: {
+        position: "top",
+        labels: { color: theme.palette.text.primary },
+      },
+      title: {
+        display: true,
+        text: "Volume by Muscle Group",
+        color: theme.palette.text.primary,
+      },
     },
     scales: {
-      x: { title: { display: true, text: "Muscle Group" } },
-      y: { title: { display: true, text: "Total Volume" } },
+      x: {
+        title: {
+          display: true,
+          text: "Muscle Group",
+          color: theme.palette.text.primary,
+        },
+        ticks: { color: theme.palette.text.secondary },
+      },
+      y: {
+        title: {
+          display: true,
+          text: "Total Volume",
+          color: theme.palette.text.primary,
+        },
+        ticks: { color: theme.palette.text.secondary },
+      },
     },
   };
 
@@ -290,12 +346,33 @@ const Charts = ({ logs }) => {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      legend: { position: "top" },
-      title: { display: true, text: "Total Reps by Muscle Group" },
+      legend: {
+        position: "top",
+        labels: { color: theme.palette.text.primary },
+      },
+      title: {
+        display: true,
+        text: "Total Reps by Muscle Group",
+        color: theme.palette.text.primary,
+      },
     },
     scales: {
-      x: { title: { display: true, text: "Muscle Group" } },
-      y: { title: { display: true, text: "Total Reps" } },
+      x: {
+        title: {
+          display: true,
+          text: "Muscle Group",
+          color: theme.palette.text.primary,
+        },
+        ticks: { color: theme.palette.text.secondary },
+      },
+      y: {
+        title: {
+          display: true,
+          text: "Total Reps",
+          color: theme.palette.text.primary,
+        },
+        ticks: { color: theme.palette.text.secondary },
+      },
     },
   };
 
@@ -303,13 +380,32 @@ const Charts = ({ logs }) => {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      legend: { position: "top" },
-      title: { display: true, text: "Average Rating Over Time" },
+      legend: {
+        position: "top",
+        labels: { color: theme.palette.text.primary },
+      },
+      title: {
+        display: true,
+        text: "Average Rating Over Time",
+        color: theme.palette.text.primary,
+      },
     },
     scales: {
-      x: { title: { display: true, text: "Date" } },
+      x: {
+        title: {
+          display: true,
+          text: "Date",
+          color: theme.palette.text.primary,
+        },
+        ticks: { color: theme.palette.text.secondary },
+      },
       y: {
-        title: { display: true, text: "Rating (1-10)" },
+        title: {
+          display: true,
+          text: "Rating (1-10)",
+          color: theme.palette.text.primary,
+        },
+        ticks: { color: theme.palette.text.secondary },
         min: 0,
         max: 10,
       },
@@ -320,12 +416,33 @@ const Charts = ({ logs }) => {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      legend: { position: "top" },
-      title: { display: true, text: "Max Weight by Exercise" },
+      legend: {
+        position: "top",
+        labels: { color: theme.palette.text.primary },
+      },
+      title: {
+        display: true,
+        text: "Max Weight by Exercise",
+        color: theme.palette.text.primary,
+      },
     },
     scales: {
-      x: { title: { display: true, text: "Exercise" } },
-      y: { title: { display: true, text: "Weight (lbs)" } },
+      x: {
+        title: {
+          display: true,
+          text: "Exercise",
+          color: theme.palette.text.primary,
+        },
+        ticks: { color: theme.palette.text.secondary },
+      },
+      y: {
+        title: {
+          display: true,
+          text: "Weight (lbs)",
+          color: theme.palette.text.primary,
+        },
+        ticks: { color: theme.palette.text.secondary },
+      },
     },
   };
 
@@ -333,12 +450,35 @@ const Charts = ({ logs }) => {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      legend: { position: "top" },
-      title: { display: true, text: "Volume by Muscle Group and Exercise" },
+      legend: {
+        position: "top",
+        labels: { color: theme.palette.text.primary },
+      },
+      title: {
+        display: true,
+        text: "Volume by Muscle Group and Exercise",
+        color: theme.palette.text.primary,
+      },
     },
     scales: {
-      x: { stacked: true, title: { display: true, text: "Exercise" } },
-      y: { stacked: true, title: { display: true, text: "Total Volume" } },
+      x: {
+        stacked: true,
+        title: {
+          display: true,
+          text: "Exercise",
+          color: theme.palette.text.primary,
+        },
+        ticks: { color: theme.palette.text.secondary },
+      },
+      y: {
+        stacked: true,
+        title: {
+          display: true,
+          text: "Total Volume",
+          color: theme.palette.text.primary,
+        },
+        ticks: { color: theme.palette.text.secondary },
+      },
     },
   };
 
@@ -346,23 +486,47 @@ const Charts = ({ logs }) => {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      legend: { position: "top" },
-      title: { display: true, text: "Reps and Weight Trends by Muscle Group" },
+      legend: {
+        position: "top",
+        labels: { color: theme.palette.text.primary },
+      },
+      title: {
+        display: true,
+        text: "Reps and Weight Trends by Muscle Group",
+        color: theme.palette.text.primary,
+      },
       tooltip: { mode: "index", intersect: false },
     },
     scales: {
-      x: { title: { display: true, text: "Date" } },
+      x: {
+        title: {
+          display: true,
+          text: "Date",
+          color: theme.palette.text.primary,
+        },
+        ticks: { color: theme.palette.text.secondary },
+      },
       y: {
         type: "linear",
         display: true,
         position: "left",
-        title: { display: true, text: "Weight (lbs)" },
+        title: {
+          display: true,
+          text: "Weight (lbs)",
+          color: theme.palette.text.primary,
+        },
+        ticks: { color: theme.palette.text.secondary },
       },
       y1: {
         type: "linear",
         display: true,
         position: "right",
-        title: { display: true, text: "Reps" },
+        title: {
+          display: true,
+          text: "Reps",
+          color: theme.palette.text.primary,
+        },
+        ticks: { color: theme.palette.text.secondary },
         grid: { drawOnChartArea: false },
       },
     },
@@ -375,47 +539,49 @@ const Charts = ({ logs }) => {
         Workout Analytics
       </Typography>
       <Paper elevation={3} sx={{ p: 2 }}>
-        <Box sx={{ mb: 4 }}>
-          <Line
-            data={progressOverTimeData}
-            options={lineOptions}
-            height={400}
-          />
-        </Box>
-        <Box sx={{ mb: 4 }}>
-          <Bar data={volumeByMuscleData} options={barOptions} height={400} />
-        </Box>
-        <Box sx={{ mb: 4 }}>
-          <Bar data={repsByMuscleData} options={repsBarOptions} height={400} />
-        </Box>
-        <Box sx={{ mb: 4 }}>
-          <Line
-            data={ratingOverTimeData}
-            options={ratingLineOptions}
-            height={400}
-          />
-        </Box>
-        <Box sx={{ mb: 4 }}>
-          <Bar
-            data={maxWeightByExerciseData}
-            options={maxWeightBarOptions}
-            height={400}
-          />
-        </Box>
-        <Box sx={{ mb: 4 }}>
-          <Bar
-            data={volumeByMuscleAndExerciseData}
-            options={stackedBarOptions}
-            height={400}
-          />
-        </Box>
-        <Box>
-          <Line
-            data={trendsByMuscleData}
-            options={trendsLineOptions}
-            height={400}
-          />
-        </Box>
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={6}>
+            <Box sx={{ height: 400 }}>
+              <Line data={progressOverTimeData} options={lineOptions} />
+            </Box>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Box sx={{ height: 400 }}>
+              <Bar data={volumeByMuscleData} options={barOptions} />
+            </Box>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Box sx={{ height: 400 }}>
+              <Bar data={repsByMuscleData} options={repsBarOptions} />
+            </Box>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Box sx={{ height: 400 }}>
+              <Line data={ratingOverTimeData} options={ratingLineOptions} />
+            </Box>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Box sx={{ height: 400 }}>
+              <Bar
+                data={maxWeightByExerciseData}
+                options={maxWeightBarOptions}
+              />
+            </Box>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Box sx={{ height: 400 }}>
+              <Bar
+                data={volumeByMuscleAndExerciseData}
+                options={stackedBarOptions}
+              />
+            </Box>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Box sx={{ height: 400 }}>
+              <Line data={trendsByMuscleData} options={trendsLineOptions} />
+            </Box>
+          </Grid>
+        </Grid>
       </Paper>
     </Box>
   );

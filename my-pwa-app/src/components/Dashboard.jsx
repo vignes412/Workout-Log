@@ -15,8 +15,9 @@ import {
   MenuItem,
   AppBar,
   Toolbar,
+  IconButton,
 } from "@mui/material";
-import { Add } from "@mui/icons-material";
+import { Add, Brightness4, Brightness7 } from "@mui/icons-material";
 import WorkoutLogsTable from "./WorkoutLogsTable";
 import WorkoutSummaryTable from "./WorkoutSummaryTable";
 import Charts from "./Charts";
@@ -26,7 +27,7 @@ import "../styles.css";
 const getRecentWorkoutLogs = (logs) => {
   if (!logs || logs.length === 0) return [];
   return logs
-    .slice(-3) // Get the last 3 entries
+    .slice(-3)
     .map((log) => ({
       date: log[0],
       muscleGroup: log[1],
@@ -35,7 +36,7 @@ const getRecentWorkoutLogs = (logs) => {
       weight: log[4],
       rating: log[5],
     }))
-    .reverse(); // Reverse to show most recent first
+    .reverse();
 };
 
 const Dashboard = ({
@@ -43,6 +44,8 @@ const Dashboard = ({
   setIsAuthenticated,
   accessToken,
   onNavigate,
+  toggleTheme,
+  themeMode,
 }) => {
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
   const [logs, setLogs] = useState(null);
@@ -153,6 +156,9 @@ const Dashboard = ({
           <Button color="inherit" onClick={handleLogout}>
             Logout
           </Button>
+          <IconButton color="inherit" onClick={toggleTheme}>
+            {themeMode === "light" ? <Brightness4 /> : <Brightness7 />}
+          </IconButton>
         </Toolbar>
       </AppBar>
 
@@ -160,7 +166,6 @@ const Dashboard = ({
         <Typography variant="body1" sx={{ mb: 2 }}>
           Status: {isOffline ? "Offline" : "Online"}
         </Typography>
-
         <WorkoutLogsTable
           logs={logs}
           setLogs={setLogs}
@@ -168,7 +173,7 @@ const Dashboard = ({
           exercises={exercises}
         />
         <WorkoutSummaryTable logs={logs} />
-        <Charts logs={logs} />
+        <Charts logs={logs} themeMode={themeMode} /> {/* Pass themeMode */}
       </div>
 
       <Fab
@@ -209,10 +214,7 @@ const Dashboard = ({
       >
         {recentLogs.length > 0 ? (
           recentLogs.map((log, index) => (
-            <MenuItem
-              key={index}
-              onClick={() => handleQuickAdd(log)}
-            >
+            <MenuItem key={index} onClick={() => handleQuickAdd(log)}>
               {log.exercise} ({log.muscleGroup}) - {log.date}
             </MenuItem>
           ))
