@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline"; // Ensures consistent baseline styles
+import CssBaseline from "@mui/material/CssBaseline";
 import App from "./App";
 import Login from "./pages/Login";
 import Dashboard from "./components/Dashboard";
 import ExerciseList from "./pages/ExerciseList";
+import WorkoutPlanner from "./pages/WorkoutPlanner"; // Import new page
+import { initClient, syncData } from "./utils/sheetsApi";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import config from "./config";
 import "./index.css";
@@ -40,7 +42,22 @@ const Main = () => {
   const [currentPage, setCurrentPage] = useState(
     isAuthenticated ? "dashboard" : "login"
   );
-  const [themeMode, setThemeMode] = useState("light"); // Default to light theme
+  const [themeMode, setThemeMode] = useState("light");
+  const [logs, setLogs] = useState(null);
+
+  useEffect(() => {
+    if (isAuthenticated && accessToken) {
+      const loadData = async () => {
+        try {
+          await initClient(accessToken);
+          await syncData("Workout_Logs!A2:F", "/api/workout", setLogs);
+        } catch (error) {
+          console.error("Error loading logs:", error);
+        }
+      };
+      loadData();
+    }
+  }, [isAuthenticated, accessToken]);
 
   const theme = themeMode === "light" ? lightTheme : darkTheme;
 
@@ -67,8 +84,8 @@ const Main = () => {
             setIsAuthenticated={setIsAuthenticated}
             accessToken={accessToken}
             onNavigate={setCurrentPage}
-            toggleTheme={toggleTheme} // Pass toggle function
-            themeMode={themeMode} // Pass current theme mode
+            toggleTheme={toggleTheme}
+            themeMode={themeMode}
           />
         );
       case "exerciselist":
@@ -76,8 +93,15 @@ const Main = () => {
           <ExerciseList
             accessToken={accessToken}
             onNavigate={setCurrentPage}
-            toggleTheme={toggleTheme} // Pass toggle function
-            themeMode={themeMode} // Pass current theme mode
+            toggleTheme={toggleTheme}
+            themeMode={themeMode}
+          />
+        );
+      case "workoutplanner":
+        return (
+          <WorkoutPlanner
+            accessToken={accessToken}
+            onNavigate={setCurrentPage}
           />
         );
       default:
@@ -93,8 +117,10 @@ const Main = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <CssBaseline /> {/* Ensures consistent styling across themes */}
-      {renderPage()}
+      <CssBaseline />
+      <GoogleOAuthProvider clientId={config.google.CLIENT_ID}>
+        {renderPage()}
+      </GoogleOAuthProvider>
     </ThemeProvider>
   );
 };
@@ -104,9 +130,7 @@ const root = createRoot(container);
 
 root.render(
   <React.StrictMode>
-    <GoogleOAuthProvider clientId={config.google.CLIENT_ID}>
-      <Main />
-    </GoogleOAuthProvider>
+    <Main />
   </React.StrictMode>
 );
 

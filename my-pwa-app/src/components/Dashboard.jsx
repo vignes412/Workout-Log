@@ -153,6 +153,9 @@ const Dashboard = ({
           <Button color="inherit" onClick={() => onNavigate("exerciselist")}>
             Exercise List
           </Button>
+          <Button color="inherit" onClick={() => onNavigate("workoutplanner")}>
+            Workout Planner
+          </Button>
           <Button color="inherit" onClick={handleLogout}>
             Logout
           </Button>
@@ -166,6 +169,7 @@ const Dashboard = ({
         <Typography variant="body1" sx={{ mb: 2 }}>
           Status: {isOffline ? "Offline" : "Online"}
         </Typography>
+
         <WorkoutLogsTable
           logs={logs}
           setLogs={setLogs}
@@ -173,7 +177,7 @@ const Dashboard = ({
           exercises={exercises}
         />
         <WorkoutSummaryTable logs={logs} />
-        <Charts logs={logs} themeMode={themeMode} /> {/* Pass themeMode */}
+        <Charts logs={logs} themeMode={themeMode} />
       </div>
 
       <Fab
