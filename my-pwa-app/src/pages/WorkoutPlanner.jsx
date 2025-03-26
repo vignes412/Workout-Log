@@ -17,7 +17,7 @@ import {
   Grid,
 } from "@mui/material";
 import { syncData } from "../utils/sheetsApi";
-import WorkoutLogModal from "./WorkoutLogModal"; // Import the modal
+import WorkoutLogModal from "./WorkoutLogModal";
 
 const WorkoutPlanner = ({ accessToken, onNavigate }) => {
   const [selectedMuscles, setSelectedMuscles] = useState([]);
@@ -137,20 +137,19 @@ const WorkoutPlanner = ({ accessToken, onNavigate }) => {
     localStorage.setItem("workoutPlan", JSON.stringify(plan));
   };
 
-  // Handle card click to open modal
+  // Handle card click to open modal with today's date
   const handleCardClick = (exercise) => {
-    const now = new Date();
-    const date = now.toLocaleDateString("en-IN", {
+    const today = new Date().toLocaleDateString("en-IN", {
       day: "2-digit",
       month: "2-digit",
       year: "numeric",
     });
     const newLog = {
-      date,
+      date: today, // Always today's date
       muscleGroup: exercise.muscleGroup,
       exercise: exercise.exercise,
-      reps: exercise.reps.toString(), // Pre-fill suggested reps
-      weight: exercise.weight.replace(" kg", ""), // Pre-fill suggested weight
+      reps: exercise.reps.toString(),
+      weight: exercise.weight.replace(" kg", ""),
       rating: "",
     };
     setModalEditLog(newLog);
@@ -277,7 +276,6 @@ const WorkoutPlanner = ({ accessToken, onNavigate }) => {
         )}
       </Paper>
 
-      {/* Workout Log Modal */}
       <WorkoutLogModal
         open={openModal}
         onClose={() => {

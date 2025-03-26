@@ -42,7 +42,7 @@ const Main = () => {
   const [currentPage, setCurrentPage] = useState(
     isAuthenticated ? "dashboard" : "login"
   );
-  const [themeMode, setThemeMode] = useState("light");
+  const [themeMode, setThemeMode] = useState("dark");
   const [logs, setLogs] = useState(null);
 
   useEffect(() => {

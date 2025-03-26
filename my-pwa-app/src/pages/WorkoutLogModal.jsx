@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types"; // Add prop-types for validation
+import PropTypes from "prop-types";
 import { appendData, cacheData, loadCachedData } from "../utils/sheetsApi";
 import {
   Dialog,
@@ -24,8 +24,14 @@ const WorkoutLogModal = ({
   editLog,
   onSave,
 }) => {
+  const getTodayDate = () => {
+    const now = new Date();
+    // Format as YYYY-MM-DD for type="date" input
+    return now.toISOString().split("T")[0];
+  };
+
   const [log, setLog] = useState({
-    date: "",
+    date: getTodayDate(), // Default to today
     muscleGroup: "",
     exercise: "",
     reps: "",
@@ -35,30 +41,42 @@ const WorkoutLogModal = ({
   const [message, setMessage] = useState(null);
 
   useEffect(() => {
-    const now = new Date();
-    const today = now.toLocaleDateString("en-US", {
-      month: "2-digit",
-      day: "2-digit",
-      year: "numeric",
-    });
-
+    const today = getTodayDate();
     if (editLog) {
+      // For editing an existing log with originalIndex, use the original date
+      let initialDate = today;
+      if (editLog.originalIndex !== undefined && editLog.date) {
+        // Ensure the date is a valid string in DD/MM/YYYY format before splitting
+        const [day, month, year] = editLog.date?.split("/") || [];
+
+        // Check if the split resulted in valid values before proceeding with padStart
+        if (day && month && year) {
+          initialDate = `${year}-${month.padStart(2, "0")}-${day.padStart(
+            2,
+            "0"
+          )}`;
+        } else {
+          console.error("Invalid date format:", editLog.date); // Handle invalid date format
+        }
+      }
+
       setLog({
-        date: editLog.date || today,
+        date: initialDate,
         muscleGroup: editLog.muscleGroup || "",
         exercise: editLog.exercise || "",
-        reps: editLog.reps.toString() || "",
-        weight: editLog.weight.toString() || "",
+        reps: editLog.reps?.toString() || "",
+        weight: editLog.weight?.toString() || "",
         rating: editLog.rating?.toString() || "",
       });
     } else {
+      // For new logs, use today
       setLog({
-        date: today, // Always today for new logs
-        muscleGroup: "",
-        exercise: "",
-        reps: "",
-        weight: "",
-        rating: "",
+        date: today,
+        muscleGroup: editLog?.muscleGroup || "", // Pre-fill from Workout Planner if present
+        exercise: editLog?.exercise || "",
+        reps: editLog?.reps?.toString() || "",
+        weight: editLog?.weight?.toString() || "",
+        rating: editLog?.rating?.toString() || "",
       });
     }
   }, [editLog, open]);
@@ -111,10 +129,13 @@ const WorkoutLogModal = ({
       return;
     }
 
-    const row = [date, muscleGroup, exercise, reps, weight, rating];
+    // Convert YYYY-MM-DD to DD/MM/YYYY for storage
+    const [year, month, day] = date.split("-");
+    const formattedDate = `${day}/${month}/${year}`;
+    const row = [formattedDate, muscleGroup, exercise, reps, weight, rating];
 
     try {
-      if (editLog && onSave) {
+      if (editLog && onSave && editLog.originalIndex !== undefined) {
         console.log(
           "Updating workout log:",
           row,
@@ -149,7 +170,7 @@ const WorkoutLogModal = ({
 
       setTimeout(() => {
         setLog({
-          date: "",
+          date: getTodayDate(), // Reset to today
           muscleGroup: "",
           exercise: "",
           reps: "",
@@ -174,7 +195,9 @@ const WorkoutLogModal = ({
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>
         <Typography variant="h6" color="primary">
-          {editLog ? "Edit Workout Log" : "Add Workout Log"}
+          {editLog && editLog.originalIndex !== undefined
+            ? "Edit Workout Log"
+            : "Add Workout Log"}
         </Typography>
       </DialogTitle>
       <DialogContent>
@@ -194,14 +217,14 @@ const WorkoutLogModal = ({
           fullWidth
           margin="normal"
           InputLabelProps={{ shrink: true }}
-          disabled={editLog && !editLog.originalIndex === undefined} // Disabled only for Quick Add (no originalIndex)
+          // Always editable, no disabled prop
         />
         <Autocomplete
           options={filteredMuscleGroups}
           value={log.muscleGroup}
           onChange={handleMuscleGroupChange}
           freeSolo
-          disabled={editLog && !editLog.originalIndex === undefined} // Disabled only for Quick Add
+          disabled={editLog && editLog.muscleGroup !== ""} // Disabled only if pre-filled
           renderInput={(params) => (
             <TextField
               {...params}
@@ -217,6 +240,7 @@ const WorkoutLogModal = ({
           value={log.exercise}
           onChange={handleExerciseChange}
           freeSolo
+          disabled={editLog && editLog.exercise !== ""} // Disabled only if pre-filled
           renderInput={(params) => (
             <TextField
               {...params}
@@ -237,7 +261,7 @@ const WorkoutLogModal = ({
           inputProps={{ min: 1 }}
         />
         <TextField
-          label="Weight (lbs)"
+          label="Weight (kg)"
           type="number"
           value={log.weight}
           onChange={(e) => setLog({ ...log, weight: e.target.value })}
@@ -271,14 +295,13 @@ const WorkoutLogModal = ({
           variant="contained"
           disabled={isOffline}
         >
-          {editLog ? "Save" : "Submit"}
+          {editLog && editLog.originalIndex !== undefined ? "Save" : "Submit"}
         </Button>
       </DialogActions>
     </Dialog>
   );
 };
 
-// PropTypes to prevent warnings
 WorkoutLogModal.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
@@ -298,7 +321,7 @@ WorkoutLogModal.propTypes = {
     reps: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     weight: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     rating: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    originalIndex: PropTypes.number, // Optional, only for edits from table
+    originalIndex: PropTypes.number,
   }),
   onSave: PropTypes.func,
 };
