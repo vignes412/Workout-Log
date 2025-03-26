@@ -5,7 +5,7 @@ import { appendData, cacheData } from "../utils/sheetsApi";
 import WorkoutLogModal from "../pages/WorkoutLogModal";
 import config from "../config";
 
-const SPREADSHEET_ID = config.google.SPREADSHEET_ID; // Replace with your spreadsheet ID
+const SPREADSHEET_ID = config.google.SPREADSHEET_ID;
 
 const WorkoutLogsTable = ({ logs, setLogs, isOffline, exercises }) => {
   const [editOpen, setEditOpen] = useState(false);
@@ -16,7 +16,7 @@ const WorkoutLogsTable = ({ logs, setLogs, isOffline, exercises }) => {
     return logs.map((log, index) => ({
       id: index + 1,
       date: log[0] || "",
-      muscleGroup: log[1] || "",
+      muscleGroup: log[1] || "", // Adjusted to match modal expectation
       exercise: log[2] || "",
       reps: parseReps(log[3]),
       weight: parseWeight(log[4]),
@@ -58,7 +58,7 @@ const WorkoutLogsTable = ({ logs, setLogs, isOffline, exercises }) => {
   ];
 
   const handleEdit = (row) => {
-    setEditLog(row);
+    setEditLog(row); // Already in object format expected by modal
     setEditOpen(true);
   };
 

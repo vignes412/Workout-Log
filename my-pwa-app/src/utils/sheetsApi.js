@@ -139,7 +139,12 @@ export const useOnlineStatus = (setIsOffline) => {
   }, [setIsOffline]);
 };
 
-export const syncData = async (range, cacheKey, setData, mapFn) => {
+export const syncData = async (
+  range,
+  cacheKey,
+  setData,
+  mapFn = (row) => row
+) => {
   try {
     const data = await fetchData(range, mapFn);
     setData(data);

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types"; // Add prop-types for validation
 import { appendData, cacheData, loadCachedData } from "../utils/sheetsApi";
 import {
   Dialog,
@@ -16,7 +17,7 @@ import {
 } from "@mui/material";
 
 const WorkoutLogModal = ({
-  open,
+  open = false,
   onClose,
   exercises,
   isOffline,
@@ -34,18 +35,25 @@ const WorkoutLogModal = ({
   const [message, setMessage] = useState(null);
 
   useEffect(() => {
+    const now = new Date();
+    const today = now.toLocaleDateString("en-US", {
+      month: "2-digit",
+      day: "2-digit",
+      year: "numeric",
+    });
+
     if (editLog) {
       setLog({
-        date: editLog.date || "",
+        date: editLog.date || today,
         muscleGroup: editLog.muscleGroup || "",
         exercise: editLog.exercise || "",
         reps: editLog.reps.toString() || "",
         weight: editLog.weight.toString() || "",
-        rating: editLog.howIFeel || "",
+        rating: editLog.rating?.toString() || "",
       });
     } else {
       setLog({
-        date: "",
+        date: today, // Always today for new logs
         muscleGroup: "",
         exercise: "",
         reps: "",
@@ -117,7 +125,7 @@ const WorkoutLogModal = ({
         setMessage({ type: "success", text: "Workout updated successfully" });
       } else {
         console.log("Appending new workout log:", row);
-        await appendData("Workout_Logs!A:F", [row]);
+        await appendData("Workout_Logs!A:F", row);
         const cachedData = (await loadCachedData("/api/workout")) || [];
         await cacheData("/api/workout", [...cachedData, row]);
         setMessage({ type: "success", text: "Workout logged successfully" });
@@ -131,7 +139,7 @@ const WorkoutLogModal = ({
           muscleGroup,
           exercise,
         ]);
-        await appendData("Exercises!A:B", [[muscleGroup, exercise]]);
+        await appendData("Exercises!A:B", [muscleGroup, exercise]);
         const cachedExercises = (await loadCachedData("/api/exercises")) || [];
         await cacheData("/api/exercises", [
           ...cachedExercises,
@@ -186,12 +194,14 @@ const WorkoutLogModal = ({
           fullWidth
           margin="normal"
           InputLabelProps={{ shrink: true }}
+          disabled={editLog && !editLog.originalIndex === undefined} // Disabled only for Quick Add (no originalIndex)
         />
         <Autocomplete
           options={filteredMuscleGroups}
           value={log.muscleGroup}
           onChange={handleMuscleGroupChange}
           freeSolo
+          disabled={editLog && !editLog.originalIndex === undefined} // Disabled only for Quick Add
           renderInput={(params) => (
             <TextField
               {...params}
@@ -266,6 +276,31 @@ const WorkoutLogModal = ({
       </DialogActions>
     </Dialog>
   );
+};
+
+// PropTypes to prevent warnings
+WorkoutLogModal.propTypes = {
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  exercises: PropTypes.arrayOf(
+    PropTypes.shape({
+      muscleGroup: PropTypes.string,
+      exercise: PropTypes.string,
+      exerciseLink: PropTypes.string,
+      imageLink: PropTypes.string,
+    })
+  ).isRequired,
+  isOffline: PropTypes.bool.isRequired,
+  editLog: PropTypes.shape({
+    date: PropTypes.string,
+    muscleGroup: PropTypes.string,
+    exercise: PropTypes.string,
+    reps: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    weight: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    rating: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    originalIndex: PropTypes.number, // Optional, only for edits from table
+  }),
+  onSave: PropTypes.func,
 };
 
 export default WorkoutLogModal;

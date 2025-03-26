@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { googleLogout } from "@react-oauth/google";
-import { initClient, syncData, useOnlineStatus } from "../utils/sheetsApi";
+import {
+  initClient,
+  syncData,
+  appendData,
+  useOnlineStatus,
+} from "../utils/sheetsApi";
 import WorkoutLogModal from "../pages/WorkoutLogModal";
 import {
   Button,
@@ -17,6 +22,22 @@ import WorkoutSummaryTable from "./WorkoutSummaryTable";
 import Charts from "./Charts";
 import "../styles.css";
 
+// Helper function to get the last 3 recent workout logs
+const getRecentWorkoutLogs = (logs) => {
+  if (!logs || logs.length === 0) return [];
+  return logs
+    .slice(-3) // Get the last 3 entries
+    .map((log) => ({
+      date: log[0],
+      muscleGroup: log[1],
+      exercise: log[2],
+      reps: log[3],
+      weight: log[4],
+      rating: log[5],
+    }))
+    .reverse(); // Reverse to show most recent first
+};
+
 const Dashboard = ({
   isAuthenticated,
   setIsAuthenticated,
@@ -27,7 +48,9 @@ const Dashboard = ({
   const [logs, setLogs] = useState(null);
   const [exercises, setExercises] = useState([]);
   const [openModal, setOpenModal] = useState(false);
+  const [modalEditLog, setModalEditLog] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [quickAddAnchorEl, setQuickAddAnchorEl] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useOnlineStatus(setIsOffline);
@@ -40,7 +63,7 @@ const Dashboard = ({
           await Promise.all([
             syncData("Workout_Logs!A2:F", "/api/workout", setLogs),
             syncData(
-              "Exercises!A2:D", // Fetch all columns
+              "Exercises!A2:D",
               "/api/exercises",
               setExercises,
               (row) => ({
@@ -71,7 +94,42 @@ const Dashboard = ({
   };
 
   const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
-  const handleMenuClose = () => setAnchorEl(null);
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    setQuickAddAnchorEl(null);
+  };
+
+  const handleQuickAddOpen = (event) =>
+    setQuickAddAnchorEl(event.currentTarget);
+  const handleQuickAddClose = () => setQuickAddAnchorEl(null);
+
+  const handleQuickAdd = async (recentLog) => {
+    const now = new Date();
+    const date = now.toLocaleDateString("en-US", {
+      month: "2-digit",
+      day: "2-digit",
+      year: "numeric",
+    });
+    const newLogObject = {
+      date,
+      muscleGroup: recentLog.muscleGroup,
+      exercise: recentLog.exercise,
+      reps: "",
+      weight: "",
+      rating: "",
+    };
+
+    try {
+      setModalEditLog(newLogObject);
+      setOpenModal(true);
+    } catch (error) {
+      console.error("Error in quick add:", error);
+    } finally {
+      handleMenuClose();
+    }
+  };
+
+  const recentLogs = getRecentWorkoutLogs(logs);
 
   if (!isAuthenticated) {
     onNavigate("login");
@@ -103,17 +161,13 @@ const Dashboard = ({
           Status: {isOffline ? "Offline" : "Online"}
         </Typography>
 
-        {/* Workout Logs Table (Top) */}
         <WorkoutLogsTable
           logs={logs}
           setLogs={setLogs}
           isOffline={isOffline}
           exercises={exercises}
         />
-
-        {/* Workout Summary Table (Bottom) */}
         <WorkoutSummaryTable logs={logs} />
-
         <Charts logs={logs} />
       </div>
 
@@ -134,21 +188,48 @@ const Dashboard = ({
       >
         <MenuItem
           onClick={() => {
+            setModalEditLog(null);
             setOpenModal(true);
             handleMenuClose();
           }}
         >
           Workout Log
         </MenuItem>
+        <MenuItem onClick={handleQuickAddOpen}>Quick Add</MenuItem>
         <MenuItem onClick={handleMenuClose}>Body Weight</MenuItem>
         <MenuItem onClick={handleMenuClose}>Exercise</MenuItem>
       </Menu>
 
+      <Menu
+        anchorEl={quickAddAnchorEl}
+        open={Boolean(quickAddAnchorEl)}
+        onClose={handleQuickAddClose}
+        anchorOrigin={{ vertical: "top", horizontal: "left" }}
+        transformOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        {recentLogs.length > 0 ? (
+          recentLogs.map((log, index) => (
+            <MenuItem
+              key={index}
+              onClick={() => handleQuickAdd(log)}
+            >
+              {log.exercise} ({log.muscleGroup}) - {log.date}
+            </MenuItem>
+          ))
+        ) : (
+          <MenuItem disabled>No recent workouts yet</MenuItem>
+        )}
+      </Menu>
+
       <WorkoutLogModal
         open={openModal}
-        onClose={() => setOpenModal(false)}
+        onClose={() => {
+          setOpenModal(false);
+          setModalEditLog(null);
+        }}
         exercises={exercises}
         isOffline={isOffline}
+        editLog={modalEditLog}
       />
     </div>
   );
