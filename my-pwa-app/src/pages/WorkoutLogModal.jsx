@@ -43,37 +43,27 @@ const WorkoutLogModal = ({
   useEffect(() => {
     const today = getTodayDate();
     if (editLog) {
-      // For editing an existing log with originalIndex, use the original date
+      // For editing an existing log with originalIndex, use the original date if provided
       let initialDate = today;
       if (editLog.originalIndex !== undefined && editLog.date) {
-        // Ensure the date is a valid string in DD/MM/YYYY format before splitting
-        const [day, month, year] = editLog.date?.split("/") || [];
-
-        // Check if the split resulted in valid values before proceeding with padStart
-        if (day && month && year) {
-          initialDate = `${year}-${month.padStart(2, "0")}-${day.padStart(
-            2,
-            "0"
-          )}`;
-        } else {
-          console.error("Invalid date format:", editLog.date); // Handle invalid date format
-        }
+        // Convert DD/MM/YYYY to YYYY-MM-DD if needed
+        const [day, month, year] = editLog.date.split("/");
+        initialDate = `${year}-${month}-${day}`;
       }
-
       setLog({
         date: initialDate,
         muscleGroup: editLog.muscleGroup || "",
         exercise: editLog.exercise || "",
-        reps: editLog.reps?.toString() || "",
-        weight: editLog.weight?.toString() || "",
+        reps: editLog.reps.toString() || "",
+        weight: editLog.weight.toString() || "",
         rating: editLog.rating?.toString() || "",
       });
     } else {
-      // For new logs, use today
+      // For new logs (including from Workout Planner), use today
       setLog({
         date: today,
         muscleGroup: editLog?.muscleGroup || "", // Pre-fill from Workout Planner if present
-        exercise: editLog?.exercise || "",
+        exercise: editLog?.exercise || "", // Pre-fill from Workout Planner if present
         reps: editLog?.reps?.toString() || "",
         weight: editLog?.weight?.toString() || "",
         rating: editLog?.rating?.toString() || "",
@@ -224,7 +214,7 @@ const WorkoutLogModal = ({
           value={log.muscleGroup}
           onChange={handleMuscleGroupChange}
           freeSolo
-          disabled={editLog && editLog.muscleGroup !== ""} // Disabled only if pre-filled
+          // Removed disabled prop, always editable
           renderInput={(params) => (
             <TextField
               {...params}
@@ -240,7 +230,7 @@ const WorkoutLogModal = ({
           value={log.exercise}
           onChange={handleExerciseChange}
           freeSolo
-          disabled={editLog && editLog.exercise !== ""} // Disabled only if pre-filled
+          // Removed disabled prop, always editable
           renderInput={(params) => (
             <TextField
               {...params}
