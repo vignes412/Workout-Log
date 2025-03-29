@@ -118,12 +118,12 @@ const WorkoutLogModal = ({
     ) {
       return "Weight must be a number between 0 and 1000 kg";
     }
-    if (
-      !/^[a-zA-Z\s]+$/.test(log.muscleGroup) ||
-      !/^[a-zA-Z\s]+$/.test(log.exercise)
-    ) {
-      return "Muscle Group and Exercise must contain only letters and spaces";
-    }
+    // if (
+    //   !/^[a-zA-Z\s]+$/.test(log.muscleGroup) ||
+    //   !/^[a-zA-Z\s]+$/.test(log.exercise)
+    // ) {
+    //   return "Muscle Group and Exercise must contain only letters and spaces";
+    // }
     return null;
   };
 

@@ -3,9 +3,7 @@ import { googleLogout } from "@react-oauth/google";
 import { initClient, syncData, useOnlineStatus } from "../utils/sheetsApi";
 import WorkoutLogModal from "../pages/WorkoutLogModal";
 import SettingsModal from "./SettingsModal";
-// import BodyMeasurements from "./BodyMeasurements";
 import ProgressGoals from "./ProgressGoals";
-// import PerformanceDashboard from "./PerformanceDashboard";
 import {
   Button,
   Typography,
@@ -20,6 +18,8 @@ import {
   Paper,
   LinearProgress,
   Badge,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import {
   Add,
@@ -27,6 +27,7 @@ import {
   Brightness7,
   FitnessCenter,
   Settings,
+  Menu as MenuIcon,
 } from "@mui/icons-material";
 import WorkoutLogsTable from "./WorkoutLogsTable";
 import WorkoutSummaryTable from "./WorkoutSummaryTable";
@@ -63,6 +64,7 @@ const Dashboard = ({
   const [modalEditLog, setModalEditLog] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const [quickAddAnchorEl, setQuickAddAnchorEl] = useState(null);
+  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [layout, setLayout] = useState(
     () =>
@@ -73,6 +75,9 @@ const Dashboard = ({
       }
   );
   const [loading, setLoading] = useState(true);
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm")); // Mobile <= 600px
 
   useOnlineStatus(setIsOffline);
 
@@ -95,7 +100,6 @@ const Dashboard = ({
               })
             ),
           ]);
-          // Schedule notification
           if (Notification.permission === "granted") {
             setTimeout(() => {
               navigator.serviceWorker.ready.then((registration) => {
@@ -134,6 +138,9 @@ const Dashboard = ({
   const handleQuickAddOpen = (event) =>
     setQuickAddAnchorEl(event.currentTarget);
   const handleQuickAddClose = () => setQuickAddAnchorEl(null);
+
+  const handleMobileMenuOpen = (event) => setMenuAnchorEl(event.currentTarget);
+  const handleMobileMenuClose = () => setMenuAnchorEl(null);
 
   const handleQuickAdd = (recentLog) => {
     const now = new Date();
@@ -183,31 +190,117 @@ const Dashboard = ({
         elevation={0}
         sx={{ borderRadius: "10px 10px 0 0" }}
       >
-        <Toolbar>
-          <Typography variant="h5" sx={{ flexGrow: 1, fontWeight: "bold" }}>
+        <Toolbar sx={{ flexWrap: "wrap", justifyContent: "space-between" }}>
+          <Typography
+            variant="h5"
+            sx={{ fontWeight: "bold", mr: 2, flexShrink: 0 }}
+          >
             Fitness Dashboard
           </Typography>
-          <Button color="inherit" onClick={() => onNavigate("exerciselist")}>
-            Exercises
-          </Button>
-          <Button color="inherit" onClick={() => onNavigate("workoutplanner")}>
-            Planner
-          </Button>
-          <Button
-            color="inherit"
-            onClick={() => onNavigate("bodymeasurements")}
-          >
-            Body Measurements
-          </Button>
-          <Button color="inherit" onClick={handleLogout}>
-            Logout
-          </Button>
-          <IconButton color="inherit" onClick={toggleTheme}>
-            {themeMode === "light" ? <Brightness4 /> : <Brightness7 />}
-          </IconButton>
-          <IconButton color="inherit" onClick={() => setSettingsOpen(true)}>
-            <Settings />
-          </IconButton>
+          {isMobile ? (
+            <>
+              <IconButton
+                color="inherit"
+                onClick={handleMobileMenuOpen}
+                edge="end"
+              >
+                <MenuIcon />
+              </IconButton>
+              <Menu
+                anchorEl={menuAnchorEl}
+                open={Boolean(menuAnchorEl)}
+                onClose={handleMobileMenuClose}
+                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                transformOrigin={{ vertical: "top", horizontal: "right" }}
+              >
+                <MenuItem
+                  onClick={() => {
+                    onNavigate("exerciselist");
+                    handleMobileMenuClose();
+                  }}
+                >
+                  Exercises
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    onNavigate("workoutplanner");
+                    handleMobileMenuClose();
+                  }}
+                >
+                  Planner
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    onNavigate("bodymeasurements");
+                    handleMobileMenuClose();
+                  }}
+                >
+                  Body Measurements
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    handleLogout();
+                    handleMobileMenuClose();
+                  }}
+                >
+                  Logout
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    toggleTheme();
+                    handleMobileMenuClose();
+                  }}
+                >
+                  Toggle {themeMode === "light" ? "Dark" : "Light"} Theme
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    setSettingsOpen(true);
+                    handleMobileMenuClose();
+                  }}
+                >
+                  Settings
+                </MenuItem>
+              </Menu>
+            </>
+          ) : (
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                flexWrap: "wrap",
+                gap: 1,
+              }}
+            >
+              <Button
+                color="inherit"
+                onClick={() => onNavigate("exerciselist")}
+              >
+                Exercises
+              </Button>
+              <Button
+                color="inherit"
+                onClick={() => onNavigate("workoutplanner")}
+              >
+                Planner
+              </Button>
+              <Button
+                color="inherit"
+                onClick={() => onNavigate("bodymeasurements")}
+              >
+                Body Measurements
+              </Button>
+              <Button color="inherit" onClick={handleLogout}>
+                Logout
+              </Button>
+              <IconButton color="inherit" onClick={toggleTheme}>
+                {themeMode === "light" ? <Brightness4 /> : <Brightness7 />}
+              </IconButton>
+              <IconButton color="inherit" onClick={() => setSettingsOpen(true)}>
+                <Settings />
+              </IconButton>
+            </Box>
+          )}
         </Toolbar>
       </AppBar>
 
@@ -238,17 +331,19 @@ const Dashboard = ({
         )}
         {layout.showSummary && <WorkoutSummaryTable logs={logs} />}
         {layout.showCharts && <Charts logs={logs} themeMode={themeMode} />}
-        {/* <BodyMeasurements isOffline={isOffline} /> */}
         <ProgressGoals logs={logs} />
-        {/* <PerformanceDashboard /> */}
       </Paper>
 
       <Fab
         color="primary"
         onClick={handleMenuOpen}
-        className="fab-add"
         aria-label="add"
-        sx={{ boxShadow: 6 }}
+        sx={{
+          position: "fixed",
+          bottom: 16,
+          right: 16,
+          boxShadow: 6,
+        }}
       >
         <Add />
       </Fab>

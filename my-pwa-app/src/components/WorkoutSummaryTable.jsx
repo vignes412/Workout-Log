@@ -133,8 +133,9 @@ const WorkoutSummaryTable = ({ logs }) => {
           rows={sanitizedRows}
           columns={summaryColumns}
           initialState={{
-            pagination: { paginationModel: { pageSize: 10, page: 0 } },
+            pagination: { paginationModel: { pageSize: -1, page: 0 } },
             sorting: { sortModel: [{ field: "date", sort: "desc" }] },
+            density: "compact",
           }}
           pageSizeOptions={[5, 10, 20]}
           slots={{ toolbar: GridToolbar }}

@@ -1,3 +1,66 @@
+/* Reset and Standardization */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f0f2f5;
+    padding: 10px;
+    line-height: 1.6;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Container Standardization */
+.container,
+.login-page,
+.dashboard-container,
+.exercise-list-container,
+.workout-planner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 15px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #212121;
+        color: #ffffff;
+    }
+
+    .container,
+    .login-page,
+    .dashboard-container,
+    .exercise-list-container,
+    .workout-planner {
+        background: #424242;
+        color: #ffffff;
+    }
+
+    h1,
+    h5,
+    h6 {
+        color: #ffffff;
+    }
+}
+
+/* Headings */
+h1,
+h5,
+h6 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
 /* Dashboard Styles */
 .dashboard-container {
     min-height: 100vh;
@@ -6,28 +69,36 @@
 }
 
 .dashboard-content {
-    padding: 20px;
+    padding: 15px;
     flex-grow: 1;
 }
 
+/* Floating Add Button */
+.fab-add {
+    position: fixed !important;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+}
+
+.fab-add:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+/* Loading State */
 .loading {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-}
-
-.fab-add {
-    position: fixed !important;
-    /* Ensures it floats on scroll */
-    bottom: 20px;
-    /* Distance from bottom of viewport */
-    right: 20px;
-    /* Distance from right of viewport */
-    z-index: 1000;
-    /* Keeps it above other content */
-    transition: all 0.3s ease;
-    /* Smooth transition for size/position changes */
+    font-size: 1.2rem;
+    color: #666;
 }
 
 /* Charts Styles */
@@ -36,20 +107,57 @@
 }
 
 .chart-wrapper {
-    height: 350px;
+    height: 300px;
     width: 100%;
-    border: 1px solid #ccc;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
     overflow: hidden;
+    background: #fafafa;
+    transition: height 0.3s ease;
+}
+
+/* Cards */
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Tooltip */
+.tooltip {
+    position: absolute;
+    background: #ffffff;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
 }
 
 /* Responsive Design */
 @media (max-width: 960px) {
+
+    .container,
+    .login-page,
+    .dashboard-container,
+    .exercise-list-container,
+    .workout-planner {
+        padding: 12px;
+    }
+
     .dashboard-content {
-        padding: 15px;
+        padding: 12px;
     }
 
     .chart-wrapper {
-        height: 300px;
+        height: 250px;
     }
 
     .fab-add {
@@ -59,47 +167,58 @@
 }
 
 @media (max-width: 600px) {
+
+    .container,
+    .login-page,
+    .dashboard-container,
+    .exercise-list-container,
+    .workout-planner {
+        padding: 10px;
+        border-radius: 8px;
+    }
+
     .dashboard-content {
         padding: 10px;
+    }
+
+    h1,
+    h5,
+    h6 {
+        font-size: 1.1rem;
     }
 
     .fab-add {
         bottom: 10px;
         right: 10px;
         width: 48px;
-        /* Slightly smaller for small screens */
         height: 48px;
     }
 
     .chart-wrapper {
-        height: 250px;
+        height: 200px;
+    }
+
+    /* Stack grids vertically on mobile */
+    .MuiGrid-container {
+        flex-direction: column;
+    }
+
+    .MuiGrid-item {
+        width: 100%;
     }
 }
 
-/* Tooltip Styles (for D3 charts) */
-.tooltip {
-    position: absolute;
-    background: #f9f9f9;
-    padding: 5px;
-    border: 1px solid #ddd;
-    border-radius: 3px;
-    pointer-events: none;
-    opacity: 0;
+/* Smooth Scroll Behavior */
+html {
+    scroll-behavior: smooth;
 }
 
-.exercise-list-container {
-    max-width: 1200px;
-    margin: 0 auto;
+/* Additional Utility Classes */
+.full-width {
+    width: 100%;
 }
 
-.exercise-list-content {
-    padding: 20px;
-}
-
-.card {
-    transition: transform 0.2s;
-}
-
-.card:hover {
-    transform: scale(1.05);
+/* Animation for Tooltip Visibility */
+.tooltip.show {
+    opacity: 1;
 }

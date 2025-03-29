@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { Typography, Button, CircularProgress } from "@mui/material";
+import { Typography, Button, CircularProgress, Box } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { appendData, cacheData } from "../utils/sheetsApi";
 import WorkoutLogModal from "../pages/WorkoutLogModal";
@@ -27,23 +27,20 @@ const WorkoutLogsTable = ({ logs, setLogs, isOffline, exercises }) => {
   }, [logs]);
 
   const workoutLogColumns = [
-    { field: "date", headerName: "Date", width: 120, sortable: true },
-    {
-      field: "muscleGroup",
-      headerName: "Muscle Group",
-      width: 150,
-      sortable: true,
-    },
-    { field: "exercise", headerName: "Exercise", width: 150, sortable: true },
-    { field: "reps", headerName: "Reps", width: 100, sortable: true },
-    { field: "weight", headerName: "Weight", width: 100, sortable: true },
-    { field: "howIFeel", headerName: "How I Feel", width: 120, sortable: true },
+    { field: "date", headerName: "Date", width: 100, sortable: true },
+    { field: "muscleGroup", headerName: "Muscle", width: 120, sortable: true },
+    { field: "exercise", headerName: "Exercise", width: 120, sortable: true },
+    { field: "reps", headerName: "Reps", width: 80, sortable: true },
+    { field: "weight", headerName: "Weight", width: 80, sortable: true },
+    { field: "howIFeel", headerName: "Feel", width: 100, sortable: true },
     {
       field: "actions",
       headerName: "Actions",
       width: 150,
       renderCell: (params) => (
-        <>
+        <Box sx={{ display: { xs: "none", sm: "block" } }}>
+          {" "}
+          {/* Hide on mobile */}
           <Button
             onClick={() => handleEdit(params.row)}
             disabled={isOffline || editOpen || loading}
@@ -56,7 +53,7 @@ const WorkoutLogsTable = ({ logs, setLogs, isOffline, exercises }) => {
           >
             Delete
           </Button>
-        </>
+        </Box>
       ),
     },
   ];
@@ -130,8 +127,9 @@ const WorkoutLogsTable = ({ logs, setLogs, isOffline, exercises }) => {
           rows={workoutLogRows}
           columns={workoutLogColumns}
           initialState={{
-            pagination: { paginationModel: { pageSize: 5, page: 0 } },
+            pagination: { paginationModel: { pageSize: -1, page: 0 } },
             sorting: { sortModel: [{ field: "date", sort: "desc" }] },
+            density: "compact",
           }}
           pageSizeOptions={[5, 10, 20]}
           pagination
