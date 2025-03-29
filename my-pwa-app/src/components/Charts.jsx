@@ -30,152 +30,112 @@ const Charts = ({ logs, themeMode }) => {
   const dailyMetrics = useMemo(() => computeDailyMetrics(logs), [logs]);
 
   const processedData = useMemo(() => {
-    if (!logs || logs.length === 0) return {};
+    if (!logs || logs.length === 0) {
+      return {
+        dates: [],
+        muscleGroups: [],
+        fatigueData: [],
+        progressionData: [],
+        fatigueByMuscle: [],
+        fatigueTrend: { rest: "None", workout: "None" },
+      };
+    }
 
     const dates = [...new Set(logs.map((log) => log[0]))].sort();
     const muscleGroups = [...new Set(logs.map((log) => log[1]))];
-    const currentDate = new Date(); // Current date as per system info
+
+    // Calculate maxThreshold: Group by date and get the highest volume across all dates
+    const maxThreshold = dates.reduce((max, date) => {
+      const dateLogs = logs.filter((log) => log[0] === date);
+      const dateVolume = dateLogs.reduce((sum, log) => {
+        const reps = parseFloat(log[3]); // Assuming reps are at index 3
+        const weight = parseFloat(log[4]); // Assuming weight is at index 4
+        const volume = reps * weight;
+        return sum + (isNaN(volume) ? 0 : volume);
+      }, 0);
+      return Math.max(max, dateVolume);
+    }, 1); // Avoid division by zero
+
+    // Filter logs for the last 10 days
+    const currentDate = new Date();
     const tenDaysAgo = new Date(currentDate);
     tenDaysAgo.setDate(currentDate.getDate() - 10);
 
-    // Overall Progression Rate
-    const progressionData = dailyMetrics.map((metric) =>
-      metric.progressionRate === "N/A" ? 0 : parseFloat(metric.progressionRate)
-    );
-
-    // Fatigue Overall (unchanged for chart)
-    const fatigueData = dailyMetrics.map((metric) =>
-      parseFloat(metric.fatigue)
-    );
-
-    // Calculate maxVolumeThreshold from all logs grouped by date
-    const dailyVolumes = dates.map((date) => {
-      const dayLogs = logs.filter((log) => log[0] === date);
-      return dayLogs.reduce(
-        (sum, log) => sum + parseFloat(log[3]) * parseFloat(log[4]),
-        0
-      );
-    });
-    const maxVolumeThreshold = Math.max(...dailyVolumes, 1); // Avoid division by zero, use highest daily volume
-
-    // Per Muscle Group Analytics
-    const muscleAnalytics = muscleGroups.map((group) => {
-      const groupLogs = logs.filter((log) => log[1] === group);
-      const totalVolume = groupLogs.reduce(
-        (sum, log) => sum + parseFloat(log[3]) * parseFloat(log[4]),
-        0
-      );
-      const totalReps = groupLogs.reduce(
-        (sum, log) => sum + parseFloat(log[3]),
-        0
-      );
-      const totalSets = groupLogs.length;
-
-      const avgProgression =
-        groupLogs.length > 1
-          ? groupLogs.reduce((sum, log, idx) => {
-              if (idx === 0) return 0;
-              const prevWeight = parseFloat(groupLogs[idx - 1][4]);
-              const currWeight = parseFloat(log[4]);
-              return (
-                sum +
-                (currWeight > prevWeight
-                  ? ((currWeight - prevWeight) / prevWeight) * 100
-                  : 0)
-              );
-            }, 0) /
-            (groupLogs.length - 1)
-          : 0;
-
-      // Enhanced Fatigue per Muscle Group (Last 10 Days)
-      const recentLogs = groupLogs.filter((log) => {
-        const [day, month, year] = log[0].split("/"); // Assuming DD/MM/YYYY
-        const logDate = new Date(`${year}-${month}-${day}`);
-        return logDate >= tenDaysAgo && logDate <= currentDate;
-      });
-
-      // Volume Factor
-      const exerciseVolumes = recentLogs.reduce((acc, log) => {
-        const exercise = log[2];
-        const volume = parseFloat(log[3]) * parseFloat(log[4]);
-        acc[exercise] = (acc[exercise] || 0) + volume;
-        return acc;
-      }, {});
-      const totalRecentVolume = Object.values(exerciseVolumes).reduce(
-        (sum, vol) => sum + vol,
-        0
-      );
-      const volumeFactor = (totalRecentVolume / maxVolumeThreshold) * 33.3;
-
-      // Frequency Factor
-      const workoutDays = [...new Set(recentLogs.map((log) => log[0]))].length;
-      const frequencyFactor = (workoutDays / 10) * 33.3;
-
-      // Rating Factor
-      const avgRating =
-        recentLogs.length > 0
-          ? recentLogs.reduce((sum, log) => sum + parseFloat(log[5]), 0) /
-            recentLogs.length
-          : 0;
-      const ratingFactor = (avgRating / 10) * 33.3;
-
-      // Rest Adjustment
-      const lastWorkoutDate =
-        recentLogs.length > 0
-          ? new Date(
-              recentLogs[recentLogs.length - 1][0]
-                .split("/")
-                .reverse()
-                .join("-")
-            )
-          : tenDaysAgo;
-      const daysSinceLastWorkout = Math.max(
-        0,
-        Math.floor((currentDate - lastWorkoutDate) / (1000 * 60 * 60 * 24))
-      );
-      const restAdjustment = 1 - daysSinceLastWorkout / 10;
-
-      // Total Fatigue (capped at 100%)
-      const fatiguePerMuscle = Math.min(
-        (volumeFactor + frequencyFactor + ratingFactor) * restAdjustment,
-        100
-      );
-
-      return {
-        muscleGroup: group,
-        totalVolume,
-        totalReps,
-        totalSets,
-        avgProgression,
-        fatigue: fatiguePerMuscle,
-      };
+    const last10DaysLogs = logs.filter((log) => {
+      const [day, month, year] = log[0].split("/"); // Assuming DD/MM/YYYY
+      const logDate = new Date(`${year}-${month}-${day}`);
+      return logDate >= tenDaysAgo && logDate <= currentDate;
     });
 
-    // Enhanced Overall Fatigue Trend
-    const avgFatigue =
-      muscleAnalytics.reduce((sum, m) => sum + m.fatigue, 0) /
-        muscleAnalytics.length || 0;
-    const fatigueTrend = avgFatigue > 50 ? "High" : "Normal";
-    const musclesToExercise =
-      muscleAnalytics
-        .filter((m) => m.fatigue < 30)
-        .map((m) => m.muscleGroup)
-        .join(", ") || "None";
-    const musclesToFocus =
-      muscleAnalytics
-        .filter((m) => m.fatigue > 70)
-        .map((m) => m.muscleGroup)
-        .join(", ") || "None";
-    const restRecommendation = `Exercise More: ${musclesToExercise}. Focus/Rest: ${musclesToFocus}`;
+    // Fatigue per Muscle Group: Calculate fatigue based on total volume
+    const fatigueByMuscle = muscleGroups.map((group) => {
+      const groupLogs = last10DaysLogs.filter((log) => log[1] === group);
+
+      // Calculate total volume (reps * weight) for the muscle group
+      const totalVolume = groupLogs.reduce((sum, log) => {
+        const reps = parseFloat(log[3]); // Assuming reps are at index 3
+        const weight = parseFloat(log[4]); // Assuming weight is at index 4
+        const volume = reps * weight;
+        return sum + (isNaN(volume) ? 0 : volume);
+      }, 0);
+
+      // Calculate fatigue as normalized volume
+      const fatigue = (totalVolume / maxThreshold) * 100; // Normalize to percentage
+
+      return { muscleGroup: group, fatigue: Math.min(fatigue, 200) }; // Cap at 100%
+    });
+
+    // Debugging: Log intermediate results
+    console.log("Fatigue by Muscle Group (Volume-Based):", fatigueByMuscle);
+
+    // Determine Overall Fatigue Trend
+    const musclesToRest = fatigueByMuscle
+      .filter((m) => m.fatigue > 70) // High fatigue
+      .map((m) => m.muscleGroup);
+
+    const musclesToWorkout = fatigueByMuscle
+      .filter((m) => m.fatigue < 30) // Low fatigue
+      .map((m) => m.muscleGroup);
+
+    const overallFatigueTrend = {
+      rest: musclesToRest.length > 0 ? musclesToRest.join(", ") : "None",
+      workout:
+        musclesToWorkout.length > 0 ? musclesToWorkout.join(", ") : "None",
+    };
+
+    // Fatigue Data: Group by date and get max fatigue for each date
+    const fatigueData = dates.map((date) => {
+      const dateLogs = logs.filter((log) => log[0] === date);
+      const dateVolume = dateLogs.reduce((sum, log) => {
+        const reps = parseFloat(log[3]);
+        const weight = parseFloat(log[4]);
+        const volume = reps * weight;
+        return sum + (isNaN(volume) ? 0 : volume);
+      }, 0);
+      return (dateVolume / maxThreshold) * 100; // Normalize to percentage
+    });
+
+    // Progression Data: Group by date and calculate average progression
+    const progressionData = dates.map((date) => {
+      const dayMetrics = dailyMetrics.filter((metric) => metric.date === date);
+      const progressionRates = dayMetrics.map((metric) =>
+        metric.progressionRate === "N/A"
+          ? 0
+          : parseFloat(metric.progressionRate)
+      );
+      return (
+        progressionRates.reduce((sum, rate) => sum + rate, 0) /
+        progressionRates.length
+      );
+    });
 
     return {
       dates,
       muscleGroups,
-      progressionData,
       fatigueData,
-      fatigueTrend,
-      restRecommendation,
-      muscleAnalytics,
+      progressionData,
+      fatigueByMuscle,
+      fatigueTrend: overallFatigueTrend,
     };
   }, [logs, dailyMetrics]);
 
@@ -207,69 +167,13 @@ const Charts = ({ logs, themeMode }) => {
     ],
   };
 
-  // Avg Progression per Muscle Group
-  const avgProgressionData = {
-    labels: processedData.muscleGroups || [],
-    datasets: [
-      {
-        label: "Avg Progression (%)",
-        data: processedData.muscleAnalytics.map((m) => m.avgProgression) || [],
-        backgroundColor: `${theme.palette.success.main}99`,
-        borderColor: theme.palette.success.main,
-        borderWidth: 1,
-      },
-    ],
-  };
-
-  // Total Volume per Muscle Group
-  const volumeByMuscleData = {
-    labels: processedData.muscleGroups || [],
-    datasets: [
-      {
-        label: "Total Volume",
-        data: processedData.muscleAnalytics.map((m) => m.totalVolume) || [],
-        backgroundColor: `${theme.palette.info.main}99`,
-        borderColor: theme.palette.info.main,
-        borderWidth: 1,
-      },
-    ],
-  };
-
-  // Total Reps per Muscle Group
-  const repsByMuscleData = {
-    labels: processedData.muscleGroups || [],
-    datasets: [
-      {
-        label: "Total Reps",
-        data: processedData.muscleAnalytics.map((m) => m.totalReps) || [],
-        backgroundColor: `${theme.palette.warning.main}99`,
-        borderColor: theme.palette.warning.main,
-        borderWidth: 1,
-      },
-    ],
-  };
-
-  // Total Sets per Muscle Group
-  const setsByMuscleData = {
-    labels: processedData.muscleGroups || [],
-    datasets: [
-      {
-        label: "Total Sets",
-        data: processedData.muscleAnalytics.map((m) => m.totalSets) || [],
-        backgroundColor: `${theme.palette.secondary.main}99`,
-        borderColor: theme.palette.secondary.main,
-        borderWidth: 1,
-      },
-    ],
-  };
-
-  // Fatigue per Muscle Group (Restored from old code)
+  // Fatigue per Muscle Group Chart
   const fatigueByMuscleData = {
     labels: processedData.muscleGroups || [],
     datasets: [
       {
-        label: "Fatigue (%) - Last 10 Days",
-        data: processedData.muscleAnalytics.map((m) => m.fatigue) || [],
+        label: "Fatigue (%) - Per Muscle Group",
+        data: processedData.fatigueByMuscle?.map((m) => m.fatigue) || [],
         backgroundColor: `${theme.palette.error.main}99`,
         borderColor: theme.palette.error.main,
         borderWidth: 1,
@@ -360,60 +264,21 @@ const Charts = ({ logs, themeMode }) => {
           <Grid item xs={12} md={6}>
             <Box sx={{ height: 350 }}>
               <Bar
-                data={avgProgressionData}
-                options={barChartOptions(
-                  "Average Progression per Muscle Group",
-                  "Progression (%)"
-                )}
-              />
-            </Box>
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <Box sx={{ height: 350 }}>
-              <Bar
-                data={volumeByMuscleData}
-                options={barChartOptions(
-                  "Total Volume per Muscle Group",
-                  "Volume"
-                )}
-              />
-            </Box>
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <Box sx={{ height: 350 }}>
-              <Bar
-                data={repsByMuscleData}
-                options={barChartOptions("Total Reps per Muscle Group", "Reps")}
-              />
-            </Box>
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <Box sx={{ height: 350 }}>
-              <Bar
-                data={setsByMuscleData}
-                options={barChartOptions("Total Sets per Muscle Group", "Sets")}
-              />
-            </Box>
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <Box sx={{ height: 350 }}>
-              <Bar
                 data={fatigueByMuscleData}
                 options={barChartOptions(
-                  "Fatigue per Muscle Group (Last 10 Days)",
+                  "Fatigue per Muscle Group",
                   "Fatigue (%)"
                 )}
               />
             </Box>
           </Grid>
           <Grid item xs={12}>
-            <Alert
-              severity={
-                processedData.fatigueTrend === "High" ? "warning" : "info"
-              }
-            >
-              Overall Fatigue Trend: {processedData.fatigueTrend} -{" "}
-              {processedData.restRecommendation}
+            <Alert severity="info">
+              Muscles to Rest: {processedData.fatigueTrend?.rest || "None"}
+            </Alert>
+            <Alert severity="info">
+              Muscles to Workout:{" "}
+              {processedData.fatigueTrend?.workout || "None"}
             </Alert>
           </Grid>
         </Grid>
