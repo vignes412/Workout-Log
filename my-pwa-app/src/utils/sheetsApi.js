@@ -1,4 +1,3 @@
-// src/utils/sheetsApi.js
 import { gapi } from "gapi-script";
 import config from "../config";
 import React from "react";
@@ -9,6 +8,18 @@ const { DATA_CACHE_NAME } = config.cache;
 
 let isInitialized = false;
 
+const retryOperation = async (operation, maxRetries = 3, delay = 1000) => {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await operation();
+    } catch (error) {
+      if (attempt === maxRetries) throw error;
+      console.warn(`Retry ${attempt}/${maxRetries} failed: ${error.message}`);
+      await new Promise((resolve) => setTimeout(resolve, delay * attempt));
+    }
+  }
+};
+
 export const initClient = (accessToken) => {
   return new Promise((resolve, reject) => {
     if (isInitialized) {
@@ -18,8 +29,8 @@ export const initClient = (accessToken) => {
     gapi.load("client", () => {
       gapi.client
         .init({
-          apiKey: API_KEY,
-          clientId: CLIENT_ID,
+          apiKey: process.env.REACT_APP_GOOGLE_API_KEY || API_KEY,
+          clientId: process.env.REACT_APP_GOOGLE_CLIENT_ID || CLIENT_ID,
           discoveryDocs: DISCOVERY_DOCS,
           scope: SCOPES,
         })
@@ -41,56 +52,38 @@ export const initClient = (accessToken) => {
 };
 
 export const fetchData = async (range, mapFn = (row) => row) => {
-  try {
+  return retryOperation(async () => {
     const response = await gapi.client.sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
       range,
     });
     return (response.result.values || []).map(mapFn);
-  } catch (error) {
-    console.error(
-      `Fetch Error for range ${range}:`,
-      error.result?.error || error
-    );
-    throw error;
-  }
+  });
 };
 
 export const appendData = async (range, values) => {
-  try {
+  return retryOperation(async () => {
     await gapi.client.sheets.spreadsheets.values.append({
       spreadsheetId: SPREADSHEET_ID,
       range,
       valueInputOption: "RAW",
       resource: { values: [values] },
     });
-  } catch (error) {
-    console.error(
-      `Append Error for range ${range}:`,
-      error.result?.error || error
-    );
-    throw error;
-  }
+  });
 };
 
 export const clearSheet = async (range) => {
-  try {
+  return retryOperation(async () => {
     await gapi.client.sheets.spreadsheets.values.clear({
       spreadsheetId: SPREADSHEET_ID,
       range,
     });
     console.log(`Cleared range ${range} successfully`);
-  } catch (error) {
-    console.error(
-      `Clear Error for range ${range}:`,
-      error.result?.error || error
-    );
-    throw error;
-  }
+  });
 };
 
 export const updateData = async (range, values) => {
-  try {
+  return retryOperation(async () => {
     await gapi.client.sheets.spreadsheets.values.update({
       spreadsheetId: SPREADSHEET_ID,
       range,
@@ -98,13 +91,7 @@ export const updateData = async (range, values) => {
       resource: { values },
     });
     console.log(`Updated range ${range} successfully`);
-  } catch (error) {
-    console.error(
-      `Update Error for range ${range}:`,
-      error.result?.error || error
-    );
-    throw error;
-  }
+  });
 };
 
 export const cacheData = async (cacheKey, data) => {
@@ -153,5 +140,28 @@ export const syncData = async (
     const cached = await loadCachedData(cacheKey);
     if (cached) setData(cached);
     console.error(`Sync error for ${range}:`, error);
+    throw error; // Re-throw for UI notification
   }
+};
+
+export const appendData2 = async (range, values, accessToken) => {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${
+    process.env.REACT_APP_SPREADSHEET_ID || config.google.SPREADSHEET_ID
+  }/values/${range}:append?valueInputOption=RAW`;
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      values: values,
+    }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(`Failed to append data: ${error.error.message}`);
+  }
+  return response.json();
 };

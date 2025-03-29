@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { googleLogout } from "@react-oauth/google";
-import {
-  initClient,
-  syncData,
-  appendData,
-  useOnlineStatus,
-} from "../utils/sheetsApi";
+import { initClient, syncData, useOnlineStatus } from "../utils/sheetsApi";
 import WorkoutLogModal from "../pages/WorkoutLogModal";
+import SettingsModal from "./SettingsModal";
+// import BodyMeasurements from "./BodyMeasurements";
+import ProgressGoals from "./ProgressGoals";
+// import PerformanceDashboard from "./PerformanceDashboard";
 import {
   Button,
   Typography,
@@ -16,14 +15,25 @@ import {
   AppBar,
   Toolbar,
   IconButton,
+  Box,
+  Container,
+  Paper,
+  LinearProgress,
+  Badge,
 } from "@mui/material";
-import { Add, Brightness4, Brightness7 } from "@mui/icons-material";
+import {
+  Add,
+  Brightness4,
+  Brightness7,
+  FitnessCenter,
+  Settings,
+} from "@mui/icons-material";
 import WorkoutLogsTable from "./WorkoutLogsTable";
 import WorkoutSummaryTable from "./WorkoutSummaryTable";
 import Charts from "./Charts";
+import { useAppState } from "../index";
 import "../styles.css";
 
-// Helper function to get the last 3 recent workout logs
 const getRecentWorkoutLogs = (logs) => {
   if (!logs || logs.length === 0) return [];
   return logs
@@ -47,13 +57,21 @@ const Dashboard = ({
   toggleTheme,
   themeMode,
 }) => {
+  const { logs, setLogs, exercises, setExercises } = useAppState();
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
-  const [logs, setLogs] = useState(null);
-  const [exercises, setExercises] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [modalEditLog, setModalEditLog] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const [quickAddAnchorEl, setQuickAddAnchorEl] = useState(null);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [layout, setLayout] = useState(
+    () =>
+      JSON.parse(localStorage.getItem("dashboardLayout")) || {
+        showLogs: true,
+        showSummary: true,
+        showCharts: true,
+      }
+  );
   const [loading, setLoading] = useState(true);
 
   useOnlineStatus(setIsOffline);
@@ -77,6 +95,17 @@ const Dashboard = ({
               })
             ),
           ]);
+          // Schedule notification
+          if (Notification.permission === "granted") {
+            setTimeout(() => {
+              navigator.serviceWorker.ready.then((registration) => {
+                registration.showNotification("Workout Reminder", {
+                  body: "Time to log your workout!",
+                  icon: "/muscles.png",
+                });
+              });
+            }, 3600000); // 1 hour
+          }
         } catch (error) {
           console.error("Error loading data:", error);
         } finally {
@@ -84,10 +113,10 @@ const Dashboard = ({
         }
       };
       loadData();
-      const interval = setInterval(loadData, 60000);
+      const interval = setInterval(loadData, 300000); // 5 minutes
       return () => clearInterval(interval);
     }
-  }, [isAuthenticated, accessToken, isOffline]);
+  }, [isAuthenticated, accessToken, setLogs, setExercises]);
 
   const handleLogout = () => {
     googleLogout();
@@ -106,30 +135,23 @@ const Dashboard = ({
     setQuickAddAnchorEl(event.currentTarget);
   const handleQuickAddClose = () => setQuickAddAnchorEl(null);
 
-  const handleQuickAdd = async (recentLog) => {
+  const handleQuickAdd = (recentLog) => {
     const now = new Date();
     const date = now.toLocaleDateString("en-US", {
       month: "2-digit",
       day: "2-digit",
       year: "numeric",
     });
-    const newLogObject = {
+    setModalEditLog({
       date,
       muscleGroup: recentLog.muscleGroup,
       exercise: recentLog.exercise,
       reps: "",
       weight: "",
       rating: "",
-    };
-
-    try {
-      setModalEditLog(newLogObject);
-      setOpenModal(true);
-    } catch (error) {
-      console.error("Error in quick add:", error);
-    } finally {
-      handleMenuClose();
-    }
+    });
+    setOpenModal(true);
+    handleMenuClose();
   };
 
   const recentLogs = getRecentWorkoutLogs(logs);
@@ -140,21 +162,42 @@ const Dashboard = ({
   }
 
   if (loading) {
-    return <div className="loading">Loading...</div>;
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        <LinearProgress sx={{ width: "50%" }} />
+      </Box>
+    );
   }
 
   return (
-    <div className="dashboard-container">
-      <AppBar position="static">
+    <Container maxWidth="lg" className="dashboard-container">
+      <AppBar
+        position="static"
+        elevation={0}
+        sx={{ borderRadius: "10px 10px 0 0" }}
+      >
         <Toolbar>
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            Dashboard
+          <Typography variant="h5" sx={{ flexGrow: 1, fontWeight: "bold" }}>
+            Fitness Dashboard
           </Typography>
           <Button color="inherit" onClick={() => onNavigate("exerciselist")}>
-            Exercise List
+            Exercises
           </Button>
           <Button color="inherit" onClick={() => onNavigate("workoutplanner")}>
-            Workout Planner
+            Planner
+          </Button>
+          <Button
+            color="inherit"
+            onClick={() => onNavigate("bodymeasurements")}
+          >
+            Body Measurements
           </Button>
           <Button color="inherit" onClick={handleLogout}>
             Logout
@@ -162,29 +205,50 @@ const Dashboard = ({
           <IconButton color="inherit" onClick={toggleTheme}>
             {themeMode === "light" ? <Brightness4 /> : <Brightness7 />}
           </IconButton>
+          <IconButton color="inherit" onClick={() => setSettingsOpen(true)}>
+            <Settings />
+          </IconButton>
         </Toolbar>
       </AppBar>
 
-      <div className="dashboard-content">
-        <Typography variant="body1" sx={{ mb: 2 }}>
-          Status: {isOffline ? "Offline" : "Online"}
-        </Typography>
+      <Paper elevation={3} sx={{ p: 3, mt: 2, borderRadius: "0 0 10px 10px" }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            mb: 3,
+          }}
+        >
+          <Typography variant="h6" color={isOffline ? "error" : "success"}>
+            Status: {isOffline ? "Offline" : "Online"}
+          </Typography>
+          <Badge badgeContent={logs?.length || 0} color="primary">
+            <FitnessCenter />
+          </Badge>
+        </Box>
 
-        <WorkoutLogsTable
-          logs={logs}
-          setLogs={setLogs}
-          isOffline={isOffline}
-          exercises={exercises}
-        />
-        <WorkoutSummaryTable logs={logs} />
-        <Charts logs={logs} themeMode={themeMode} />
-      </div>
+        {layout.showLogs && (
+          <WorkoutLogsTable
+            logs={logs}
+            setLogs={setLogs}
+            isOffline={isOffline}
+            exercises={exercises}
+          />
+        )}
+        {layout.showSummary && <WorkoutSummaryTable logs={logs} />}
+        {layout.showCharts && <Charts logs={logs} themeMode={themeMode} />}
+        {/* <BodyMeasurements isOffline={isOffline} /> */}
+        <ProgressGoals logs={logs} />
+        {/* <PerformanceDashboard /> */}
+      </Paper>
 
       <Fab
         color="primary"
         onClick={handleMenuOpen}
         className="fab-add"
         aria-label="add"
+        sx={{ boxShadow: 6 }}
       >
         <Add />
       </Fab>
@@ -202,11 +266,9 @@ const Dashboard = ({
             handleMenuClose();
           }}
         >
-          Workout Log
+          New Workout
         </MenuItem>
         <MenuItem onClick={handleQuickAddOpen}>Quick Add</MenuItem>
-        <MenuItem onClick={handleMenuClose}>Body Weight</MenuItem>
-        <MenuItem onClick={handleMenuClose}>Exercise</MenuItem>
       </Menu>
 
       <Menu
@@ -223,7 +285,7 @@ const Dashboard = ({
             </MenuItem>
           ))
         ) : (
-          <MenuItem disabled>No recent workouts yet</MenuItem>
+          <MenuItem disabled>No recent workouts</MenuItem>
         )}
       </Menu>
 
@@ -237,7 +299,12 @@ const Dashboard = ({
         isOffline={isOffline}
         editLog={modalEditLog}
       />
-    </div>
+      <SettingsModal
+        open={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
+        onUpdateLayout={setLayout}
+      />
+    </Container>
   );
 };
 

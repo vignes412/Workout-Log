@@ -14,6 +14,8 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Snackbar,
+  CircularProgress,
 } from "@mui/material";
 
 const WorkoutLogModal = ({
@@ -26,12 +28,11 @@ const WorkoutLogModal = ({
 }) => {
   const getTodayDate = () => {
     const now = new Date();
-    // Format as YYYY-MM-DD for type="date" input
     return now.toISOString().split("T")[0];
   };
 
   const [log, setLog] = useState({
-    date: getTodayDate(), // Default to today
+    date: getTodayDate(),
     muscleGroup: "",
     exercise: "",
     reps: "",
@@ -39,14 +40,13 @@ const WorkoutLogModal = ({
     rating: "",
   });
   const [message, setMessage] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const today = getTodayDate();
     if (editLog) {
-      // For editing an existing log with originalIndex, use the original date if provided
       let initialDate = today;
       if (editLog.originalIndex !== undefined && editLog.date) {
-        // Convert DD/MM/YYYY to YYYY-MM-DD if needed
         const [day, month, year] = editLog.date.split("/");
         initialDate = `${year}-${month}-${day}`;
       }
@@ -59,11 +59,10 @@ const WorkoutLogModal = ({
         rating: editLog.rating?.toString() || "",
       });
     } else {
-      // For new logs (including from Workout Planner), use today
       setLog({
         date: today,
-        muscleGroup: editLog?.muscleGroup || "", // Pre-fill from Workout Planner if present
-        exercise: editLog?.exercise || "", // Pre-fill from Workout Planner if present
+        muscleGroup: editLog?.muscleGroup || "",
+        exercise: editLog?.exercise || "",
         reps: editLog?.reps?.toString() || "",
         weight: editLog?.weight?.toString() || "",
         rating: editLog?.rating?.toString() || "",
@@ -94,24 +93,44 @@ const WorkoutLogModal = ({
       ]
     : allExercises;
 
-  const handleMuscleGroupChange = (event, newValue) => {
-    setLog((prev) => ({
-      ...prev,
-      muscleGroup: newValue || "",
-    }));
-  };
-
-  const handleExerciseChange = (event, newValue) => {
-    setLog((prev) => ({
-      ...prev,
-      exercise: newValue || "",
-    }));
+  const validateInputs = () => {
+    if (
+      !log.date ||
+      !log.muscleGroup ||
+      !log.exercise ||
+      !log.reps ||
+      !log.weight ||
+      !log.rating
+    ) {
+      return "All fields are required";
+    }
+    if (
+      isNaN(log.reps) ||
+      parseInt(log.reps) <= 0 ||
+      parseInt(log.reps) > 100
+    ) {
+      return "Reps must be a number between 1 and 100";
+    }
+    if (
+      isNaN(log.weight) ||
+      parseFloat(log.weight) < 0 ||
+      parseFloat(log.weight) > 1000
+    ) {
+      return "Weight must be a number between 0 and 1000 kg";
+    }
+    if (
+      !/^[a-zA-Z\s]+$/.test(log.muscleGroup) ||
+      !/^[a-zA-Z\s]+$/.test(log.exercise)
+    ) {
+      return "Muscle Group and Exercise must contain only letters and spaces";
+    }
+    return null;
   };
 
   const handleSubmit = async () => {
-    const { date, muscleGroup, exercise, reps, weight, rating } = log;
-    if (!date || !muscleGroup || !exercise || !reps || !weight || !rating) {
-      setMessage({ type: "error", text: "All fields are required" });
+    const validationError = validateInputs();
+    if (validationError) {
+      setMessage({ type: "error", text: validationError });
       return;
     }
     if (isOffline) {
@@ -119,23 +138,23 @@ const WorkoutLogModal = ({
       return;
     }
 
-    // Convert YYYY-MM-DD to DD/MM/YYYY for storage
-    const [year, month, day] = date.split("-");
+    setLoading(true);
+    const [year, month, day] = log.date.split("-");
     const formattedDate = `${day}/${month}/${year}`;
-    const row = [formattedDate, muscleGroup, exercise, reps, weight, rating];
+    const row = [
+      formattedDate,
+      log.muscleGroup,
+      log.exercise,
+      log.reps,
+      log.weight,
+      log.rating,
+    ];
 
     try {
       if (editLog && onSave && editLog.originalIndex !== undefined) {
-        console.log(
-          "Updating workout log:",
-          row,
-          "at index:",
-          editLog.originalIndex
-        );
         await onSave(row, editLog.originalIndex);
         setMessage({ type: "success", text: "Workout updated successfully" });
       } else {
-        console.log("Appending new workout log:", row);
         await appendData("Workout_Logs!A:F", row);
         const cachedData = (await loadCachedData("/api/workout")) || [];
         await cacheData("/api/workout", [...cachedData, row]);
@@ -143,24 +162,20 @@ const WorkoutLogModal = ({
       }
 
       if (
-        !muscleGroups.includes(muscleGroup) ||
-        !allExercises.includes(exercise)
+        !muscleGroups.includes(log.muscleGroup) ||
+        !allExercises.includes(log.exercise)
       ) {
-        console.log("Adding new exercise to Exercises sheet:", [
-          muscleGroup,
-          exercise,
-        ]);
-        await appendData("Exercises!A:B", [muscleGroup, exercise]);
+        await appendData("Exercises!A:B", [log.muscleGroup, log.exercise]);
         const cachedExercises = (await loadCachedData("/api/exercises")) || [];
         await cacheData("/api/exercises", [
           ...cachedExercises,
-          { muscleGroup, exercise },
+          { muscleGroup: log.muscleGroup, exercise: log.exercise },
         ]);
       }
 
       setTimeout(() => {
         setLog({
-          date: getTodayDate(), // Reset to today
+          date: getTodayDate(),
           muscleGroup: "",
           exercise: "",
           reps: "",
@@ -168,16 +183,12 @@ const WorkoutLogModal = ({
           rating: "",
         });
         setMessage(null);
+        setLoading(false);
         onClose();
       }, 1000);
     } catch (error) {
-      console.error("Error in handleSubmit:", error.message, error.stack);
-      setMessage({
-        type: "error",
-        text: editLog
-          ? `Error updating workout: ${error.message}`
-          : `Error logging workout: ${error.message}`,
-      });
+      setMessage({ type: "error", text: `Error: ${error.message}` });
+      setLoading(false);
     }
   };
 
@@ -191,6 +202,9 @@ const WorkoutLogModal = ({
         </Typography>
       </DialogTitle>
       <DialogContent>
+        {loading && (
+          <CircularProgress sx={{ display: "block", mx: "auto", my: 2 }} />
+        )}
         {message && (
           <Typography
             color={message.type === "error" ? "error" : "success"}
@@ -207,37 +221,38 @@ const WorkoutLogModal = ({
           fullWidth
           margin="normal"
           InputLabelProps={{ shrink: true }}
-          // Always editable, no disabled prop
         />
         <Autocomplete
           options={filteredMuscleGroups}
           value={log.muscleGroup}
-          onChange={handleMuscleGroupChange}
+          onChange={(e, newValue) =>
+            setLog({ ...log, muscleGroup: newValue || "" })
+          }
           freeSolo
-          // Removed disabled prop, always editable
           renderInput={(params) => (
             <TextField
               {...params}
               label="Muscle Group"
               margin="normal"
               fullWidth
-              placeholder="Select or type a muscle group"
+              placeholder="Select or type"
             />
           )}
         />
         <Autocomplete
           options={filteredExercises}
           value={log.exercise}
-          onChange={handleExerciseChange}
+          onChange={(e, newValue) =>
+            setLog({ ...log, exercise: newValue || "" })
+          }
           freeSolo
-          // Removed disabled prop, always editable
           renderInput={(params) => (
             <TextField
               {...params}
               label="Exercise"
               margin="normal"
               fullWidth
-              placeholder="Select or type an exercise"
+              placeholder="Select or type"
             />
           )}
         />
@@ -248,7 +263,7 @@ const WorkoutLogModal = ({
           onChange={(e) => setLog({ ...log, reps: e.target.value })}
           fullWidth
           margin="normal"
-          inputProps={{ min: 1 }}
+          inputProps={{ min: 1, max: 100 }}
         />
         <TextField
           label="Weight (kg)"
@@ -257,7 +272,7 @@ const WorkoutLogModal = ({
           onChange={(e) => setLog({ ...log, weight: e.target.value })}
           fullWidth
           margin="normal"
-          inputProps={{ min: 0 }}
+          inputProps={{ min: 0, max: 1000 }}
         />
         <FormControl fullWidth margin="normal">
           <InputLabel>Rating (1-10)</InputLabel>
@@ -276,18 +291,24 @@ const WorkoutLogModal = ({
         </FormControl>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} color="secondary">
+        <Button onClick={onClose} color="secondary" disabled={loading}>
           Close
         </Button>
         <Button
           onClick={handleSubmit}
           color="primary"
           variant="contained"
-          disabled={isOffline}
+          disabled={isOffline || loading}
         >
           {editLog && editLog.originalIndex !== undefined ? "Save" : "Submit"}
         </Button>
       </DialogActions>
+      <Snackbar
+        open={!!message}
+        autoHideDuration={3000}
+        onClose={() => setMessage(null)}
+        message={message?.text}
+      />
     </Dialog>
   );
 };

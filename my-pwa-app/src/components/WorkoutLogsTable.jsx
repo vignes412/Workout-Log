@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { Typography, Button } from "@mui/material";
+import { Typography, Button, CircularProgress } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { appendData, cacheData } from "../utils/sheetsApi";
 import WorkoutLogModal from "../pages/WorkoutLogModal";
@@ -10,13 +10,14 @@ const SPREADSHEET_ID = config.google.SPREADSHEET_ID;
 const WorkoutLogsTable = ({ logs, setLogs, isOffline, exercises }) => {
   const [editOpen, setEditOpen] = useState(false);
   const [editLog, setEditLog] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const workoutLogRows = useMemo(() => {
     if (!logs || !Array.isArray(logs)) return [];
     return logs.map((log, index) => ({
       id: index + 1,
       date: log[0] || "",
-      muscleGroup: log[1] || "", // Adjusted to match modal expectation
+      muscleGroup: log[1] || "",
       exercise: log[2] || "",
       reps: parseReps(log[3]),
       weight: parseWeight(log[4]),
@@ -45,11 +46,14 @@ const WorkoutLogsTable = ({ logs, setLogs, isOffline, exercises }) => {
         <>
           <Button
             onClick={() => handleEdit(params.row)}
-            disabled={isOffline || editOpen}
+            disabled={isOffline || editOpen || loading}
           >
             Edit
           </Button>
-          <Button onClick={() => handleDelete(params.row)} disabled={isOffline}>
+          <Button
+            onClick={() => handleDelete(params.row)}
+            disabled={isOffline || loading}
+          >
             Delete
           </Button>
         </>
@@ -58,55 +62,49 @@ const WorkoutLogsTable = ({ logs, setLogs, isOffline, exercises }) => {
   ];
 
   const handleEdit = (row) => {
-    setEditLog(row); // Already in object format expected by modal
+    setEditLog(row);
     setEditOpen(true);
   };
 
   const handleDelete = async (row) => {
     if (window.confirm("Are you sure you want to delete this log?")) {
+      setLoading(true);
       const updatedLogs = logs.filter(
         (_, index) => index !== row.originalIndex
       );
       await updateSheet(updatedLogs);
       setLogs(updatedLogs);
+      setLoading(false);
     }
   };
 
   const handleEditSave = async (updatedRow, originalIndex) => {
+    setLoading(true);
     try {
-      console.log("Saving edited row:", updatedRow, "at index:", originalIndex);
       const updatedLogs = [...logs];
       updatedLogs[originalIndex] = updatedRow;
       await updateSheet(updatedLogs, originalIndex);
       setLogs(updatedLogs);
       setEditOpen(false);
     } catch (error) {
-      console.error("Error in handleEditSave:", error.message, error.stack);
-      throw error;
+      console.error("Error in handleEditSave:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const updateSheet = async (updatedLogs, editIndex = null) => {
     if (isOffline) return;
-
     try {
       if (editIndex !== null) {
         const range = `Workout_Logs!A${editIndex + 2}:F${editIndex + 2}`;
-        console.log("Updating single row:", {
+        await window.gapi.client.sheets.spreadsheets.values.update({
           spreadsheetId: SPREADSHEET_ID,
           range,
-          values: [updatedLogs[editIndex]],
+          valueInputOption: "RAW",
+          resource: { values: [updatedLogs[editIndex]] },
         });
-        const response =
-          await window.gapi.client.sheets.spreadsheets.values.update({
-            spreadsheetId: SPREADSHEET_ID,
-            range,
-            valueInputOption: "RAW",
-            resource: { values: [updatedLogs[editIndex]] },
-          });
-        console.log("Update response:", response);
       } else {
-        console.log("Rewriting entire sheet with:", updatedLogs);
         await appendData("Workout_Logs!A1:F", [
           ["Date", "Muscle Group", "Exercise", "Reps", "Weight", "Rating"],
         ]);
@@ -114,7 +112,7 @@ const WorkoutLogsTable = ({ logs, setLogs, isOffline, exercises }) => {
       }
       await cacheData("/api/workout", updatedLogs);
     } catch (error) {
-      console.error("Error in updateSheet:", error.message, error.stack);
+      console.error("Error in updateSheet:", error);
       throw error;
     }
   };
@@ -124,15 +122,19 @@ const WorkoutLogsTable = ({ logs, setLogs, isOffline, exercises }) => {
       <Typography variant="h6" gutterBottom>
         Workout Logs
       </Typography>
+      {loading && (
+        <CircularProgress sx={{ display: "block", mx: "auto", my: 2 }} />
+      )}
       <div style={{ height: 400, width: "100%", marginBottom: 20 }}>
         <DataGrid
           rows={workoutLogRows}
           columns={workoutLogColumns}
           initialState={{
-            pagination: { paginationModel: { pageSize: 10, page: 0 } },
+            pagination: { paginationModel: { pageSize: 5, page: 0 } },
             sorting: { sortModel: [{ field: "date", sort: "desc" }] },
           }}
           pageSizeOptions={[5, 10, 20]}
+          pagination
           slots={{ toolbar: GridToolbar }}
           sortingOrder={["asc", "desc"]}
           filterMode="client"
@@ -140,7 +142,6 @@ const WorkoutLogsTable = ({ logs, setLogs, isOffline, exercises }) => {
           paginationMode="client"
         />
       </div>
-
       <WorkoutLogModal
         open={editOpen}
         onClose={() => setEditOpen(false)}

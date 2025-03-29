@@ -1,27 +1,190 @@
-/* src/index.css */
+/* Reset and Standardization */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
   font-family: 'Roboto', sans-serif;
-  margin: 0;
-  padding: 20px;
   background-color: #f0f2f5;
+  padding: 20px;
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .login-page,
-.dashboard-page {
-  max-width: 1000px;
+.dashboard-container,
+.exercise-list-container,
+.workout-planner {
+  max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
   background: white;
   border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-h1 {
+/* Headings and Text in Dark Mode */
+@media (prefers-color-scheme: dark) {
+
+  h1,
+  h5,
+  h6 {
+    color: #ffffff;
+    /* Bright white for headings */
+  }
+
+  body {
+    color: #ffffff;
+    /* Bright white for body text */
+    background-color: #212121;
+    /* Dark background */
+  }
+
+  .login-page,
+  .dashboard-container,
+  .exercise-list-container,
+  .workout-planner {
+    background: #424242;
+    /* Darker paper background */
+    color: #ffffff;
+    /* Bright white text */
+  }
+}
+
+/* Light Mode Headings (unchanged) */
+h1,
+h5,
+h6 {
   color: #2c3e50;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+/* Dashboard Styles */
+.dashboard-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-content {
+  padding: 20px;
+  flex-grow: 1;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.fab-add {
+  position: fixed !important;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+.fab-add:hover {
+  transform: scale(1.1);
+}
+
+/* Charts Styles */
+.charts-container {
+  margin-top: 2rem;
+}
+
+.chart-wrapper {
+  height: 350px;
+  width: 100%;
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+  overflow: hidden;
+  background: #fafafa;
+}
+
+/* Tooltip Styles */
+.tooltip {
+  position: absolute;
+  background: #ffffff;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  pointer-events: none;
+  opacity: 0;
+}
+
+.card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-radius: 8px;
+}
+
+.card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Responsive Design */
+@media (max-width: 960px) {
+
+  .login-page,
+  .dashboard-container,
+  .exercise-list-container,
+  .workout-planner {
+    padding: 15px;
+  }
+
+  .dashboard-content {
+    padding: 15px;
+  }
+
+  .chart-wrapper {
+    height: 300px;
+  }
+
+  .fab-add {
+    bottom: 15px;
+    right: 15px;
+  }
 }
 
 @media (max-width: 600px) {
-  .dashboard-page {
+
+  .login-page,
+  .dashboard-container,
+  .exercise-list-container,
+  .workout-planner {
     padding: 10px;
+    border-radius: 5px;
+  }
+
+  .dashboard-content {
+    padding: 10px;
+  }
+
+  .fab-add {
+    bottom: 10px;
+    right: 10px;
+    width: 48px;
+    height: 48px;
+  }
+
+  .chart-wrapper {
+    height: 250px;
+  }
+
+  h1,
+  h5,
+  h6 {
+    font-size: 1.2rem;
   }
 }

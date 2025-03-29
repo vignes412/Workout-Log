@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, createContext, useContext } from "react";
 import { createRoot } from "react-dom/client";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
@@ -7,13 +7,18 @@ import App from "./App";
 import Login from "./pages/Login";
 import Dashboard from "./components/Dashboard";
 import ExerciseList from "./pages/ExerciseList";
-import WorkoutPlanner from "./pages/WorkoutPlanner"; // Import new page
+import WorkoutPlanner from "./pages/WorkoutPlanner";
+import ErrorBoundary from "./components/ErrorBoundary";
 import { initClient, syncData } from "./utils/sheetsApi";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import config from "./config";
 import "./index.css";
+import BodyMeasurements from "./components/BodyMeasurements";
+// import BodyMeasurements from "./components/BodyMeasurements";
 
-// Define light and dark themes
+const AppContext = createContext();
+export const useAppState = () => useContext(AppContext);
+
 const lightTheme = createTheme({
   palette: {
     mode: "light",
@@ -26,9 +31,18 @@ const lightTheme = createTheme({
 const darkTheme = createTheme({
   palette: {
     mode: "dark",
-    primary: { main: "#90caf9" },
-    secondary: { main: "#f48fb1" },
-    background: { default: "#121212", paper: "#424242" },
+    primary: { main: "#64b5f6" },
+    secondary: { main: "#f06292" },
+    background: { default: "#212121", paper: "#424242" },
+    text: {
+      primary: "#ffffff", // Bright white for main text
+      secondary: "#b0bec5", // Light gray for secondary text
+    },
+  },
+  typography: {
+    h1: { color: "#ffffff" }, // Bright white for h1
+    h5: { color: "#ffffff" }, // Bright white for h5
+    h6: { color: "#ffffff" }, // Bright white for h6
   },
 });
 
@@ -44,15 +58,29 @@ const Main = () => {
   );
   const [themeMode, setThemeMode] = useState("dark");
   const [logs, setLogs] = useState(null);
+  const [exercises, setExercises] = useState([]);
 
   useEffect(() => {
     if (isAuthenticated && accessToken) {
       const loadData = async () => {
         try {
           await initClient(accessToken);
-          await syncData("Workout_Logs!A2:F", "/api/workout", setLogs);
+          await Promise.all([
+            syncData("Workout_Logs!A2:F", "/api/workout", setLogs),
+            syncData(
+              "Exercises!A2:D",
+              "/api/exercises",
+              setExercises,
+              (row) => ({
+                muscleGroup: row[0],
+                exercise: row[1],
+                exerciseLink: row[2],
+                imageLink: row[3],
+              })
+            ),
+          ]);
         } catch (error) {
-          console.error("Error loading logs:", error);
+          console.error("Error loading initial data:", error);
         }
       };
       loadData();
@@ -60,10 +88,8 @@ const Main = () => {
   }, [isAuthenticated, accessToken]);
 
   const theme = themeMode === "light" ? lightTheme : darkTheme;
-
-  const toggleTheme = () => {
-    setThemeMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
-  };
+  const toggleTheme = () =>
+    setThemeMode((prev) => (prev === "light" ? "dark" : "light"));
 
   const renderPage = () => {
     switch (currentPage) {
@@ -104,6 +130,14 @@ const Main = () => {
             onNavigate={setCurrentPage}
           />
         );
+      case "bodymeasurements":
+        return (
+          <BodyMeasurements
+            accessToken={accessToken}
+            onNavigate={setCurrentPage}
+            themeMode={themeMode}
+          />
+        );
       default:
         return (
           <Login
@@ -116,12 +150,18 @@ const Main = () => {
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <GoogleOAuthProvider clientId={config.google.CLIENT_ID}>
-        {renderPage()}
-      </GoogleOAuthProvider>
-    </ThemeProvider>
+    <AppContext.Provider value={{ logs, setLogs, exercises, setExercises }}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <GoogleOAuthProvider
+          clientId={
+            process.env.REACT_APP_GOOGLE_CLIENT_ID || config.google.CLIENT_ID
+          }
+        >
+          <ErrorBoundary>{renderPage()}</ErrorBoundary>
+        </GoogleOAuthProvider>
+      </ThemeProvider>
+    </AppContext.Provider>
   );
 };
 
