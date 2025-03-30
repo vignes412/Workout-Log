@@ -56,15 +56,9 @@ const getRecentWorkoutLogs = (logs) => {
     .reverse();
 };
 
-const Dashboard = ({
-  isAuthenticated,
-  setIsAuthenticated,
-  accessToken,
-  onNavigate,
-  toggleTheme,
-  themeMode,
-}) => {
-  const { logs, setLogs, exercises, setExercises } = useAppState();
+const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
+  const { state, dispatch } = useAppState();
+  const { logs, exercises, isAuthenticated, accessToken } = state;
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
   const [openModal, setOpenModal] = useState(false);
   const [modalEditLog, setModalEditLog] = useState(null);
@@ -97,11 +91,13 @@ const Dashboard = ({
         try {
           await initClient(accessToken);
           await Promise.all([
-            syncData("Workout_Logs!A2:F", "/api/workout", setLogs),
+            syncData("Workout_Logs!A2:F", "/api/workout", (data) =>
+              dispatch({ type: "SET_LOGS", payload: data })
+            ),
             syncData(
               "Exercises!A2:D",
               "/api/exercises",
-              setExercises,
+              (data) => dispatch({ type: "SET_EXERCISES", payload: data }),
               (row) => ({
                 muscleGroup: row[0],
                 exercise: row[1],
@@ -130,7 +126,7 @@ const Dashboard = ({
       const interval = setInterval(loadData, 300000); // 5 minutes
       return () => clearInterval(interval);
     }
-  }, [isAuthenticated, accessToken, setLogs, setExercises]);
+  }, [isAuthenticated, accessToken, dispatch]);
 
   useEffect(() => {
     const today = new Date().toLocaleDateString("en-US");
@@ -143,9 +139,11 @@ const Dashboard = ({
   }, [lastRecordedDate]);
 
   const handleLogout = () => {
-    googleLogout();
     localStorage.removeItem("authToken");
-    setIsAuthenticated(false);
+    dispatch({
+      type: "SET_AUTHENTICATION",
+      payload: { isAuthenticated: false, accessToken: null },
+    });
     onNavigate("login");
   };
 
@@ -300,6 +298,14 @@ const Dashboard = ({
                 >
                   Settings
                 </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    onNavigate("advancedanalytics");
+                    handleMobileMenuClose();
+                  }}
+                >
+                  Advanced Analytics
+                </MenuItem>
               </Menu>
             </>
           ) : (
@@ -338,6 +344,12 @@ const Dashboard = ({
               <IconButton color="inherit" onClick={() => setSettingsOpen(true)}>
                 <Settings />
               </IconButton>
+              <Button
+                color="inherit"
+                onClick={() => onNavigate("advancedanalytics")}
+              >
+                Advanced Analytics
+              </Button>
             </Box>
           )}
         </Toolbar>
@@ -363,7 +375,6 @@ const Dashboard = ({
         {layout.showLogs && (
           <WorkoutLogsTable
             logs={logs}
-            setLogs={setLogs}
             isOffline={isOffline}
             exercises={exercises}
           />

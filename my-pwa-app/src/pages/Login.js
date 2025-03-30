@@ -1,8 +1,10 @@
 import React from "react";
 import { useGoogleLogin } from "@react-oauth/google";
 import { Button } from "@mui/material";
+import { useAppState } from "../index";
 
-const Login = ({ setIsAuthenticated, setAccessToken, onNavigate }) => {
+const Login = ({ setIsAuthenticated, onNavigate }) => {
+  const { dispatch } = useAppState();
   const token = localStorage.getItem("authToken");
 
   React.useEffect(() => {
@@ -13,8 +15,10 @@ const Login = ({ setIsAuthenticated, setAccessToken, onNavigate }) => {
     onSuccess: (tokenResponse) => {
       const token = tokenResponse.access_token;
       localStorage.setItem("authToken", token);
-      setAccessToken(token);
-      setIsAuthenticated(true);
+      dispatch({
+        type: "SET_AUTHENTICATION",
+        payload: { isAuthenticated: true, accessToken: token },
+      });
       onNavigate("dashboard");
     },
     onError: (error) => console.error("Login Failed:", error),

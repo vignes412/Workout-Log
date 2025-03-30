@@ -1,4 +1,10 @@
-import React, { useState, useEffect, createContext, useContext } from "react";
+import React, {
+  useState,
+  useEffect,
+  createContext,
+  useContext,
+  useReducer,
+} from "react";
 import { createRoot } from "react-dom/client";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
@@ -14,7 +20,37 @@ import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import config from "./config";
 import "./index.css";
 import BodyMeasurements from "./components/BodyMeasurements";
-// import BodyMeasurements from "./components/BodyMeasurements";
+import AdvancedAnalytics from "./pages/AdvancedAnalytics";
+
+const initialState = {
+  isAuthenticated: !!localStorage.getItem("authToken"),
+  accessToken: localStorage.getItem("authToken"),
+  currentPage: !!localStorage.getItem("authToken") ? "dashboard" : "login",
+  themeMode: "dark",
+  logs: null,
+  exercises: [],
+};
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case "SET_AUTHENTICATION":
+      return {
+        ...state,
+        isAuthenticated: action.payload.isAuthenticated,
+        accessToken: action.payload.accessToken,
+      };
+    case "SET_PAGE":
+      return { ...state, currentPage: action.payload };
+    case "SET_THEME":
+      return { ...state, themeMode: action.payload };
+    case "SET_LOGS":
+      return { ...state, logs: action.payload };
+    case "SET_EXERCISES":
+      return { ...state, exercises: action.payload };
+    default:
+      return state;
+  }
+};
 
 const AppContext = createContext();
 export const useAppState = () => useContext(AppContext);
@@ -47,30 +83,21 @@ const darkTheme = createTheme({
 });
 
 const Main = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(
-    !!localStorage.getItem("authToken")
-  );
-  const [accessToken, setAccessToken] = useState(
-    localStorage.getItem("authToken")
-  );
-  const [currentPage, setCurrentPage] = useState(
-    isAuthenticated ? "dashboard" : "login"
-  );
-  const [themeMode, setThemeMode] = useState("dark");
-  const [logs, setLogs] = useState(null);
-  const [exercises, setExercises] = useState([]);
+  const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
-    if (isAuthenticated && accessToken) {
+    if (state.isAuthenticated && state.accessToken) {
       const loadData = async () => {
         try {
-          await initClient(accessToken);
+          await initClient(state.accessToken);
           await Promise.all([
-            syncData("Workout_Logs!A2:F", "/api/workout", setLogs),
+            syncData("Workout_Logs!A2:F", "/api/workout", (data) =>
+              dispatch({ type: "SET_LOGS", payload: data })
+            ),
             syncData(
               "Exercises!A2:D",
               "/api/exercises",
-              setExercises,
+              (data) => dispatch({ type: "SET_EXERCISES", payload: data }),
               (row) => ({
                 muscleGroup: row[0],
                 exercise: row[1],
@@ -85,7 +112,7 @@ const Main = () => {
       };
       loadData();
     }
-  }, [isAuthenticated, accessToken]);
+  }, [state.isAuthenticated, state.accessToken]);
 
   useEffect(() => {
     if ("Notification" in window && Notification.permission !== "granted") {
@@ -116,70 +143,102 @@ const Main = () => {
     scheduleNotification();
   }, []);
 
-  const theme = themeMode === "light" ? lightTheme : darkTheme;
-  const toggleTheme = () =>
-    setThemeMode((prev) => (prev === "light" ? "dark" : "light"));
+  const theme = state.themeMode === "light" ? lightTheme : darkTheme;
 
   const renderPage = () => {
-    switch (currentPage) {
+    switch (state.currentPage) {
       case "login":
         return (
           <Login
-            setIsAuthenticated={setIsAuthenticated}
-            setAccessToken={setAccessToken}
-            onNavigate={setCurrentPage}
+            setIsAuthenticated={(isAuthenticated, accessToken) =>
+              dispatch({
+                type: "SET_AUTHENTICATION",
+                payload: { isAuthenticated, accessToken },
+              })
+            }
+            onNavigate={(page) => dispatch({ type: "SET_PAGE", payload: page })}
           />
         );
       case "app":
-        return <App onNavigate={setCurrentPage} />;
+        return (
+          <App
+            onNavigate={(page) => dispatch({ type: "SET_PAGE", payload: page })}
+          />
+        );
       case "dashboard":
         return (
           <Dashboard
-            isAuthenticated={isAuthenticated}
-            setIsAuthenticated={setIsAuthenticated}
-            accessToken={accessToken}
-            onNavigate={setCurrentPage}
-            toggleTheme={toggleTheme}
-            themeMode={themeMode}
+            isAuthenticated={state.isAuthenticated}
+            setIsAuthenticated={(isAuthenticated) =>
+              dispatch({
+                type: "SET_AUTHENTICATION",
+                payload: { isAuthenticated, accessToken: null },
+              })
+            }
+            accessToken={state.accessToken}
+            onNavigate={(page) => dispatch({ type: "SET_PAGE", payload: page })}
+            toggleTheme={() =>
+              dispatch({
+                type: "SET_THEME",
+                payload: state.themeMode === "light" ? "dark" : "light",
+              })
+            }
+            themeMode={state.themeMode}
           />
         );
       case "exerciselist":
         return (
           <ExerciseList
-            accessToken={accessToken}
-            onNavigate={setCurrentPage}
-            toggleTheme={toggleTheme}
-            themeMode={themeMode}
+            accessToken={state.accessToken}
+            onNavigate={(page) => dispatch({ type: "SET_PAGE", payload: page })}
+            toggleTheme={() =>
+              dispatch({
+                type: "SET_THEME",
+                payload: state.themeMode === "light" ? "dark" : "light",
+              })
+            }
+            themeMode={state.themeMode}
           />
         );
       case "workoutplanner":
         return (
           <WorkoutPlanner
-            accessToken={accessToken}
-            onNavigate={setCurrentPage}
+            accessToken={state.accessToken}
+            onNavigate={(page) => dispatch({ type: "SET_PAGE", payload: page })}
           />
         );
       case "bodymeasurements":
         return (
           <BodyMeasurements
-            accessToken={accessToken}
-            onNavigate={setCurrentPage}
-            themeMode={themeMode}
+            accessToken={state.accessToken}
+            onNavigate={(page) => dispatch({ type: "SET_PAGE", payload: page })}
+            themeMode={state.themeMode}
+          />
+        );
+      case "advancedanalytics":
+        return (
+          <AdvancedAnalytics
+            logs={state.logs}
+            onNavigate={(page) => dispatch({ type: "SET_PAGE", payload: page })}
           />
         );
       default:
         return (
           <Login
-            setIsAuthenticated={setIsAuthenticated}
-            setAccessToken={setAccessToken}
-            onNavigate={setCurrentPage}
+            setIsAuthenticated={(isAuthenticated, accessToken) =>
+              dispatch({
+                type: "SET_AUTHENTICATION",
+                payload: { isAuthenticated, accessToken },
+              })
+            }
+            onNavigate={(page) => dispatch({ type: "SET_PAGE", payload: page })}
           />
         );
     }
   };
 
   return (
-    <AppContext.Provider value={{ logs, setLogs, exercises, setExercises }}>
+    <AppContext.Provider value={{ state, dispatch }}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <GoogleOAuthProvider
