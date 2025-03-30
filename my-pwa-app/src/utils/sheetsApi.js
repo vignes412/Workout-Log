@@ -63,11 +63,13 @@ export const fetchData = async (range, mapFn = (row) => row) => {
 
 export const appendData = async (range, values) => {
   return retryOperation(async () => {
+    // Ensure values is a two-dimensional array
+    const formattedValues = Array.isArray(values[0]) ? values : [values];
     await gapi.client.sheets.spreadsheets.values.append({
       spreadsheetId: SPREADSHEET_ID,
       range,
       valueInputOption: "RAW",
-      resource: { values: [values] },
+      resource: { values: formattedValues },
     });
   });
 };

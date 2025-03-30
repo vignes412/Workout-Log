@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { googleLogout } from "@react-oauth/google";
-import { initClient, syncData, useOnlineStatus } from "../utils/sheetsApi";
+import {
+  initClient,
+  syncData,
+  useOnlineStatus,
+  appendData,
+} from "../utils/sheetsApi";
 import WorkoutLogModal from "../pages/WorkoutLogModal";
 import SettingsModal from "./SettingsModal";
 import ProgressGoals from "./ProgressGoals";
@@ -20,6 +25,7 @@ import {
   Badge,
   useMediaQuery,
   useTheme,
+  TextField,
 } from "@mui/material";
 import {
   Add,
@@ -75,6 +81,10 @@ const Dashboard = ({
       }
   );
   const [loading, setLoading] = useState(true);
+  const [bodyWeight, setBodyWeight] = useState("");
+  const [lastRecordedDate, setLastRecordedDate] = useState(
+    localStorage.getItem("lastRecordedDate") || ""
+  );
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm")); // Mobile <= 600px
@@ -122,6 +132,16 @@ const Dashboard = ({
     }
   }, [isAuthenticated, accessToken, setLogs, setExercises]);
 
+  useEffect(() => {
+    const today = new Date().toLocaleDateString("en-US");
+    if (today !== lastRecordedDate) {
+      // Trigger notification for recording body weight
+      if (Notification.permission === "granted") {
+        new Notification("Don't forget to record your body weight today!");
+      }
+    }
+  }, [lastRecordedDate]);
+
   const handleLogout = () => {
     googleLogout();
     localStorage.removeItem("authToken");
@@ -159,6 +179,25 @@ const Dashboard = ({
     });
     setOpenModal(true);
     handleMenuClose();
+  };
+
+  const handleRecordWeight = async () => {
+    const today = new Date().toLocaleDateString("en-US");
+    if (today !== lastRecordedDate) {
+      try {
+        // Pass a single row as a two-dimensional array
+        await appendData("Bodyweight!A:B", [[today, bodyWeight]]);
+        localStorage.setItem("bodyWeight", bodyWeight);
+        localStorage.setItem("lastRecordedDate", today);
+        setLastRecordedDate(today);
+        alert("Body weight recorded successfully!");
+      } catch (error) {
+        console.error("Error recording body weight:", error);
+        alert("Failed to record body weight. Please try again.");
+      }
+    } else {
+      alert("You have already recorded your weight today.");
+    }
   };
 
   const recentLogs = getRecentWorkoutLogs(logs);
@@ -333,6 +372,28 @@ const Dashboard = ({
         {layout.showCharts && <Charts logs={logs} themeMode={themeMode} />}
         <ProgressGoals logs={logs} />
       </Paper>
+
+      <Box sx={{ mt: 4 }}>
+        <Typography variant="h5" gutterBottom sx={{ fontWeight: "bold" }}>
+          Record Body Weight
+        </Typography>
+        <Paper elevation={3} sx={{ p: 3, borderRadius: "10px" }}>
+          <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+            <TextField
+              label="Body Weight (kg)"
+              type="number"
+              value={bodyWeight}
+              onChange={(e) => setBodyWeight(e.target.value)}
+            />
+            <Button variant="contained" onClick={handleRecordWeight}>
+              Record
+            </Button>
+          </Box>
+          <Typography variant="body2" sx={{ mt: 2 }}>
+            Last recorded: {lastRecordedDate || "Not recorded yet"}
+          </Typography>
+        </Paper>
+      </Box>
 
       <Fab
         color="primary"

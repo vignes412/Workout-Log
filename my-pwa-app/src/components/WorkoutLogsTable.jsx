@@ -12,6 +12,19 @@ const WorkoutLogsTable = ({ logs, setLogs, isOffline, exercises }) => {
   const [editLog, setEditLog] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  // Request notification permission when the component mounts
+  React.useEffect(() => {
+    if ("Notification" in window && Notification.permission !== "granted") {
+      Notification.requestPermission();
+    }
+  }, []);
+
+  const showNotification = (title, body) => {
+    if ("Notification" in window && Notification.permission === "granted") {
+      new Notification(title, { body });
+    }
+  };
+
   const workoutLogRows = useMemo(() => {
     if (!logs || !Array.isArray(logs)) return [];
     return logs.map((log, index) => ({
@@ -72,6 +85,10 @@ const WorkoutLogsTable = ({ logs, setLogs, isOffline, exercises }) => {
       await updateSheet(updatedLogs);
       setLogs(updatedLogs);
       setLoading(false);
+      showNotification(
+        "Workout Log Deleted",
+        `Log for ${row.join(",")} has been deleted.`
+      );
     }
   };
 
@@ -83,6 +100,10 @@ const WorkoutLogsTable = ({ logs, setLogs, isOffline, exercises }) => {
       await updateSheet(updatedLogs, originalIndex);
       setLogs(updatedLogs);
       setEditOpen(false);
+      showNotification(
+        "Workout Log Updated",
+        `Log for ${updatedRow.join(",")} has been updated.`
+      );
     } catch (error) {
       console.error("Error in handleEditSave:", error);
     } finally {

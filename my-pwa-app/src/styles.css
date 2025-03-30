@@ -222,3 +222,13 @@ html {
 .tooltip.show {
     opacity: 1;
 }
+
+/* Body Weight Section */
+.record-weight {
+  margin-top: 2rem;
+}
+
+.record-weight .MuiPaper-root {
+  padding: 16px;
+  border-radius: 8px;
+}

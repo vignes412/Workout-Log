@@ -87,6 +87,35 @@ const Main = () => {
     }
   }, [isAuthenticated, accessToken]);
 
+  useEffect(() => {
+    if ("Notification" in window && Notification.permission !== "granted") {
+      Notification.requestPermission();
+    }
+
+    const scheduleNotification = () => {
+      const now = new Date();
+      const targetTime = new Date();
+      targetTime.setHours(8, 20, 0, 0); // Set time to 8:20 AM
+
+      if (now > targetTime) {
+        targetTime.setDate(targetTime.getDate() + 1); // Schedule for the next day
+      }
+
+      const timeUntilNotification = targetTime - now;
+
+      setTimeout(() => {
+        if (Notification.permission === "granted") {
+          new Notification(
+            "Good Morning! Don't forget to log your workout today!"
+          );
+        }
+        scheduleNotification(); // Reschedule for the next day
+      }, timeUntilNotification);
+    };
+
+    scheduleNotification();
+  }, []);
+
   const theme = themeMode === "light" ? lightTheme : darkTheme;
   const toggleTheme = () =>
     setThemeMode((prev) => (prev === "light" ? "dark" : "light"));
