@@ -48,10 +48,10 @@ const Charts = ({ logs, themeMode }) => {
     const maxThreshold = dates.reduce((max, date) => {
       const dateLogs = logs.filter((log) => log[0] === date);
       const dateVolume = dateLogs.reduce((sum, log) => {
-        const reps = parseFloat(log[3]); // Assuming reps are at index 3
-        const weight = parseFloat(log[4]); // Assuming weight is at index 4
+        const reps = parseFloat(log[3]) || 0; // Assuming reps are at index 3
+        const weight = parseFloat(log[4]) || 0; // Assuming weight is at index 4
         const volume = reps * weight;
-        return sum + (isNaN(volume) ? 0 : volume);
+        return sum + volume;
       }, 0);
       return Math.max(max, dateVolume);
     }, 1); // Avoid division by zero
@@ -59,7 +59,7 @@ const Charts = ({ logs, themeMode }) => {
     // Filter logs for the last 10 days
     const currentDate = new Date();
     const tenDaysAgo = new Date(currentDate);
-    tenDaysAgo.setDate(currentDate.getDate() - 10);
+    tenDaysAgo.setDate(currentDate.getDate() - 4);
 
     const last10DaysLogs = logs.filter((log) => {
       const [day, month, year] = log[0].split("/"); // Assuming DD/MM/YYYY
@@ -73,14 +73,14 @@ const Charts = ({ logs, themeMode }) => {
 
       // Calculate total volume (reps * weight) for the muscle group
       const totalVolume = groupLogs.reduce((sum, log) => {
-        const reps = parseFloat(log[3]); // Assuming reps are at index 3
-        const weight = parseFloat(log[4]); // Assuming weight is at index 4
+        const reps = parseFloat(log[3]) || 0; // Assuming reps are at index 3
+        const weight = parseFloat(log[4]) || 0; // Assuming weight is at index 4
         const volume = reps * weight;
-        return sum + (isNaN(volume) ? 0 : volume);
+        return sum + volume;
       }, 0);
 
       // Calculate fatigue as normalized volume
-      const fatigue = (totalVolume / maxThreshold) * 100; // Normalize to percentage
+      const fatigue = (totalVolume / maxThreshold) * 100 || 0; // Normalize to percentage
 
       return { muscleGroup: group, fatigue: Math.min(fatigue, 200) }; // Cap at 100%
     });
@@ -90,11 +90,11 @@ const Charts = ({ logs, themeMode }) => {
 
     // Determine Overall Fatigue Trend
     const musclesToRest = fatigueByMuscle
-      .filter((m) => m.fatigue > 70) // High fatigue
+      .filter((m) => m.fatigue > 30) // High fatigue
       .map((m) => m.muscleGroup);
 
     const musclesToWorkout = fatigueByMuscle
-      .filter((m) => m.fatigue < 30) // Low fatigue
+      .filter((m) => m.fatigue < 10) // Low fatigue
       .map((m) => m.muscleGroup);
 
     const overallFatigueTrend = {
@@ -107,12 +107,12 @@ const Charts = ({ logs, themeMode }) => {
     const fatigueData = dates.map((date) => {
       const dateLogs = logs.filter((log) => log[0] === date);
       const dateVolume = dateLogs.reduce((sum, log) => {
-        const reps = parseFloat(log[3]);
-        const weight = parseFloat(log[4]);
+        const reps = parseFloat(log[3]) || 0;
+        const weight = parseFloat(log[4]) || 0;
         const volume = reps * weight;
-        return sum + (isNaN(volume) ? 0 : volume);
+        return sum + volume;
       }, 0);
-      return (dateVolume / maxThreshold) * 100; // Normalize to percentage
+      return (dateVolume / maxThreshold) * 100 || 0; // Normalize to percentage
     });
 
     // Progression Data: Group by date and calculate average progression
@@ -121,11 +121,11 @@ const Charts = ({ logs, themeMode }) => {
       const progressionRates = dayMetrics.map((metric) =>
         metric.progressionRate === "N/A"
           ? 0
-          : parseFloat(metric.progressionRate)
+          : parseFloat(metric.progressionRate) || 0
       );
       return (
         progressionRates.reduce((sum, rate) => sum + rate, 0) /
-        progressionRates.length
+        (progressionRates.length || 1)
       );
     });
 

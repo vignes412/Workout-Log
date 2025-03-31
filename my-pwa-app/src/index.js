@@ -21,6 +21,7 @@ import config from "./config";
 import "./index.css";
 import BodyMeasurements from "./components/BodyMeasurements";
 import AdvancedAnalytics from "./pages/AdvancedAnalytics";
+import SmartWorkoutPlanner from "./components/SmartWorkoutPlanner";
 
 const initialState = {
   isAuthenticated: !!localStorage.getItem("authToken"),
@@ -205,6 +206,8 @@ const Main = () => {
           <WorkoutPlanner
             accessToken={state.accessToken}
             onNavigate={(page) => dispatch({ type: "SET_PAGE", payload: page })}
+            logs={state.logs}
+            exercises={state.exercises}
           />
         );
       case "bodymeasurements":
@@ -213,6 +216,13 @@ const Main = () => {
             accessToken={state.accessToken}
             onNavigate={(page) => dispatch({ type: "SET_PAGE", payload: page })}
             themeMode={state.themeMode}
+          />
+        );
+      case "smart-planner":
+        return (
+          <SmartWorkoutPlanner
+            accessToken={state.accessToken}
+            onNavigate={(page) => dispatch({ type: "SET_PAGE", payload: page })}
           />
         );
       case "advancedanalytics":

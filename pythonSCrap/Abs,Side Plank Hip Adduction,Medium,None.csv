@@ -1,0 +1,494 @@
+Abs,Side Plank Hip Adduction,Medium,None,N/A,Abs,Hip,2,30,Strength,5,Increase hold time,Low
+Full Body,Side Plank Hip Adduction,Medium,None,N/A,Full Body,Hip,2,30,Strength,5,Increase hold time,Low
+Hip,Side Plank Hip Adduction,Medium,None,N/A,Hip,Abs,2,30,Strength,5,Increase hold time,Low
+Hip,Single-Leg Dumbbell Hip Thrust,Hard,Dumbbell,70%,Hip,Glutes,3,60,Strength,8,Increase weight,Medium
+Triceps,Barbell JM Press,Hard,Barbell,75%,Triceps,Chest,4,90,Strength,10,Increase weight,Medium
+Chest,Bench Press,Hard,Barbell,80%,Chest,Triceps,5,120,Strength,12,Increase weight,Medium
+Hip,Smith Machine Squat,Medium,Smith Machine,65%,Hip,Legs,4,90,Strength,10,Increase weight,Medium
+Leg,Smith Machine Squat,Medium,Smith Machine,65%,Legs,Hip,4,90,Strength,10,Increase weight,Medium
+Hip,Dumbbell Cossack Squat,Medium,Dumbbell,60%,Hip,Legs,3,60,Strength,8,Increase depth,Low
+Leg,Dumbbell Cossack Squat,Medium,Dumbbell,60%,Legs,Hip,3,60,Strength,8,Increase depth,Low
+Shoulders,Seated Barbell Shoulder Press,Hard,Barbell,70%,Shoulders,Triceps,4,90,Strength,10,Increase weight,Medium
+Hip,Dumbbell Goblet Squat,Medium,Dumbbell,60%,Hip,Legs,3,60,Strength,8,Increase weight,Low
+Leg,Dumbbell Goblet Squat,Medium,Dumbbell,60%,Legs,Hip,3,60,Strength,8,Increase weight,Low
+Hip,Curtsy Lunge,Medium,None,N/A,Hip,Legs,3,60,Strength,7,Increase reps,Low
+Leg,Curtsy Lunge,Medium,None,N/A,Legs,Hip,3,60,Strength,7,Increase reps,Low
+Abs,Medicine Ball Rotational Throw,Medium,Medicine Ball,N/A,Abs,Obliques,2,30,Strength,6,Increase weight,Low
+Cardio,5 Dot Drills,Easy,None,N/A,Cardio,Legs,2,15,Cardio,10,Increase speed,Low
+Hip,5 Dot Drills,Easy,None,N/A,Hip,Legs,2,15,Cardio,10,Increase speed,Low
+Leg,5 Dot Drills,Easy,None,N/A,Legs,Hip,2,15,Cardio,10,Increase speed,Low
+Hip,High Knee Lunge on Bosu Ball,Medium,Bosu Ball,N/A,Hip,Legs,3,30,Strength,7,Increase reps,Medium
+Leg,High Knee Lunge on Bosu Ball,Medium,Bosu Ball,N/A,Legs,Hip,3,30,Strength,7,Increase reps,Medium
+Hip,Standing Leg Circles,Easy,None,N/A,Hip,Legs,2,15,Mobility,5,Increase range,Low
+Leg,Standing Leg Circles,Easy,None,N/A,Legs,Hip,2,15,Mobility,5,Increase range,Low
+Hip,Static Lunge,Medium,None,N/A,Hip,Legs,3,30,Strength,7,Increase reps,Low
+Leg,Static Lunge,Medium,None,N/A,Legs,Hip,3,30,Strength,7,Increase reps,Low
+Cardio,Navy Seal Burpee,Hard,None,N/A,Cardio,Full Body,5,60,Cardio,15,Increase reps,Medium
+Full Body,Navy Seal Burpee,Hard,None,N/A,Full Body,Cardio,5,60,Cardio,15,Increase reps,Medium
+Biceps,Seated Zottman Curl,Medium,Dumbbell,65%,Biceps,Forearm,3,60,Strength,8,Increase weight,Low
+Forearm,Seated Zottman Curl,Medium,Dumbbell,65%,Forearm,Biceps,3,60,Strength,8,Increase weight,Low
+Full Body,Dumbbell Walking Lunge,Medium,Dumbbell,60%,Full Body,Legs,3,60,Strength,8,Increase distance,Low
+Hip,Dumbbell Walking Lunge,Medium,Dumbbell,60%,Hip,Legs,3,60,Strength,8,Increase distance,Low
+Leg,Dumbbell Walking Lunge,Medium,Dumbbell,60%,Legs,Hip,3,60,Strength,8,Increase distance,Low
+Full Body,Dumbbell Push Press,Hard,Dumbbell,70%,Full Body,Shoulders,3,90,Strength,10,Increase weight,Medium
+Shoulders,Dumbbell Push Press,Hard,Dumbbell,70%,Shoulders,Triceps,3,90,Strength,10,Increase weight,Medium
+Biceps,Standing Barbell Concentration Curl,Medium,Barbell,65%,Biceps,Forearm,3,60,Strength,8,Increase weight,Low
+Erector Spinae,Dumbbell Good Morning,Medium,Dumbbell,60%,Erector Spinae,Hip,3,60,Strength,8,Increase weight,Low
+Hip,Dumbbell Good Morning,Medium,Dumbbell,60%,Hip,Erector Spinae,3,60,Strength,8,Increase weight,Low
+Leg,Dumbbell Good Morning,Medium,Dumbbell,60%,Legs,Hip,3,60,Strength,8,Increase weight,Low
+Hip,Dumbbell Squat,Medium,Dumbbell,60%,Hip,Legs,3,60,Strength,8,Increase weight,Low
+Leg,Dumbbell Squat,Medium,Dumbbell,60%,Legs,Hip,3,60,Strength,8,Increase weight,Low
+Cardio,Depth Jump to Hurdle Hop,Hard,None,N/A,Cardio,Legs,3,30,Cardio,12,Increase height,Medium
+Hip,Depth Jump to Hurdle Hop,Hard,None,N/A,Hip,Legs,3,30,Cardio,12,Increase height,Medium
+Leg,Depth Jump to Hurdle Hop,Hard,None,N/A,Legs,Hip,3,30,Cardio,12,Increase height,Medium
+Biceps,Waiter Curl,Medium,Dumbbell,65%,Biceps,Forearm,3,60,Strength,8,Increase weight,Low
+Cardio,Power Lunge,Medium,None,N/A,Cardio,Legs,3,30,Cardio,10,Increase reps,Low
+Hip,Power Lunge,Medium,None,N/A,Hip,Legs,3,30,Cardio,10,Increase reps,Low
+Leg,Power Lunge,Medium,None,N/A,Legs,Hip,3,30,Cardio,10,Increase reps,Low
+Cardio,Shadow Boxing,Easy,None,N/A,Cardio,Full Body,2,15,Cardio,8,Increase speed,Low
+Shoulders,Standing Dumbbell Shoulder Press,Medium,Dumbbell,65%,Shoulders,Triceps,3,60,Strength,8,Increase weight,Low
+Erector Spinae,Dumbbell Deadlift,Medium,Dumbbell,65%,Erector Spinae,Hip,3,60,Strength,8,Increase weight,Low
+Full Body,Dumbbell Deadlift,Medium,Dumbbell,65%,Full Body,Hip,3,60,Strength,8,Increase weight,Low
+Hip,Dumbbell Deadlift,Medium,Dumbbell,65%,Hip,Erector Spinae,3,60,Strength,8,Increase weight,Low
+Leg,Dumbbell Deadlift,Medium,Dumbbell,65%,Legs,Hip,3,60,Strength,8,Increase weight,Low
+Erector Spinae,Dumbbell Sumo Deadlift,Medium,Dumbbell,65%,Erector Spinae,Hip,3,60,Strength,8,Increase weight,Low
+Full Body,Dumbbell Sumo Deadlift,Medium,Dumbbell,65%,Full Body,Hip,3,60,Strength,8,Increase weight,Low
+Hip,Dumbbell Sumo Deadlift,Medium,Dumbbell,65%,Hip,Erector Spinae,3,60,Strength,8,Increase weight,Low
+Leg,Dumbbell Sumo Deadlift,Medium,Dumbbell,65%,Legs,Hip,3,60,Strength,8,Increase weight,Low
+Hip,Bodyweight Lunge,Easy,None,N/A,Hip,Legs,2,30,Strength,6,Increase reps,Low
+Leg,Bodyweight Lunge,Easy,None,N/A,Legs,Hip,2,30,Strength,6,Increase reps,Low
+Calisthenic,Frog Stand,Hard,None,N/A,Calisthenic,Full Body,3,60,Strength,10,Increase hold time,Medium
+Full Body,Backward Medicine Ball Throw,Medium,Medicine Ball,N/A,Full Body,Shoulders,3,30,Strength,8,Increase weight,Low
+Hip,Bulgarian Split Squat Jump,Hard,None,N/A,Hip,Legs,3,60,Strength,10,Increase reps,Medium
+Leg,Bulgarian Split Squat Jump,Hard,None,N/A,Legs,Hip,3,60,Strength,10,Increase reps,Medium
+Yoga,Warrior 1 Pose,Easy,None,N/A,Yoga,Full Body,2,15,Flexibility,5,Increase hold time,Low
+Yoga,Warrior 2 Pose,Easy,None,N/A,Yoga,Full Body,2,15,Flexibility,5,Increase hold time,Low
+Yoga,Warrior 3 Pose,Medium,None,N/A,Yoga,Full Body,3,30,Flexibility,6,Increase hold time,Low
+Yoga,Humble Warrior Pose,Easy,None,N/A,Yoga,Full Body,2,15,Flexibility,5,Increase hold time,Low
+Yoga,Reverse Warrior Pose (Viparita Virabhadrasana),Easy,None,N/A,Yoga,Full Body,2,15,Flexibility,5,Increase hold time,Low
+Yoga,Ustrasana,Medium,None,N/A,Yoga,Full Body,3,30,Flexibility,6,Increase hold time,Low
+Yoga,Utthita Trikonasana (Extended Triangle Pose),Easy,None,N/A,Yoga,Full Body,2,15,Flexibility,5,Increase hold time,Low
+Full Body,Zercher Carry,Hard,Barbell,N/A,Full Body,Legs,3,60,Strength,12,Increase distance,Medium
+Calisthenic,Wall Walk,Hard,None,N/A,Calisthenic,Full Body,3,60,Strength,10,Increase reps,Medium
+Full Body,Wall Walk,Hard,None,N/A,Full Body,Calisthenic,3,60,Strength,10,Increase reps,Medium
+Triceps,One Arm Triceps Pushdown,Medium,Cable,65%,Triceps,Shoulders,3,60,Strength,8,Increase weight,Low
+Full Body,Kettlebell Hang Clean,Hard,Kettlebell,70%,Full Body,Shoulders,3,90,Strength,10,Increase weight,Medium
+Abs,Dragon Flag,Hard,None,N/A,Abs,Full Body,3,60,Strength,10,Increase hold time,Medium
+Calisthenic,Dragon Flag,Hard,None,N/A,Calisthenic,Full Body,3,60,Strength,10,Increase hold time,Medium
+Full Body,Dumbbell Power Clean,Hard,Dumbbell,70%,Full Body,Shoulders,3,90,Strength,10,Increase weight,Medium
+Full Body,Dumbbell Devil Press,Hard,Dumbbell,70%,Full Body,Shoulders,3,90,Strength,12,Increase weight,Medium
+Abs,Ab Coaster Machine,Easy,Machine,N/A,Abs,Obliques,2,30,Strength,6,Increase reps,Low
+Trapezius,Overhead Shrug,Medium,Barbell,65%,Trapezius,Shoulders,3,60,Strength,8,Increase weight,Low
+Full Body,Overhead Squat,Hard,Barbell,70%,Full Body,Legs,3,90,Strength,12,Increase weight,Medium
+Yoga,Tiger Yoga Pose,Easy,None,N/A,Yoga,Full Body,2,15,Flexibility,5,Increase hold time,Low
+Hip,Barbell Glute Bridge Two Legs on Bench,Medium,Barbell,65%,Hip,Glutes,3,60,Strength,8,Increase weight,Low
+Full Body,Ski Ergometer,Medium,Machine,N/A,Full Body,Cardio,3,30,Cardio,10,Increase duration,Low
+Cardio,Riding Outdoor Bicycle,Easy,None,N/A,Cardio,Legs,5,15,Cardio,8,Increase distance,Low
+Calisthenic,Human Flag,Hard,None,N/A,Calisthenic,Full Body,3,60,Strength,12,Increase hold time,High
+Full Body,Human Flag,Hard,None,N/A,Full Body,Calisthenic,3,60,Strength,12,Increase hold time,High
+Full Body,Farmer's Walk,Medium,Dumbbell,N/A,Full Body,Legs,3,60,Strength,10,Increase distance,Low
+Full Body,Log Lift,Hard,Log,N/A,Full Body,Shoulders,3,90,Strength,12,Increase weight,Medium
+Full Body,Tire Sledge Hammer,Medium,Tire,N/A,Full Body,Shoulders,3,60,Strength,10,Increase reps,Low
+Full Body,Tire Flip,Hard,Tire,N/A,Full Body,Legs,3,90,Strength,12,Increase weight,Medium
+Full Body,Barbell Snatch,Hard,Barbell,75%,Full Body,Shoulders,3,90,Strength,12,Increase weight,Medium
+Full Body,Power Snatch,Hard,Barbell,75%,Full Body,Shoulders,3,90,Strength,12,Increase weight,Medium
+Full Body,Muscle Snatch,Hard,Barbell,75%,Full Body,Shoulders,3,90,Strength,12,Increase weight,Medium
+Full Body,Heaving Snatch Balance,Hard,Barbell,75%,Full Body,Shoulders,3,90,Strength,12,Increase weight,Medium
+Chest,Arm Scissors,Easy,None,N/A,Chest,Shoulders,2,15,Mobility,5,Increase reps,Low
+Shoulders,Arm Scissors,Easy,None,N/A,Shoulders,Chest,2,15,Mobility,5,Increase reps,Low
+Shoulders,Side Arm Raises,Easy,None,N/A,Shoulders,Trapezius,2,15,Strength,5,Increase reps,Low
+Hip,Barbell Hip Thrusts,Medium,Barbell,65%,Hip,Glutes,3,60,Strength,8,Increase weight,Low
+Neck,Weighted Lateral Neck Flexion,Medium,Neck Harness,N/A,Neck,Trapezius,2,30,Strength,5,Increase weight,Low
+Abs,Cross Crunch,Easy,None,N/A,Abs,Obliques,2,15,Strength,5,Increase reps,Low
+Abs,Standing Cable Crunch,Medium,Cable,N/A,Abs,Obliques,3,30,Strength,6,Increase weight,Low
+Cardio,Walking,Easy,None,N/A,Cardio,Legs,5,15,Cardio,5,Increase duration,Low
+Cardio,Briskly Walking,Easy,None,N/A,Cardio,Legs,5,15,Cardio,6,Increase speed,Low
+Neck,Weighted Lying Neck Extension (Neck Harness),Medium,Neck Harness,N/A,Neck,Trapezius,2,30,Strength,5,Increase weight,Low
+Neck,Weighted Lying Neck Flexion (Neck Harness),Medium,Neck Harness,N/A,Neck,Trapezius,2,30,Strength,5,Increase weight,Low
+Forearm,Wrist Roller,Medium,Wrist Roller,N/A,Forearm,Grip,2,30,Strength,5,Increase weight,Low
+Abs,Seated Bench Leg Pull-in,Easy,None,N/A,Abs,Hip,2,15,Strength,5,Increase reps,Low
+Abs,Cross Body Mountain Climber,Medium,None,N/A,Abs,Cardio,3,30,Cardio,8,Increase speed,Low
+Neck,Gittleson Shrug,Medium,None,N/A,Neck,Trapezius,2,30,Strength,5,Increase reps,Low
+Trapezius,Gittleson Shrug,Medium,None,N/A,Trapezius,Neck,2,30,Strength,5,Increase reps,Low
+Cardio,Running,Medium,None,N/A,Cardio,Legs,5,30,Cardio,10,Increase speed,Low
+Cardio,Sprint,Hard,None,N/A,Cardio,Legs,3,60,Cardio,12,Increase speed,Medium
+Full Body,Barbell Hang Clean,Hard,Barbell,75%,Full Body,Shoulders,3,90,Strength,12,Increase weight,Medium
+Shoulders,Arm Circles,Easy,None,N/A,Shoulders,Trapezius,2,15,Mobility,5,Increase range,Low
+Shoulders,Dumbbell Lateral Raise,Medium,Dumbbell,65%,Shoulders,Trapezius,3,60,Strength,8,Increase weight,Low
+Shoulders,Dumbbell Shoulder Press,Medium,Dumbbell,65%,Shoulders,Triceps,3,60,Strength,8,Increase weight,Low
+Shoulders,Smith Machine Behind Neck Press,Hard,Smith Machine,70%,Shoulders,Trapezius,3,90,Strength,10,Increase weight,Medium
+Shoulders,Smith Machine Shoulder Press,Hard,Smith Machine,70%,Shoulders,Triceps,3,90,Strength,10,Increase weight,Medium
+Shoulders,Cable Lateral Raise,Medium,Cable,65%,Shoulders,Trapezius,3,60,Strength,8,Increase weight,Low
+Shoulders,45 Degree Incline Row,Medium,Dumbbell,65%,Shoulders,Trapezius,3,60,Strength,8,Increase weight,Low
+Trapezius,45 Degree Incline Row,Medium,Dumbbell,65%,Trapezius,Shoulders,3,60,Strength,8,Increase weight,Low
+Shoulders,Lever Shoulder Press,Hard,Lever Machine,70%,Shoulders,Triceps,3,90,Strength,10,Increase weight,Medium
+Shoulders,Standing Close Grip Military Press,Hard,Barbell,70%,Shoulders,Triceps,3,90,Strength,10,Increase weight,Medium
+Shoulders,Barbell Military Press (Overhead press),Hard,Barbell,70%,Shoulders,Triceps,3,90,Strength,10,Increase weight,Medium
+Neck,Diagonal Neck Stretch,Easy,None,N/A,Neck,Trapezius,2,15,Flexibility,5,Increase hold time,Low
+Neck,Neck Rotation Stretch,Easy,None,N/A,Neck,Trapezius,2,15,Flexibility,5,Increase hold time,Low
+Neck,Neck Flexion Stretch,Easy,None,N/A,Neck,Trapezius,2,15,Flexibility,5,Increase hold time,Low
+Neck,Neck Extension Stretch,Easy,None,N/A,Neck,Trapezius,2,15,Flexibility,5,Increase hold time,Low
+Cardio,Walk Wave Machine,Easy,Machine,N/A,Cardio,Legs,5,15,Cardio,6,Increase duration,Low
+Calf,Standing Calf Raise,Easy,None,N/A,Calf,Legs,2,15,Strength,5,Increase reps,Low
+Forearm,Dumbbell Seated Neutral Wrist Curl,Medium,Dumbbell,N/A,Forearm,Grip,2,30,Strength,5,Increase weight,Low
+Forearm,Dumbbell Wrist Curl,Medium,Dumbbell,N/A,Forearm,Grip,2,30,Strength,5,Increase weight,Low
+Forearm,Barbell Reverse Wrist Curl,Medium,Barbell,N/A,Forearm,Grip,2,30,Strength,5,Increase weight,Low
+Neck,Side Neck Stretch,Easy,None,N/A,Neck,Trapezius,2,15,Flexibility,5,Increase hold time,Low
+Neck,Side Push Neck Stretch,Easy,None,N/A,Neck,Trapezius,2,15,Flexibility,5,Increase hold time,Low
+Neck,Front and Back Neck Stretch,Easy,None,N/A,Neck,Trapezius,2,15,Flexibility,5,Increase hold time,Low
+Neck,Chin Tuck,Easy,None,N/A,Neck,Trapezius,2,15,Flexibility,5,Increase hold time,Low
+Cardio,Jump Rope,Easy,None,N/A,Cardio,Full Body,5,15,Cardio,8,Increase duration,Low
+Cardio,Bike,Easy,None,N/A,Cardio,Legs,5,15,Cardio,8,Increase duration,Low
+Cardio,Treadmill,Easy,None,N/A,Cardio,Legs,5,15,Cardio,8,Increase duration,Low
+Cardio,Incline Treadmill,Medium,None,N/A,Cardio,Legs,5,15,Cardio,10,Increase incline,Low
+Back / Wing,Rowing Machine,Medium,Machine,N/A,Back / Wing,Cardio,5,30,Cardio,10,Increase duration,Low
+Cardio,Rowing Machine,Medium,Machine,N/A,Cardio,Back / Wing,5,30,Cardio,10,Increase duration,Low
+Full Body,Rowing Machine,Medium,Machine,N/A,Full Body,Cardio,5,30,Cardio,10,Increase duration,Low
+Cardio,Manual Treadmill,Easy,None,N/A,Cardio,Legs,5,15,Cardio,8,Increase duration,Low
+Cardio,Elliptical Machine,Easy,Machine,N/A,Cardio,Legs,5,15,Cardio,8,Increase duration,Low
+Cardio,Stair Climber Machine,Medium,Machine,N/A,Cardio,Legs,5,15,Cardio,10,Increase duration,Low
+Neck,Prone Cervical Extension,Medium,None,N/A,Neck,Trapezius,2,30,Strength,5,Increase reps,Low
+Forearm,Wrist Circles Stretch,Easy,None,N/A,Forearm,Grip,2,15,Mobility,5,Increase range,Low
+Neck,Kneeling Neck Stretch,Easy,None,N/A,Neck,Trapezius,2,15,Flexibility,5,Increase hold time,Low
+Shoulders,Dumbbell Chest Supported Lateral Raises,Medium,Dumbbell,65%,Shoulders,Trapezius,3,60,Strength,8,Increase weight,Low
+Shoulders,Dumbbell 6 Way Raise,Medium,Dumbbell,65%,Shoulders,Trapezius,3,60,Strength,8,Increase weight,Low
+Shoulders,Dumbbell 4 Way Lateral Raise,Medium,Dumbbell,65%,Shoulders,Trapezius,3,60,Strength,8,Increase weight,Low
+Hip,Smith Machine Reverse Kickback,Medium,Smith Machine,65%,Hip,Glutes,3,60,Strength,8,Increase weight,Low
+Biceps,Double Arm Dumbbell Curl,Medium,Dumbbell,65%,Biceps,Forearm,3,60,Strength,8,Increase weight,Low
+Erector Spinae,Seated Back Extension,Medium,Machine,N/A,Erector Spinae,Hip,3,60,Strength,8,Increase weight,Low
+Trapezius,Dumbbell Shrug,Medium,Dumbbell,65%,Trapezius,Shoulders,3,60,Strength,8,Increase weight,Low
+Chest,Incline Chest Fly Machine,Medium,Machine,65%,Chest,Shoulders,3,60,Strength,8,Increase weight,Low
+Trapezius,Cable Shrug,Medium,Cable,65%,Trapezius,Shoulders,3,60,Strength,8,Increase weight,Low
+Trapezius,Barbell Shrug,Medium,Barbell,65%,Trapezius,Shoulders,3,60,Strength,8,Increase weight,Low
+Trapezius,Behind The Back Barbell Shrug,Medium,Barbell,65%,Trapezius,Shoulders,3,60,Strength,8,Increase weight,Low
+Trapezius,Dumbbell Incline Shrug,Medium,Dumbbell,65%,Trapezius,Shoulders,3,60,Strength,8,Increase weight,Low
+Trapezius,Prone Incline Shrug,Medium,Dumbbell,65%,Trapezius,Shoulders,3,60,Strength,8,Increase weight,Low
+Trapezius,Lever Shrug,Medium,Lever Machine,65%,Trapezius,Shoulders,3,60,Strength,8,Increase weight,Low
+Shoulders,Alternating Dumbbell Front Raise,Medium,Dumbbell,65%,Shoulders,Trapezius,3,60,Strength,8,Increase weight,Low
+Shoulders,Two Arm Cable Front Raise,Medium,Cable,65%,Shoulders,Trapezius,3,60,Strength,8,Increase weight,Low
+Shoulders,Two Arm Dumbbell Front Raise,Medium,Dumbbell,65%,Shoulders,Trapezius,3,60,Strength,8,Increase weight,Low
+Shoulders,Dumbbell Front Raise,Medium,Dumbbell,65%,Shoulders,Trapezius,3,60,Strength,8,Increase weight,Low
+Shoulders,Cable Front Raise,Medium,Cable,65%,Shoulders,Trapezius,3,60,Strength,8,Increase weight,Low
+Shoulders,Leaning Single Arm Dumbbell Lateral Raise,Medium,Dumbbell,65%,Shoulders,Trapezius,3,60,Strength,8,Increase weight,Low
+Shoulders,Seated Behind Neck Press,Hard,Barbell,70%,Shoulders,Trapezius,3,90,Strength,10,Increase weight,Medium
+Shoulders,Rear Delt Fly Machine,Medium,Machine,65%,Shoulders,Trapezius,3,60,Strength,8,Increase weight,Low
+Trapezius,Rear Delt Fly Machine,Medium,Machine,65%,Trapezius,Shoulders,3,60,Strength,8,Increase weight,Low
+Shoulders,Seated Rear Lateral Dumbbell Raise,Medium,Dumbbell,65%,Shoulders,Trapezius,3,60,Strength,8,Increase weight,Low
+Shoulders,Half Arnold Press,Medium,Dumbbell,65%,Shoulders,Trapezius,3,60,Strength,8,Increase weight,Low
+Shoulders,Arnold Press,Hard,Dumbbell,70%,Shoulders,Trapezius,3,90,Strength,10,Increase weight,Medium
+Shoulders,Seated Dumbbell Lateral Raise,Medium,Dumbbell,65%,Shoulders,Trapezius,3,60,Strength,8,Increase weight,Low
+Trapezius,Lever Gripless Shrug,Medium,Lever Machine,65%,Trapezius,Shoulders,3,60,Strength,8,Increase weight,Low
+Shoulders,Cable Rear Delt Fly,Medium,Cable,65%,Shoulders,Trapezius,3,60,Strength,8,Increase weight,Low
+Trapezius,Cable Rear Delt Fly,Medium,Cable,65%,Trapezius,Shoulders,3,60,Strength,8,Increase weight,Low
+Shoulders,Bent Over Lateral Raise,Medium,Dumbbell,65%,Shoulders,Trapezius,3,60,Strength,8,Increase weight,Low
+Trapezius,Bent Over Lateral Raise,Medium,Dumbbell,65%,Trapezius,Shoulders,3,60,Strength,8,Increase weight,Low
+Shoulders,Bent Arm Lateral Raise,Medium,Dumbbell,65%,Shoulders,Trapezius,3,60,Strength,8,Increase weight,Low
+Shoulders,Cable Upright Row,Medium,Cable,65%,Shoulders,Trapezius,3,60,Strength,8,Increase weight,Low
+Trapezius,Cable Upright Row,Medium,Cable,65%,Trapezius,Shoulders,3,60,Strength,8,Increase weight,Low
+Cardio,Elbow To Knee Twists,Easy,None,N/A,Cardio,Abs,2,15,Cardio,8,Increase speed,Low
+Shoulders,Face Pull,Medium,Cable,65%,Shoulders,Trapezius,3,60,Strength,8,Increase weight,Low
+Trapezius,Face Pull,Medium,Cable,65%,Trapezius,Shoulders,3,60,Strength,8,Increase weight,Low
+Shoulders,Half Kneeling High Cable Row Rope,Medium,Cable,65%,Shoulders,Trapezius,3,60,Strength,8,Increase weight,Low
+Trapezius,Half Kneeling High Cable Row Rope,Medium,Cable,65%,Trapezius,Shoulders,3,60,Strength,8,Increase weight,Low
+Calf,Calf Raise,Easy,None,N/A,Calf,Legs,2,15,Strength,5,Increase reps,Low
+Shoulders,Leaning Cable Lateral Raise,Medium,Cable,65%,Shoulders,Trapezius,3,60,Strength,8,Increase weight,Low
+Shoulders,Dumbbell Raise,Medium,Dumbbell,65%,Shoulders,Trapezius,3,60,Strength,8,Increase weight,Low
+Trapezius,Dumbbell Raise,Medium,Dumbbell,65%,Trapezius,Shoulders,3,60,Strength,8,Increase weight,Low
+Shoulders,Dumbbell Upright Row,Medium,Dumbbell,65%,Shoulders,Trapezius,3,60,Strength,8,Increase weight,Low
+Trapezius,Dumbbell Upright Row,Medium,Dumbbell,65%,Trapezius,Shoulders,3,60,Strength,8,Increase weight,Low
+Neck,Weighted Neck Harness Extension,Medium,Neck Harness,N/A,Neck,Trapezius,2,30,Strength,5,Increase weight,Low
+Neck,Lying Weighted Neck Flexion,Medium,Neck Harness,N/A,Neck,Trapezius,2,30,Strength,5,Increase weight,Low
+Neck,Lying Weighted Neck Extension,Medium,Neck Harness,N/A,Neck,Trapezius,2,30,Strength,5,Increase weight,Low
+Neck,Lever Neck Right Side Flexion (plate loaded),Medium,Lever Machine,N/A,Neck,Trapezius,2,30,Strength,5,Increase weight,Low
+Neck,Lever Neck Extension (plate loaded),Medium,Lever Machine,N/A,Neck,Trapezius,2,30,Strength,5,Increase weight,Low
+Neck,Cable Seated Neck Flexion with head harness,Medium,Cable,N/A,Neck,Trapezius,2,30,Strength,5,Increase weight,Low
+Neck,Cable Seated Neck Extension with head harness,Medium,Cable,N/A,Neck,Trapezius,2,30,Strength,5,Increase weight,Low
+Abs,Alternate Leg Raises,Easy,None,N/A,Abs,Hip,2,15,Strength,5,Increase reps,Low
+Yoga,Bhekasana Frog Pose,Easy,None,N/A,Yoga,Full Body,2,15,Flexibility,5,Increase hold time,Low
+Yoga,Balasana | Child Pose,Easy,None,N/A,Yoga,Full Body,2,15,Flexibility,5,Increase hold time,Low
+Yoga,Anuvittasana | Standing Backbend Pose,Easy,None,N/A,Yoga,Full Body,2,15,Flexibility,5,Increase hold time,Low
+Yoga,Anjaneyasana | Low Lunge Pose,Easy,None,N/A,Yoga,Full Body,2,15,Flexibility,5,Increase hold time,Low
+Yoga,Eka Pada Setu Bandha Sarvangasana,Medium,None,N/A,Yoga,Full Body,3,30,Flexibility,6,Increase hold time,Low
+Yoga,Dandayamana Bharmanasana | Balancing Table Pose,Medium,None,N/A,Yoga,Full Body,3,30,Flexibility,6,Increase hold time,Low
+Yoga,Chaturanga Dandasana | Low Plank Pose,Medium,None,N/A,Yoga,Full Body,3,30,Flexibility,6,Increase hold time,Low
+Yoga,Bitilasana | Cow Pose,Easy,None,N/A,Yoga,Full Body,2,15,Flexibility,5,Increase hold time,Low
+Not specified,Side Bend With Resistance Band,Easy,Resistance Band,N/A,Not specified,Abs,2,15,Mobility,5,Increase range,Low
+Calf,Calf Raise with Resistance Band,Easy,Resistance Band,N/A,Calf,Legs,2,15,Strength,5,Increase reps,Low
+Yoga,Pada Hastasana | Hands to Feet Pose,Easy,None,N/A,Yoga,Full Body,2,15,Flexibility,5,Increase hold time,Low
+Yoga,Titli Asana | Butterfly Pose,Easy,None,N/A,Yoga,Full Body,2,15,Flexibility,5,Increase hold time,Low
+Yoga,Baddha Konasana | Butterfly Pose,Easy,None,N/A,Yoga,Full Body,2,15,Flexibility,5,Increase hold time,Low
+Yoga,Makarasana - Crocodile Pose,Easy,None,N/A,Yoga,Full Body,2,15,Flexibility,5,Increase hold time,Low
+Yoga,Ardha Uttanasana | Standing Half Forward Bend,Easy,None,N/A,Yoga,Full Body,2,15,Flexibility,5,Increase hold time,Low
+Yoga,Ardha Kapotasana - Half Pigeon Pose,Easy,None,N/A,Yoga,Full Body,2,15,Flexibility,5,Increase hold time,Low
+Yoga,Advasana | Reverse Corpse Pose,Easy,None,N/A,Yoga,Full Body,2,15,Flexibility,5,Increase hold time,Low
+Yoga,Adho Mukha Vrksasana Yoga | Handstand Pose,Hard,None,N/A,Yoga,Full Body,3,60,Flexibility,10,Increase hold time,Medium
+Yoga,Adho Mukha Svanasana | Downward Facing Dog,Easy,None,N/A,Yoga,Full Body,2,15,Flexibility,5,Increase hold time,Low
+Yoga,Tadasana | Mountain Pose,Easy,None,N/A,Yoga,Full Body,2,15,Flexibility,5,Increase hold time,Low
+Yoga,Supta Baddha Konasana | Reclining Bound Angle,Easy,None,N/A,Yoga,Full Body,2,15,Flexibility,5,Increase hold time,Low
+Yoga,Viparita Karani | Legs ups the Wall Pose,Easy,None,N/A,Yoga,Full Body,2,15,Flexibility,5,Increase hold time,Low
+Yoga,Supta Matsyendrasana | Supine Spinal Twist,Easy,None,N/A,Yoga,Full Body,2,15,Flexibility,5,Increase hold time,Low
+Yoga,Samakonasana | Straight Angle Pose,Medium,None,N/A,Yoga,Full Body,3,30,Flexibility,6,Increase hold time,Low
+Yoga,Shoulderstand | Salamba Sarvangasana,Medium,None,N/A,Yoga,Full Body,3,30,Flexibility,6,Increase hold time,Low
+Yoga,Nauka Sanchalanasan | Rowing the Boat Pose,Easy,None,N/A,Yoga,Full Body,2,15,Flexibility,5,Increase hold time,Low
+Yoga,Malasana | Squat Pose or Garland Pose,Easy,None,N/A,Yoga,Full Body,2,15,Flexibility,5,Increase hold time,Low
+Yoga,Full Lotus Pose,Medium,None,N/A,Yoga,Full Body,3,30,Flexibility,6,Increase hold time,Low
+Yoga,Halasana | Plow Pose,Medium,None,N/A,Yoga,Full Body,3,30,Flexibility,6,Increase hold time,Low
+Yoga,Locust Pose,Medium,None,N/A,Yoga,Full Body,3,30,Flexibility,6,Increase hold time,Low
+Yoga,Wheel Pose | Chakrasana | Urdhva Dhanurasana,Hard,None,N/A,Yoga,Full Body,3,60,Flexibility,10,Increase hold time,Medium
+Yoga,Garudasana | Eagle Pose,Medium,None,N/A,Yoga,Full Body,3,30,Flexibility,6,Increase hold time,Low
+Yoga,Crab Pose,Medium,None,N/A,Yoga,Full Body,3,30,Flexibility,6,Increase hold time,Low
+Yoga,Childs Pose To Cobra Pose,Easy,None,N/A,Yoga,Full Body,2,15,Flexibility,5,Increase hold time,Low
+Yoga,Camel Pose,Medium,None,N/A,Yoga,Full Body,3,30,Flexibility,6,Increase hold time,Low
+Yoga,Bridge Pose,Medium,None,N/A,Yoga,Full Body,3,30,Flexibility,6,Increase hold time,Low
+Yoga,Saithalyasana (Animal Relaxation Pose),Easy,None,N/A,Yoga,Full Body,2,15,Flexibility,5,Increase hold time,Low
+Back / Wing,Lever Front Pulldown,Medium,Lever Machine,70%,Back / Wing,Biceps,3,60,Strength,8,Increase weight,Low
+Back / Wing,Pull-Up,Hard,None,N/A,Back / Wing,Biceps,2,90,Strength,10,Increase reps,Medium
+Calisthenic,Pull-Up,Hard,None,N/A,Full Body,Back / Wing,2,90,Strength,10,Increase reps,Medium
+Back / Wing,Cable Rear Pulldown,Medium,Cable Machine,65%,Back / Wing,Biceps,3,60,Strength,8,Increase weight,Low
+Back / Wing,Lat Pulldown,Medium,Cable Machine,65%,Back / Wing,Biceps,3,60,Strength,8,Increase weight,Low
+Back / Wing,Seated Cable Row,Medium,Cable Machine,70%,Back / Wing,Biceps,3,60,Strength,8,Increase weight,Low
+Back / Wing,Barbell Bent Over Row,Hard,Barbell,75%,Back / Wing,Erector Spinae,4,90,Strength,10,Increase weight,Medium
+Erector Spinae,Barbell Bent Over Row,Hard,Barbell,75%,Erector Spinae,Back / Wing,4,90,Strength,10,Increase weight,Medium
+Full Body,Barbell Bent Over Row,Hard,Barbell,75%,Full Body,Back / Wing,4,90,Strength,10,Increase weight,Medium
+Back / Wing,Cable Straight Arm Pulldown,Medium,Cable Machine,65%,Back / Wing,Shoulders,3,60,Strength,8,Increase weight,Low
+Back / Wing,Legless Rope Climb,Hard,None,N/A,Back / Wing,Full Body,3,90,Strength,12,Increase reps,Medium
+Calisthenic,Legless Rope Climb,Hard,None,N/A,Full Body,Back / Wing,3,90,Strength,12,Increase reps,Medium
+Full Body,Legless Rope Climb,Hard,None,N/A,Full Body,Back / Wing,3,90,Strength,12,Increase reps,Medium
+Cardio,Push-up Toe Touch,Medium,None,N/A,Cardio,Full Body,2,30,Cardio,8,Increase reps,Low
+Full Body,Push-up Toe Touch,Medium,None,N/A,Full Body,Cardio,2,30,Cardio,8,Increase reps,Low
+Back / Wing,Lever T-Bar Row,Medium,Lever Machine,70%,Back / Wing,Biceps,3,60,Strength,8,Increase weight,Low
+Back / Wing,Dumbbell Row,Medium,Dumbbell,65%,Back / Wing,Biceps,3,60,Strength,8,Increase weight,Low
+Back / Wing,Bent Over Dumbbell Row,Medium,Dumbbell,65%,Back / Wing,Erector Spinae,3,60,Strength,8,Increase weight,Low
+Erector Spinae,Bent Over Dumbbell Row,Medium,Dumbbell,65%,Erector Spinae,Back / Wing,3,60,Strength,8,Increase weight,Low
+Full Body,Bent Over Dumbbell Row,Medium,Dumbbell,65%,Full Body,Back / Wing,3,60,Strength,8,Increase weight,Low
+Back / Wing,Dumbbell Bent Over Reverse Grip Row,Medium,Dumbbell,65%,Back / Wing,Biceps,3,60,Strength,8,Increase weight,Low
+Back / Wing,Reverse Lat-Pulldown,Medium,Cable Machine,65%,Back / Wing,Biceps,3,60,Strength,8,Increase weight,Low
+Back / Wing,Muscle-Up,Hard,None,N/A,Back / Wing,Full Body,2,90,Strength,12,Increase reps,High
+Calisthenic,Muscle-Up,Hard,None,N/A,Full Body,Back / Wing,2,90,Strength,12,Increase reps,High
+Full Body,Muscle-Up,Hard,None,N/A,Full Body,Back / Wing,2,90,Strength,12,Increase reps,High
+Hip,Squat,Medium,None,N/A,Hip,Legs,3,60,Strength,8,Increase depth,Low
+Leg,Squat,Medium,None,N/A,Legs,Hip,3,60,Strength,8,Increase depth,Low
+Back / Wing,Seated Row Machine,Medium,Machine,70%,Back / Wing,Biceps,3,60,Strength,8,Increase weight,Low
+Back / Wing,One Arm Cable Row,Medium,Cable Machine,65%,Back / Wing,Biceps,3,60,Strength,8,Increase weight,Low
+Back / Wing,Reverse Grip Barbell Row,Medium,Barbell,70%,Back / Wing,Erector Spinae,3,60,Strength,8,Increase weight,Low
+Abs,Crunches,Easy,None,N/A,Abs,None,2,15,Strength,5,Increase reps,Low
+Leg,Leg Press,Medium,Machine,70%,Legs,Glutes,3,60,Strength,8,Increase weight,Low
+Abs,Mountain Climber,Easy,None,N/A,Abs,Cardio,2,15,Cardio,8,Increase speed,Low
+Cardio,Mountain Climber,Easy,None,N/A,Cardio,Abs,2,15,Cardio,8,Increase speed,Low
+Abs,Bicycle Crunch,Easy,None,N/A,Abs,Obliques,2,15,Strength,6,Increase reps,Low
+Cardio,Bicycle Crunch,Easy,None,N/A,Cardio,Abs,2,15,Cardio,6,Increase reps,Low
+Abs,Lying Scissor Kick,Medium,None,N/A,Abs,None,2,30,Strength,6,Increase reps,Low
+Hip,Plie Dumbbell Squat,Medium,Dumbbell,65%,Hip,Legs,3,60,Strength,8,Increase weight,Low
+Leg,Plie Dumbbell Squat,Medium,Dumbbell,65%,Legs,Hip,3,60,Strength,8,Increase weight,Low
+Back / Wing,Deadlift,Hard,Barbell,80%,Back / Wing,Legs,3,90,Strength,10,Increase weight,Medium
+Erector Spinae,Deadlift,Hard,Barbell,80%,Erector Spinae,Legs,3,90,Strength,10,Increase weight,Medium
+Hip,Deadlift,Hard,Barbell,80%,Hip,Legs,3,90,Strength,10,Increase weight,Medium
+Leg,Deadlift,Hard,Barbell,80%,Legs,Hip,3,90,Strength,10,Increase weight,Medium
+Triceps,Dumbbell Kickback,Medium,Dumbbell,65%,Triceps,None,2,30,Strength,6,Increase weight,Low
+Biceps,Dumbbell Curl,Medium,Dumbbell,65%,Biceps,None,2,30,Strength,6,Increase weight,Low
+Biceps,Barbell Curl,Medium,Barbell,70%,Biceps,None,2,30,Strength,6,Increase weight,Low
+Abs,Leg Raise,Medium,None,N/A,Abs,None,2,30,Strength,6,Increase reps,Low
+Abs,Oblique Floor Crunches,Easy,None,N/A,Abs,Obliques,2,15,Strength,5,Increase reps,Low
+Abs,T-Cross Sit-up,Medium,None,N/A,Abs,Obliques,2,30,Strength,6,Increase reps,Low
+Cardio,T-Cross Sit-up,Medium,None,N/A,Cardio,Abs,2,30,Cardio,6,Increase reps,Low
+Leg,Leg Curl,Medium,Machine,70%,Legs,None,3,60,Strength,8,Increase weight,Low
+Triceps,One-Arm Reverse Pushdown,Medium,Cable Machine,65%,Triceps,None,2,30,Strength,6,Increase weight,Low
+Triceps,Push-down,Medium,Cable Machine,65%,Triceps,None,2,30,Strength,6,Increase weight,Low
+Biceps,Concentration Curl,Medium,Dumbbell,65%,Biceps,None,2,30,Strength,6,Increase weight,Low
+Leg,Seated Leg Curl,Medium,Machine,70%,Legs,None,3,60,Strength,8,Increase weight,Low
+Abs,Dead Bug,Easy,None,N/A,Abs,None,2,15,Strength,5,Increase reps,Low
+Abs,Decline Sit-up,Medium,None,N/A,Abs,None,2,30,Strength,6,Increase reps,Low
+Leg,Leg Extension,Medium,Machine,70%,Legs,None,3,60,Strength,8,Increase weight,Low
+Abs,Reverse Crunch,Easy,None,N/A,Abs,None,2,15,Strength,5,Increase reps,Low
+Abs,Reverse Crunch,Easy,None,N/A,Abs,None,2,15,Strength,5,Increase reps,Low
+Triceps,Bench Dips,Medium,None,N/A,Triceps,None,2,30,Strength,6,Increase reps,Low
+Triceps,Triceps Dips,Medium,None,N/A,Triceps,None,2,30,Strength,6,Increase reps,Low
+Biceps,Dumbbell Preacher Curl,Medium,Dumbbell,65%,Biceps,None,2,30,Strength,6,Increase weight,Low
+Biceps,EZ Bar Preacher Curl,Medium,EZ Bar,70%,Biceps,None,2,30,Strength,6,Increase weight,Low
+Biceps,Hammer Curl,Medium,Dumbbell,65%,Biceps,None,2,30,Strength,6,Increase weight,Low
+Biceps,Seated Incline Dumbbell Curl,Medium,Dumbbell,65%,Biceps,None,2,30,Strength,6,Increase weight,Low
+Calf,Barbell Seated Calf Raise,Medium,Barbell,70%,Calf,None,2,30,Strength,6,Increase weight,Low
+Abs,Kneeling Cable Crunch,Medium,Cable Machine,65%,Abs,None,2,30,Strength,6,Increase weight,Low
+Abs,Heel Touch,Easy,None,N/A,Abs,Obliques,2,15,Strength,5,Increase reps,Low
+Triceps,One-Arm Lying Triceps Extension,Medium,Dumbbell,65%,Triceps,None,2,30,Strength,6,Increase weight,Low
+Shoulders,Bodyweight Military Press,Hard,None,N/A,Shoulders,Trapezius,2,30,Strength,8,Increase reps,Medium
+Trapezius,Bodyweight Military Press,Hard,None,N/A,Trapezius,Shoulders,2,30,Strength,8,Increase reps,Medium
+Biceps,Lever Preacher Curl,Medium,Lever Machine,70%,Biceps,None,2,30,Strength,6,Increase weight,Low
+Biceps,High Cable Single Arm Bicep Curl,Medium,Cable Machine,65%,Biceps,None,2,30,Strength,6,Increase weight,Low
+Triceps,Cable Rope Overhead Triceps Extension,Medium,Cable Machine,65%,Triceps,None,2,30,Strength,6,Increase weight,Low
+Triceps,Lever Triceps Dip,Medium,Lever Machine,70%,Triceps,None,2,30,Strength,6,Increase weight,Low
+Back / Wing,Romanian Deadlift,Hard,Barbell,80%,Back / Wing,Legs,3,90,Strength,10,Increase weight,Medium
+Erector Spinae,Romanian Deadlift,Hard,Barbell,80%,Erector Spinae,Legs,3,90,Strength,10,Increase weight,Medium
+Hip,Romanian Deadlift,Hard,Barbell,80%,Hip,Legs,3,90,Strength,10,Increase weight,Medium
+Leg,Romanian Deadlift,Hard,Barbell,80%,Legs,Hip,3,90,Strength,10,Increase weight,Medium
+Chest,Pec Deck Fly,Medium,Machine,65%,Chest,None,2,30,Strength,6,Increase weight,Low
+Chest,Dumbbell Pullover,Medium,Dumbbell,65%,Chest,Back / Wing,2,30,Strength,6,Increase weight,Low
+Chest,Low Cable Crossover,Medium,Cable Machine,65%,Chest,None,2,30,Strength,6,Increase weight,Low
+Chest,High Cable Crossover,Medium,Cable Machine,65%,Chest,None,2,30,Strength,6,Increase weight,Low
+Chest,Cable Upper Chest Crossovers,Medium,Cable Machine,65%,Chest,None,2,30,Strength,6,Increase weight,Low
+Chest,Incline Barbell Bench Press,Medium,Barbell,70%,Chest,None,2,30,Strength,6,Increase weight,Low
+Chest,Dumbbell Fly,Medium,Dumbbell,65%,Chest,None,2,30,Strength,6,Increase weight,Low
+Chest,Dumbbell Bench Press,Medium,Dumbbell,65%,Chest,None,2,30,Strength,6,Increase weight,Low
+Chest,Cable Crossover,Medium,Cable Machine,65%,Chest,None,2,30,Strength,6,Increase weight,Low
+Chest,One-Arm Cable Chest Press,Medium,Cable Machine,65%,Chest,None,2,30,Strength,6,Increase weight,Low
+Triceps,Lying Barbell Triceps Extension,Medium,Barbell,70%,Triceps,None,2,30,Strength,6,Increase weight,Low
+Biceps,One Arm Cable Curl,Medium,Cable Machine,65%,Biceps,None,2,30,Strength,6,Increase weight,Low
+Full Body,Push Press,Hard,Barbell,75%,Full Body,Shoulders,2,30,Strength,8,Increase weight,Medium
+Shoulders,Push Press,Hard,Barbell,75%,Shoulders,Full Body,2,30,Strength,8,Increase weight,
+Chest,Single-Arm Cable Crossover,Medium,Cable Machine,65%,Chest,None,2,30,Strength,6,Increase weight,Low
+Chest,Incline Dumbbell Fly,Medium,Dumbbell,65%,Chest,None,2,30,Strength,6,Increase weight,Low
+Chest,Incline Dumbbell Press,Medium,Dumbbell,65%,Chest,None,2,30,Strength,6,Increase weight,Low
+Chest,Reverse Grip Incline Dumbbell Press,Medium,Dumbbell,65%,Chest,None,2,30,Strength,6,Increase weight,Low
+Erector Spinae,Sphinx Stretch,Easy,None,N/A,Erector Spinae,Neck,2,15,Flexibility,5,Increase duration,Low
+Neck,Sphinx Stretch,Easy,None,N/A,Neck,Erector Spinae,2,15,Flexibility,5,Increase duration,Low
+Abs,Standing Rotation,Easy,None,N/A,Abs,Obliques,2,15,Strength,5,Increase reps,Low
+Back / Wing,Upper Back Stretch,Easy,None,N/A,Back / Wing,None,2,15,Flexibility,5,Increase duration,Low
+Triceps,Cable Tricep Kickback,Medium,Cable Machine,65%,Triceps,None,2,30,Strength,6,Increase weight,Low
+Chest,Machine Fly,Medium,Machine,65%,Chest,None,2,30,Strength,6,Increase weight,Low
+Forearm,Barbell Reverse Curl,Medium,Barbell,70%,Forearm,None,2,30,Strength,6,Increase weight,Low
+Hip,Barbell Hack Squats,Medium,Barbell,70%,Hip,Legs,3,60,Strength,8,Increase weight,Low
+Leg,Barbell Hack Squats,Medium,Barbell,70%,Legs,Hip,3,60,Strength,8,Increase weight,Low
+Triceps,Triceps Dips on Floor,Medium,None,N/A,Triceps,None,2,30,Strength,6,Increase reps,Low
+Back / Wing,Kneeling High Pulley Row,Medium,Cable Machine,65%,Back / Wing,Trapezius,2,30,Strength,6,Increase weight,Low
+Trapezius,Kneeling High Pulley Row,Medium,Cable Machine,65%,Trapezius,Back / Wing,2,30,Strength,6,Increase weight,Low
+Forearm,Cable One-Arm Wrist Curl On Floor,Medium,Cable Machine,65%,Forearm,None,2,30,Strength,6,Increase weight,Low
+Hip,Barbell Sumo Squat,Medium,Barbell,70%,Hip,Legs,3,60,Strength,8,Increase weight,Low
+Leg,Barbell Sumo Squat,Medium,Barbell,70%,Legs,Hip,3,60,Strength,8,Increase weight,Low
+Hip,Lever Standing Rear Kick,Medium,Lever Machine,65%,Hip,None,2,30,Strength,6,Increase weight,Low
+Triceps,Dumbbell Seated Front and Back Tate Press,Medium,Dumbbell,65%,Triceps,None,2,30,Strength,6,Increase weight,Low
+Chest,Decline Dumbbell Press,Medium,Dumbbell,65%,Chest,None,2,30,Strength,6,Increase weight,Low
+Erector Spinae,Good Morning,Hard,Barbell,75%,Erector Spinae,Hip,3,90,Strength,10,Increase weight,Medium
+Hip,Good Morning,Hard,Barbell,75%,Hip,Erector Spinae,3,90,Strength,10,Increase weight,Medium
+Leg,Good Morning,Hard,Barbell,75%,Legs,Erector Spinae,3,90,Strength,10,Increase weight,Medium
+Leg,Dumbbell Bulgarian Split Squat,Medium,Dumbbell,65%,Legs,Hip,3,60,Strength,8,Increase weight,Low
+Erector Spinae,Weighted Back Extension,Medium,Machine,65%,Erector Spinae,None,2,30,Strength,6,Increase weight,Low
+Chest,Lever Incline Chest Press,Medium,Lever Machine,70%,Chest,None,2,30,Strength,6,Increase weight,Low
+Erector Spinae,Dumbbell Romanian Deadlift,Hard,Dumbbell,75%,Erector Spinae,Hip,3,90,Strength,10,Increase weight,Medium
+Hip,Dumbbell Romanian Deadlift,Hard,Dumbbell,75%,Hip,Erector Spinae,3,90,Strength,10,Increase weight,Medium
+Leg,Dumbbell Romanian Deadlift,Hard,Dumbbell,75%,Legs,Hip,3,90,Strength,10,Increase weight,Medium
+Leg,Hack Squats Machine,Medium,Machine,70%,Legs,Hip,3,60,Strength,8,Increase weight,Low
+Forearm,Hand Gripper,Easy,None,N/A,Forearm,None,2,15,Strength,5,Increase reps,Low
+Back / Wing,Sumo Deadlift,Hard,Barbell,80%,Back / Wing,Legs,3,90,Strength,10,Increase weight,Medium
+Erector Spinae,Sumo Deadlift,Hard,Barbell,80%,Erector Spinae,Legs,3,90,Strength,10,Increase weight,Medium
+Hip,Sumo Deadlift,Hard,Barbell,80%,Hip,Legs,3,90,Strength,10,Increase weight,Medium
+Leg,Sumo Deadlift,Hard,Barbell,80%,Legs,Hip,3,90,Strength,10,Increase weight,Medium
+Back / Wing,Half Kneeling Lat Pulldown,Medium,Cable Machine,65%,Back / Wing,Biceps,2,30,Strength,6,Increase weight,Low
+Cardio,Power Skips,Medium,None,N/A,Cardio,Legs,2,30,Cardio,8,Increase speed,Low
+Cardio,Plyo Jacks,Medium,None,N/A,Cardio,Legs,2,30,Cardio,8,Increase reps,Low
+Cardio,Split Jacks,Medium,None,N/A,Cardio,Legs,2,30,Cardio,8,Increase reps,Low
+Leg,Pistol Squat,Hard,None,N/A,Legs,Hip,2,60,Strength,10,Increase reps,Medium
+Cardio,Butt Kicks,Easy,None,N/A,Cardio,Legs,2,15,Cardio,6,Increase speed,Low
+Cardio,Fast Feet Run,Medium,None,N/A,Cardio,Legs,2,30,Cardio,8,Increase speed,Low
+Cardio,Wheel Run,Medium,None,N/A,Cardio,Legs,2,30,Cardio,8,Increase speed,Low
+Hip,Dumbbell Lunge,Medium,Dumbbell,65%,Hip,Legs,3,60,Strength,8,Increase weight,Low
+Leg,Dumbbell Lunge,Medium,Dumbbell,65%,Legs,Hip,3,60,Strength,8,Increase weight,Low
+Back / Wing,Dumbbell Straight Leg Deadlift,Hard,Dumbbell,75%,Back / Wing,Legs,3,90,Strength,10,Increase weight,Medium
+Erector Spinae,Dumbbell Straight Leg Deadlift,Hard,Dumbbell,75%,Erector Spinae,Legs,3,90,Strength,10,Increase weight,Medium
+Leg,Dumbbell Straight Leg Deadlift,Hard,Dumbbell,75%,Legs,Back / Wing,3,90,Strength,10,Increase weight,Medium
+Hip,Lever Side Hip Abduction,Medium,Lever Machine,65%,Hip,None,2,30,Strength,6,Increase weight,Low
+Leg,Lever Side Hip Abduction,Medium,Lever Machine,65%,Legs,None,2,30,Strength,6,Increase weight,Low
+Hip,Bodyweight Sumo Squat,Medium,None,N/A,Hip,Legs,3,60,Strength,8,Increase reps,Low
+Leg,Bodyweight Sumo Squat,Medium,None,N/A,Legs,Hip,3,60,Strength,8,Increase reps,Low
+Leg,Hawaiian Squat,Medium,None,N/A,Legs,Hip,3,60,Strength,8,Increase reps,Low
+Leg,Lever Standing Leg Raise,Medium,Lever Machine,65%,Legs,None,2,30,Strength,6,Increase weight,Low
+Hip,Lever Side Hip Adduction,Medium,Lever Machine,65%,Hip,None,2,30,Strength,6,Increase weight,Low
+Leg,Lever Side Hip Adduction,Medium,Lever Machine,65%,Legs,None,2,30,Strength,6,Increase weight,Low
+Leg,Barbell Bulgarian Split Squat,Medium,Barbell,70%,Legs,Hip,3,60,Strength,8,Increase weight,Low
+Leg,Lever Deadlift,Hard,Lever Machine,75%,Legs,Hip,3,90,Strength,10,Increase weight,Medium
+Hip,Dumbbell Rear Lunge,Medium,Dumbbell,65%,Hip,Legs,3,60,Strength,8,Increase weight,Low
+Leg,Dumbbell Rear Lunge,Medium,Dumbbell,65%,Legs,Hip,3,60,Strength,8,Increase weight,Low
+Leg,Barbell Lunge,Medium,Barbell,70%,Legs,Hip,3,60,Strength,8,Increase weight,Low
+Hip,Barbell Lateral Lunge,Medium,Barbell,70%,Hip,Legs,3,60,Strength,8,Increase weight,Low
+Leg,Barbell Lateral Lunge,Medium,Barbell,70%,Legs,Hip,3,60,Strength,8,Increase weight,Low
+Calf,Leg Press Calf Raise,Medium,Machine,70%,Calf,None,2,30,Strength,6,Increase weight,Low
+Hip,Standing Hip Abduction,Medium,None,N/A,Hip,None,2,30,Strength,6,Increase reps,Low
+Hip,Cable Hip Adduction,Medium,Cable Machine,65%,Hip,None,2,30,Strength,6,Increase weight,Low
+Leg,Cable Hip Adduction,Medium,Cable Machine,65%,Legs,None,2,30,Strength,6,Increase weight,Low
+Cardio,Zig Zag Hops Plyometric,Medium,None,N/A,Cardio,Legs,2,30,Cardio,8,Increase reps,Low
+Leg,Zig Zag Hops Plyometric,Medium,None,N/A,Legs,Cardio,2,30,Cardio,8,Increase reps,Low
+Cardio,Bodyweight Squat,Easy,None,N/A,Cardio,Legs,2,15,Cardio,6,Increase reps,Low
+Hip,Bodyweight Squat,Easy,None,N/A,Hip,Legs,2,15,Strength,6,Increase reps,Low
+Leg,Bodyweight Squat,Easy,None,N/A,Legs,Hip,2,15,Strength,6,Increase reps,Low
+Leg,Upavistha Konasana,Easy,None,N/A,Legs,Yoga,2,15,Flexibility,5,Increase duration,Low
+Yoga,Upavistha Konasana,Easy,None,N/A,Yoga,Legs,2,15,Flexibility,5,Increase duration,Low
+Hip,Side Lying Clam,Easy,None,N/A,Hip,None,2,15,Strength,5,Increase reps,Low
+Erector Spinae,Seated Hamstring Stretch,Easy,None,N/A,Erector Spinae,Legs,2,15,Flexibility,5,Increase duration,Low
+Leg,Seated Hamstring Stretch,Easy,None,N/A,Legs,Erector Spinae,2,15,Flexibility,5,Increase duration,Low
+Calf,Hack Squat Calf Raise,Medium,Machine,70%,Calf,None,2,30,Strength,6,Increase weight,Low
+Leg,Kneeling Quad Stretch,Easy,None,N/A,Legs,None,2,15,Flexibility,5,Increase duration,Low
+Cardio,Lateral Speed Step,Medium,None,N/A,Cardio,Legs,2,30,Cardio,8,Increase speed,Low
+Leg,Lateral Speed Step,Medium,None,N/A,Legs,Cardio,2,30,Cardio,8,Increase speed,Low
+Erector Spinae,Kettlebell Single Leg Deadlift,Hard,Kettlebell,75%,Erector Spinae,Hip,3,90,Strength,10,Increase weight,Medium
+Hip,Kettlebell Single Leg Deadlift,Hard,Kettlebell,75%,Hip,Erector Spinae,3,90,Strength,10,Increase weight,Medium
+Leg,Seated Groin / Adductor Stretch,Easy,None,N/A,Legs,Hip,2,15,Flexibility,5,Increase duration,Low
+Hip,Reverse Lunge Knee Lift,Medium,None,N/A,Hip,Legs,3,60,Strength,8,Increase reps,Low
+Leg,Reverse Lunge Knee Lift,Medium,None,N/A,Legs,Hip,3,60,Strength,8,Increase reps,Low
+Leg,Lying Hamstring Stretch,Easy,None,N/A,Legs,None,2,15,Flexibility,5,Increase duration,Low
+Cardio,Curtsy Squat,Medium,None,N/A,Cardio,Legs,2,30,Cardio,8,Increase reps,Low
+Hip,Curtsy Squat,Medium,None,N/A,Hip,Legs,3,60,Strength,8,Increase reps,Low
+Leg,Curtsy Squat,Medium,None,N/A,Legs,Hip,3,60,Strength,8,Increase reps,Low
+Hip,Cable Goblet Squat,Medium,Cable Machine,65%,Hip,Legs,3,60,Strength,8,Increase weight,Low
+Leg,Cable Goblet Squat,Medium,Cable Machine,65%,Legs,Hip,3,60,Strength,8,Increase weight,Low
+Hip,Cable Donkey Kickback,Medium,Cable Machine,65%,Hip,None,2,30,Strength,6,Increase weight,Low
+Hip,Bridge Hip Abduction,Medium,None,N/A,Hip,None,2,30,Strength,6,Increase reps,Low
+Abs,Standing Toe Touch,Easy,None,N/A,Abs,None,2,15,Flexibility,5,Increase reps,Low
+Hip,Thigh fly (Adductor Magnus Stretch),Easy,None,N/A,Hip,Legs,2,15,Flexibility,5,Increase duration,Low
+Leg,Thigh fly (Adductor Magnus Stretch),Easy,None,N/A,Legs,Hip,2,15,Flexibility,5,Increase duration,Low
+Cardio,Split Jump Squat,Medium,None,N/A,Cardio,Legs,2,30,Cardio,8,Increase reps,Low
+Hip,Split Jump Squat,Medium,None,N/A,Hip,Legs,3,60,Strength,8,Increase reps,Low
+Leg,Split Jump Squat,Medium,None,N/A,Legs,Hip,3,60,Strength,8,Increase reps,Low
+Hip,Cossack Squat,Medium,None,N/A,Hip,Legs,3,60,Strength,8,Increase depth,Low
+Leg,Cossack Squat,Medium,None,N/A,Legs,Hip,3,60,Strength,8,Increase depth,Low
+Hip,Glute Kickback Machine,Medium,Machine,65%,Hip,None,2,30,Strength,6,Increase weight,Low
+Calf,Lever Seated Calf Raise,Intermediate,Machine,Moderate,Calf,None,30 seconds,15 seconds,Strength,50,Progressive Overload,Low
+Calf,Single Leg Calf Raise,Beginner,None,Low,Calf,None,20 seconds,10 seconds,Strength,30,Bodyweight,Low
+Abs,Crunch With Leg Raise,Beginner,None,Low,Abs,None,30 seconds,15 seconds,Core,40,Bodyweight,Low
+Abs,Alternate Lying Floor Leg Raise,Beginner,None,Low,Abs,None,30 seconds,15 seconds,Core,35,Bodyweight,Low
+Chest,Chest Dips,Intermediate,Parallel Bars,Moderate,Chest,Triceps,30 seconds,20 seconds,Strength,60,Progressive Overload,Medium
+Calf,Hack Machine One-Leg Calf Raise,Intermediate,Machine,Moderate,Calf,None,30 seconds,15 seconds,Strength,50,Progressive Overload,Low
+Chest,Assisted Chest Dip,Beginner,Assisted Machine,Low,Chest,Triceps,30 seconds,20 seconds,Strength,40,Assisted,Low
+Calf,Donkey Calf Raise,Intermediate,Machine,Moderate,Calf,None,30 seconds,15 seconds,Strength,50,Progressive Overload,Low
+Calf,Lever Donkey Calf Raise,Intermediate,Machine,Moderate,Calf,None,30 seconds,15 seconds,Strength,50,Progressive Overload,Low
+Calf,Bench Press Machine Standing Calf Raise,Intermediate,Machine,Moderate,Calf,None,30 seconds,15 seconds,Strength,50,Progressive Overload,Low
+Chest,Lying Cable Fly,Intermediate,Cable Machine,Moderate,Chest,None,30 seconds,15 seconds,Strength,50,Progressive Overload,Low
+Chest,Drop Push-Up,Intermediate,None,Moderate,Chest,Triceps,20 seconds,10 seconds,Strength,40,Bodyweight,Medium
+Abs,Weighted Crunch,Intermediate,Weight Plate,Moderate,Abs,None,30 seconds,15 seconds,Core,50,Progressive Overload,Low
+Abs,Seated Side Crunch,Beginner,None,Low,Abs,Obliques,30 seconds,15 seconds,Core,35,Bodyweight,Low
+Leg,Seated Side Crunch,Beginner,None,Low,Leg,Obliques,30 seconds,15 seconds,Core,35,Bodyweight,Low
+Calf,Standing Cross Leg Hamstring Stretch,Beginner,None,Low,Calf,Hamstrings,20 seconds,10 seconds,Stretching,10,Static Stretch,Low
+Hip,Standing Cross Leg Hamstring Stretch,Beginner,None,Low,Hip,Hamstrings,20 seconds,10 seconds,Stretching,10,Static Stretch,Low
+Leg,Standing Cross Leg Hamstring Stretch,Beginner,None,Low,Leg,Hamstrings,20 seconds,10 seconds,Stretching,10,Static Stretch,Low
+Cardio,Backward Jump,Beginner,None,Moderate,Cardio,Legs,20 seconds,10 seconds,Plyometric,40,Bodyweight,Low
+Leg,Backward Jump,Beginner,None,Moderate,Legs,None,20 seconds,10 seconds,Plyometric,40,Bodyweight,Low
+Cardio,Jumping jack,Beginner,None,Moderate,Cardio,Legs,30 seconds,15 seconds,Plyometric,50,Bodyweight,Low
+Leg,Jumping jack,Beginner,None,Moderate,Legs,None,30 seconds,15 seconds,Plyometric,50,Bodyweight,Low
+Cardio,Single Leg Broad Jump,Intermediate,None,High,Cardio,Legs,20 seconds,15 seconds,Plyometric,60,Bodyweight,Medium
+Leg,Single Leg Broad Jump,Intermediate,None,High,Legs,None,20 seconds,15 seconds,Plyometric,60,Bodyweight,Medium
+Abs,Incline Leg Hip Raise,Intermediate,None,Moderate,Abs,Hip Flexors,30 seconds,15 seconds,Core,50,Bodyweight,Low
+Abs,Bodyweight Windmill,Beginner,None,Low,Abs,Obliques,30 seconds,15 seconds,Core,35,Bodyweight,Low
+Leg,Bodyweight Windmill,Beginner,None,Low,Legs,Obliques,30 seconds,15 seconds,Core,35,Bodyweight,Low
+Abs,Front to Side Plank,Intermediate,None,Moderate,Abs,Obliques,30 seconds,15 seconds,Core,50,Bodyweight,Low
+Abs,Tuck Crunch,Beginner,None,Low,Abs,None,30 seconds,15 seconds,Core,35,Bodyweight,Low
+Abs,Dumbbell Side Bend,Intermediate,Dumbbell,Moderate,Abs,Obliques,30 seconds,15 seconds,Core,50,Progressive Overload,Low
+Abs,Double Leg Stretch,Beginner,None,Low,Abs,None,30 seconds,15 seconds,Core,35,Bodyweight,Low
+Abs,Spider Plank,Intermediate,None,Moderate,Abs,Obliques,30 seconds,15 seconds,Core,50,Bodyweight,Low
+Cardio,Spider Plank,Intermediate,None,Moderate,Cardio,Obliques,30 seconds,15 seconds,Core,50,Bodyweight,Low
+Abs,Captains Chair Leg Raise,Intermediate,Captains Chair,Moderate,Abs,None,30 seconds,15 seconds,Core,50,Progressive Overload,Low
+Calisthenic,Captains Chair Leg Raise,Intermediate,Captains Chair,Moderate,Calisthenic,None,30 seconds,15 seconds,Core,50,Progressive Overload,Low
+Abs,Bench Side Bend,Intermediate,Bench,Moderate,Abs,Obliques,30 seconds,15 seconds,Core,50,Progressive Overload,Low
+Abs,Crab Twist Toe Touch,Beginner,None,Low,Abs,Obliques,30 seconds,15 seconds,Core,35,Bodyweight,Low
+Abs,Quarter Sit-up,Beginner,None,Low,Abs,None,30 seconds,15 seconds,Core,35,Bodyweight,Low
+Abs,Weighted Sit-ups,Intermediate,Weight Plate,Moderate,Abs,None,30 seconds,15 seconds,Core,50,Progressive Overload,Low
+Abs,Lying Knee Raise,Beginner,None,Low,Abs,None,30 seconds,15 seconds,Core,35,Bodyweight,Low
+Abs,Floor Crunch,Beginner,None,Low,Abs,None,30 seconds,15 seconds,Core,35,Bodyweight,Low
+Shoulders,Ez Bar Upright Row,Intermediate,Ez Bar,Moderate,Shoulders,Trapezius,30 seconds,15 seconds,Strength,50,Progressive Overload,Low
+Trapezius,Ez Bar Upright Row,Intermediate,Ez Bar,Moderate,Trapezius,Shoulders,30 seconds,15 seconds,Strength,50,Progressive Overload,Low
+Chest,Inner Chest Press Machine,Intermediate,Machine,Moderate,Chest,None,30 seconds,15 seconds,Strength,50,Progressive Overload,Low
+Chest,Decline Dumbbell Fly,Intermediate,Dumbbell,Moderate,Chest,None,30 seconds,15 seconds,Strength,50,Progressive Overload,Low
+Chest,Incline Dumbbell Hammer Press,Intermediate,Dumbbell,Moderate,Chest,None,30 seconds,15 seconds,Strength,50,Progressive Overload,Low
+Cardio,Run in Place,Beginner,None,Moderate,Cardio,Legs,30 seconds,15 seconds,Cardio,40,Bodyweight,Low
+Cardio,Jump Squats,Intermediate,None,High,Cardio,Legs,20 seconds,15 seconds,Plyometric,60,Bodyweight,Medium
+Hip,Jump Squats,Intermediate,None,High,Hip,Legs,20 seconds,15 seconds,Plyometric,60,Bodyweight,Medium
+Leg,Jump Squats,Intermediate,None,High,Legs,Hip,20 seconds,15 seconds,Plyometric,60,Bodyweight,Medium
+Triceps,Kneeling Cable Triceps Extension,Intermediate,Cable Machine,Moderate,Triceps,None,30 seconds,15 seconds,Strength,50,Progressive Overload,Low
+Triceps,Cable Rear Drive,Intermediate,Cable Machine,Moderate,Triceps,None,30 seconds,15 seconds,Strength,50,Progressive Overload,Low

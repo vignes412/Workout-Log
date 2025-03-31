@@ -30,14 +30,14 @@ const ExerciseList = ({ accessToken, onNavigate, toggleTheme, themeMode }) => {
         try {
           await initClient(accessToken);
           await syncData(
-            "Exercises!A2:D",
+            "Exercises!A2:O",
             "/api/exercises",
             setExercises,
             (row) => ({
               muscleGroup: row[0],
               exercise: row[1],
               exerciseLink: row[2],
-              imageLink: row[3],
+              imageLink: row[14],
             })
           );
         } catch (error) {

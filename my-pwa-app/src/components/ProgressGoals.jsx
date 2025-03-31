@@ -14,6 +14,11 @@ const ProgressGoals = ({ logs }) => {
   const [goals, setGoals] = useState([]);
   const [newGoal, setNewGoal] = useState({ exercise: "", targetWeight: "" });
 
+  const getCurrentMax = (exercise) => {
+    const relevantLogs = logs.filter((log) => log.exercise === exercise);
+    return Math.max(...relevantLogs.map((log) => log.weight), 0);
+  };
+
   const handleAddGoal = () => {
     if (!newGoal.exercise || !newGoal.targetWeight) return;
     setGoals([
@@ -21,13 +26,6 @@ const ProgressGoals = ({ logs }) => {
       { ...newGoal, current: getCurrentMax(newGoal.exercise) },
     ]);
     setNewGoal({ exercise: "", targetWeight: "" });
-  };
-
-  const getCurrentMax = (exercise) => {
-    const max = logs
-      .filter((log) => log[2] === exercise)
-      .reduce((max, log) => Math.max(max, parseFloat(log[4])), 0);
-    return max || 0;
   };
 
   return (

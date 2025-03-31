@@ -79,16 +79,21 @@ const WorkoutLogsTable = ({ logs, setLogs, isOffline, exercises }) => {
   const handleDelete = async (row) => {
     if (window.confirm("Are you sure you want to delete this log?")) {
       setLoading(true);
-      const updatedLogs = logs.filter(
-        (_, index) => index !== row.originalIndex
-      );
-      await updateSheet(updatedLogs);
-      setLogs(updatedLogs);
-      setLoading(false);
-      showNotification(
-        "Workout Log Deleted",
-        `Log for ${row.join(",")} has been deleted.`
-      );
+      try {
+        const updatedLogs = logs.filter(
+          (_, index) => index !== row.originalIndex
+        );
+        await updateSheet(updatedLogs);
+        setLogs(updatedLogs);
+        showNotification(
+          "Workout Log Deleted",
+          `Log for ${row.date}, ${row.exercise} has been deleted.`
+        );
+      } catch (error) {
+        console.error("Error deleting log:", error);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 

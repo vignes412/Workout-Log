@@ -12,5 +12,11 @@ module.exports = override((config, env) => {
       return plugin;
     });
   }
+  // Add fallback for TensorFlow.js dependencies
+  config.resolve.fallback = {
+    fs: false,
+    path: false,
+    os: false,
+  };
   return config;
 });

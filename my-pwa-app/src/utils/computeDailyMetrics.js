@@ -125,4 +125,6 @@ const parseReps = (value) => (isNaN(parseFloat(value)) ? 0 : parseFloat(value));
 const parseWeight = (value) =>
   isNaN(parseFloat(value)) ? 0 : parseFloat(value);
 const parseRating = (value) =>
-  isNaN(parseFloat(value)) ? 7 : Math.min(Math.max(parseFloat(value), 1), 10); // Default to 7, clamp 1-10
+  isNaN(parseFloat(value)) || value === null || value === undefined
+    ? 7
+    : Math.min(Math.max(parseFloat(value), 1), 10); // Default to 7, clamp 1-10

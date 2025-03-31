@@ -1,0 +1,831 @@
+Muscle_Group,Exercise,Difficulty_Level,Equipment_Required,Target_Intensity,Primary_Muscle_Group,Secondary_Muscle_Group,Exercise_Duration,Recovery_Time,Exercise_Type,Calories_Burned,Exercise_Progression,Injury_Risk_Level
+Cardio,Short Stride Run,Beginner,None,Low,Cardio,None,10 minutes,2 minutes,Aerobic,100,None,Low
+Erector Spinae,Hyperextension,Intermediate,Hyperextension Bench,Moderate,Lower Back,Glutes,15 minutes,3 minutes,Strength,150,Add weights,Moderate
+Abs,Reverse Plank,Beginner,None,Low,Core,None,5 minutes,1 minute,Isometric,50,Increase duration,Low
+Shoulders,Dumbbell Lying One-Arm Rear Lateral Raise,Intermediate,Dumbbell,Moderate,Shoulders,Rear Deltoid,10 minutes,2 minutes,Strength,80,Increase weight,Low
+Shoulders,Lateral Raise Machine,Beginner,Lateral Raise Machine,Low,Shoulders,None,10 minutes,2 minutes,Strength,70,Increase resistance,Low
+Shoulders,Scott Press,Advanced,Dumbbell,High,Shoulders,Triceps,12 minutes,3 minutes,Strength,120,Increase weight,Moderate
+Shoulders,Band Pull-Apart,Beginner,Resistance Band,Low,Shoulders,Upper Back,8 minutes,1 minute,Strength,60,Increase band tension,Low
+Shoulders,Bent Over Reverse Cable Fly,Intermediate,Cable Machine,Moderate,Shoulders,Rear Deltoid,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Shoulders,Bent-Over Barbell Reverse Raise,Advanced,Barbell,High,Shoulders,Rear Deltoid,12 minutes,3 minutes,Strength,110,Increase weight,Moderate
+Shoulders,Weighted Round Arm,Intermediate,Dumbbell,Moderate,Shoulders,None,10 minutes,2 minutes,Strength,85,Increase weight,Low
+Shoulders,Weight Plate Front Raise,Intermediate,Weight Plate,Moderate,Shoulders,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Chest,Dumbbell Upward Fly,Intermediate,Dumbbell,Moderate,Chest,Shoulders,12 minutes,3 minutes,Strength,100,Increase weight,Moderate
+Shoulders,Two Arm Cable Lateral Raise,Intermediate,Cable Machine,Moderate,Shoulders,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Full Body,Landmine Squat to Press,Advanced,Landmine,High,Full Body,Shoulders,15 minutes,3 minutes,Strength,200,Increase weight,Moderate
+Shoulders,Cable Shoulder Press,Intermediate,Cable Machine,Moderate,Shoulders,Triceps,12 minutes,3 minutes,Strength,110,Increase resistance,Moderate
+Shoulders,Barbell Rear Delt Raise,Advanced,Barbell,High,Shoulders,Rear Deltoid,12 minutes,3 minutes,Strength,120,Increase weight,Moderate
+Shoulders,Double Cable Front Raise,Intermediate,Cable Machine,Moderate,Shoulders,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Hip,Standing Hip Extension,Beginner,None,Low,Hips,Glutes,8 minutes,1 minute,Strength,60,Increase duration,Low
+Shoulders,Standing Smith Machine Shoulder Press,Intermediate,Smith Machine,Moderate,Shoulders,Triceps,12 minutes,3 minutes,Strength,110,Increase weight,Moderate
+Shoulders,Dumbbell W Press,Intermediate,Dumbbell,Moderate,Shoulders,Triceps,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Shoulders,Dumbbell One Arm Shoulder Press,Intermediate,Dumbbell,Moderate,Shoulders,Triceps,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Shoulders,Dumbbell Scaption,Intermediate,Dumbbell,Moderate,Shoulders,None,10 minutes,2 minutes,Strength,85,Increase weight,Low
+Full Body,Barbell Clean and Press,Advanced,Barbell,High,Full Body,Shoulders,15 minutes,3 minutes,Strength,200,Increase weight,High
+Shoulders,Dumbbell Cuban Press,Intermediate,Dumbbell,Moderate,Shoulders,Rotator Cuff,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Shoulders,Dumbbell Cuban External Rotation,Intermediate,Dumbbell,Moderate,Shoulders,Rotator Cuff,10 minutes,2 minutes,Strength,85,Increase weight,Low
+Abs,Plank,Beginner,None,Low,Core,None,5 minutes,1 minute,Isometric,50,Increase duration,Low
+Abs,Side Plank,Beginner,None,Low,Core,Obliques,5 minutes,1 minute,Isometric,50,Increase duration,Low
+Abs,Russian Twist,Intermediate,Medicine Ball,Moderate,Core,Obliques,8 minutes,2 minutes,Strength,80,Increase weight,Low
+Abs,Leg Pull-in Knee-ups,Beginner,None,Low,Core,Lower Abs,8 minutes,1 minute,Strength,70,Increase reps,Low
+Abs,Flutter Kick,Beginner,None,Low,Core,Lower Abs,8 minutes,1 minute,Strength,70,Increase duration,Low
+Abs,Jackknife Sit-ups (V-Up),Intermediate,None,Moderate,Core,Lower Abs,10 minutes,2 minutes,Strength,90,Increase reps,Low
+Abs,Long Arm Crunch,Beginner,None,Low,Core,Upper Abs,8 minutes,1 minute,Strength,70,Increase reps,Low
+Abs,Hollow Hold,Beginner,None,Low,Core,None,5 minutes,1 minute,Isometric,50,Increase duration,Low
+Abs,Glute Bridge,Beginner,None,Low,Glutes,Hamstrings,8 minutes,1 minute,Strength,70,Increase duration,Low
+Abs,Butterfly Sit-up,Beginner,None,Low,Core,Lower Abs,8 minutes,1 minute,Strength,70,Increase reps,Low
+Abs,Plank Knee to Elbow,Intermediate,None,Moderate,Core,Obliques,8 minutes,2 minutes,Strength,80,Increase reps,Low
+Abs,Side Plank Rotation,Intermediate,None,Moderate,Core,Obliques,8 minutes,2 minutes,Strength,80,Increase reps,Low
+Abs,Push-up With Rotation,Intermediate,None,Moderate,Core,Shoulders,10 minutes,2 minutes,Strength,90,Increase reps,Moderate
+Abs,Side Lying Feet Raise,Beginner,None,Low,Core,Obliques,8 minutes,1 minute,Strength,70,Increase reps,Low
+Abs,Side Hip Abduction,Beginner,None,Low,Hips,Glutes,8 minutes,1 minute,Strength,70,Increase reps,Low
+Abs,Side Lying Hip Adduction,Beginner,None,Low,Hips,Inner Thigh,8 minutes,1 minute,Strength,70,Increase reps,Low
+Abs,Seated Alternating Dumbbell Curl,Intermediate,Dumbbell,Moderate,Biceps,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Abs,Water Bottle Hammer Curl,Beginner,Water Bottle,Low,Biceps,None,8 minutes,1 minute,Strength,70,Increase reps,Low
+Abs,Barbell Reverse Wrist Curl Over a Bench,Intermediate,Barbell,Moderate,Forearms,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Abs,One Arm Medicine Ball Slam,Intermediate,Medicine Ball,Moderate,Core,Shoulders,10 minutes,2 minutes,Strength,90,Increase weight,Moderate
+Abs,Standing Medicine Ball Chest Pass,Beginner,Medicine Ball,Low,Chest,Shoulders,8 minutes,1 minute,Strength,70,Increase weight,Low
+Back / Wing,Across Chest Shoulder Stretch,Beginner,None,Low,Back,None,5 minutes,1 minute,Stretch,10,None,Low
+Back / Wing,Standing Reach Up Back rotation Stretch,Beginner,None,Low,Back,None,5 minutes,1 minute,Stretch,10,None,Low
+Back / Wing,Shoulder Stretch Behind The Back,Beginner,None,Low,Back,Shoulders,5 minutes,1 minute,Stretch,10,None,Low
+Shoulders,Incline Dumbbell Side Lateral Raise,Intermediate,Dumbbell,Moderate,Shoulders,None,10 minutes,2 minutes,Strength,80,Increase weight,Low
+Triceps,Body Ups,Intermediate,None,Moderate,Triceps,None,8 minutes,2 minutes,Strength,70,Increase reps,Low
+Hip,Bench Glute Flutter Kicks,Beginner,None,Low,Hips,Glutes,8 minutes,1 minute,Strength,60,Increase duration,Low
+Shoulders,Dumbbell Side Lying Rear Delt Raise,Intermediate,Dumbbell,Moderate,Shoulders,Rear Deltoid,10 minutes,2 minutes,Strength,85,Increase weight,Low
+Hip,Dumbbell Lateral Step Up,Intermediate,Dumbbell,Moderate,Hips,Glutes,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Back / Wing,Smith Machine Bent Over Row,Intermediate,Smith Machine,Moderate,Back,None,12 minutes,3 minutes,Strength,110,Increase weight,Moderate
+Back / Wing,Incline Reverse Grip Dumbbell Row,Intermediate,Dumbbell,Moderate,Back,None,12 minutes,3 minutes,Strength,100,Increase weight,Moderate
+Cardio,Lateral Step-up,Beginner,None,Low,Cardio,None,10 minutes,2 minutes,Aerobic,80,None,Low
+Cardio,Step Up + Opposite Elbow to Knee Twist,Beginner,None,Low,Cardio,None,10 minutes,2 minutes,Aerobic,90,None,Low
+Cardio,Band Assisted Sprinter Run,Intermediate,Resistance Band,Moderate,Cardio,None,10 minutes,2 minutes,Aerobic,100,None,Moderate
+Hip,Barbell Step-Up,Intermediate,Barbell,Moderate,Hips,Glutes,12 minutes,3 minutes,Strength,120,Increase weight,Moderate
+Full Body,Power Clean,Advanced,Barbell,High,Full Body,Shoulders,15 minutes,3 minutes,Strength,200,Increase weight,High
+Back / Wing,Barbell Pullover,Intermediate,Barbell,Moderate,Back,Chest,12 minutes,3 minutes,Strength,110,Increase weight,Moderate
+Back / Wing,Cable Pullover,Intermediate,Cable Machine,Moderate,Back,Chest,12 minutes,3 minutes,Strength,100,Increase resistance,Moderate
+Back / Wing,Weighted Pull-up,Advanced,Weight Plate,High,Back,Biceps,10 minutes,3 minutes,Strength,150,Increase weight,High
+Back / Wing,Reverse grip Pull-up,Intermediate,None,Moderate,Back,Biceps,10 minutes,2 minutes,Strength,120,Increase reps,Moderate
+Back / Wing,Close Grip Chin Up,Intermediate,None,Moderate,Back,Biceps,10 minutes,2 minutes,Strength,110,Increase reps,Moderate
+Back / Wing,Assisted Pull-up,Beginner,Assisted Machine,Low,Back,Biceps,10 minutes,2 minutes,Strength,90,None,Low
+Abs,Hanging Knee Raises,Intermediate,None,Moderate,Core,Lower Abs,8 minutes,2 minutes,Strength,80,Increase reps,Low
+Abs,Hanging Side Knee Raises,Intermediate,None,Moderate,Core,Obliques,8 minutes,2 minutes,Strength,80,Increase reps,Low
+Trapezius,Smith Machine Shrug,Intermediate,Smith Machine,Moderate,Trapezius,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Abs,Hanging Windshield Wiper,Advanced,None,High,Core,Obliques,10 minutes,3 minutes,Strength,100,Increase reps,High
+Abs,Toes to Bar,Advanced,None,High,Core,Lower Abs,10 minutes,3 minutes,Strength,120,Increase reps,High
+Abs,Weighted Hanging Knee Raises,Advanced,Weight Plate,High,Core,Lower Abs,10 minutes,3 minutes,Strength,130,Increase weight,High
+Chest,Kneeling Push-up,Beginner,None,Low,Chest,Triceps,5 minutes,1 minute,Strength,50,Increase reps,Low
+Biceps,Lying Cable Curl,Intermediate,Cable Machine,Moderate,Biceps,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Back / Wing,Standing Reach Up Back rotation Stretch,Beginner,None,Low,Back,None,5 minutes,1 minute,Stretch,10,None,Low
+Back / Wing,Shoulder Stretch Behind The Back,Beginner,None,Low,Back,Shoulders,5 minutes,1 minute,Stretch,10,None,Low
+Shoulders,Incline Dumbbell Side Lateral Raise,Intermediate,Dumbbell,Moderate,Shoulders,None,10 minutes,2 minutes,Strength,80,Increase weight,Low
+Triceps,Body Ups,Intermediate,None,Moderate,Triceps,None,8 minutes,2 minutes,Strength,70,Increase reps,Low
+Hip,Bench Glute Flutter Kicks,Beginner,None,Low,Hips,Glutes,8 minutes,1 minute,Strength,60,Increase duration,Low
+Shoulders,Dumbbell Side Lying Rear Delt Raise,Intermediate,Dumbbell,Moderate,Shoulders,Rear Deltoid,10 minutes,2 minutes,Strength,85,Increase weight,Low
+Hip,Dumbbell Lateral Step Up,Intermediate,Dumbbell,Moderate,Hips,Glutes,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Back / Wing,Smith Machine Bent Over Row,Intermediate,Smith Machine,Moderate,Back,None,12 minutes,3 minutes,Strength,110,Increase weight,Moderate
+Back / Wing,Incline Reverse Grip Dumbbell Row,Intermediate,Dumbbell,Moderate,Back,None,12 minutes,3 minutes,Strength,100,Increase weight,Moderate
+Cardio,Lateral Step-up,Beginner,None,Low,Cardio,None,10 minutes,2 minutes,Aerobic,80,None,Low
+Cardio,Step Up + Opposite Elbow to Knee Twist,Beginner,None,Low,Cardio,None,10 minutes,2 minutes,Aerobic,90,None,Low
+Cardio,Band Assisted Sprinter Run,Intermediate,Resistance Band,Moderate,Cardio,None,10 minutes,2 minutes,Aerobic,100,None,Moderate
+Hip,Barbell Step-Up,Intermediate,Barbell,Moderate,Hips,Glutes,12 minutes,3 minutes,Strength,120,Increase weight,Moderate
+Full Body,Power Clean,Advanced,Barbell,High,Full Body,Shoulders,15 minutes,3 minutes,Strength,200,Increase weight,High
+Back / Wing,Barbell Pullover,Intermediate,Barbell,Moderate,Back,Chest,12 minutes,3 minutes,Strength,110,Increase weight,Moderate
+Back / Wing,Cable Pullover,Intermediate,Cable Machine,Moderate,Back,Chest,12 minutes,3 minutes,Strength,100,Increase resistance,Moderate
+Back / Wing,Weighted Pull-up,Advanced,Weight Plate,High,Back,Biceps,10 minutes,3 minutes,Strength,150,Increase weight,High
+Back / Wing,Reverse grip Pull-up,Intermediate,None,Moderate,Back,Biceps,10 minutes,2 minutes,Strength,120,Increase reps,Moderate
+Back / Wing,Close Grip Chin Up,Intermediate,None,Moderate,Back,Biceps,10 minutes,2 minutes,Strength,110,Increase reps,Moderate
+Back / Wing,Assisted Pull-up,Beginner,Assisted Machine,Low,Back,Biceps,10 minutes,2 minutes,Strength,90,None,Low
+Abs,Hanging Knee Raises,Intermediate,None,Moderate,Core,Lower Abs,8 minutes,2 minutes,Strength,80,Increase reps,Low
+Abs,Hanging Side Knee Raises,Intermediate,None,Moderate,Core,Obliques,8 minutes,2 minutes,Strength,80,Increase reps,Low
+Trapezius,Smith Machine Shrug,Intermediate,Smith Machine,Moderate,Trapezius,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Abs,Hanging Windshield Wiper,Advanced,None,High,Core,Obliques,10 minutes,3 minutes,Strength,100,Increase reps,High
+Abs,Toes to Bar,Advanced,None,High,Core,Lower Abs,10 minutes,3 minutes,Strength,120,Increase reps,High
+Abs,Weighted Hanging Knee Raises,Advanced,Weight Plate,High,Core,Lower Abs,10 minutes,3 minutes,Strength,130,Increase weight,High
+Chest,Kneeling Push-up,Beginner,None,Low,Chest,Triceps,5 minutes,1 minute,Strength,50,Increase reps,Low
+Biceps,Lying Cable Curl,Intermediate,Cable Machine,Moderate,Biceps,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Biceps,Zottman Curl,Intermediate,Dumbbell,Moderate,Biceps,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Biceps,Dumbbell Reverse Curl,Intermediate,Dumbbell,Moderate,Biceps,None,10 minutes,2 minutes,Strength,85,Increase weight,Low
+Biceps,Seated Close-Grip Concentration Curl,Intermediate,Dumbbell,Moderate,Biceps,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Biceps,Biceps Leg Concentration Curl,Intermediate,Dumbbell,Moderate,Biceps,None,10 minutes,2 minutes,Strength,85,Increase weight,Low
+Biceps,Prone Incline Barbell Curl,Intermediate,Barbell,Moderate,Biceps,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Biceps,Overhead Cable Curl,Intermediate,Cable Machine,Moderate,Biceps,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Biceps,Seated Hammer Curl,Intermediate,Dumbbell,Moderate,Biceps,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Biceps,Seated Biceps Curl,Intermediate,Dumbbell,Moderate,Biceps,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Triceps,Seated One-Arm Dumbbell Triceps Extension,Intermediate,Dumbbell,Moderate,Triceps,None,10 minutes,2 minutes,Strength,85,Increase weight,Low
+Triceps,Seated Dumbbell Triceps Extension,Intermediate,Dumbbell,Moderate,Triceps,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Back / Wing,Cable One Arm Lat Pulldown,Intermediate,Cable Machine,Moderate,Back,None,12 minutes,3 minutes,Strength,100,Increase resistance,Moderate
+Chest,Decline Cable Fly,Intermediate,Cable Machine,Moderate,Chest,None,12 minutes,3 minutes,Strength,100,Increase resistance,Moderate
+Biceps,Single Arm Cable Preacher Curl,Intermediate,Cable Machine,Moderate,Biceps,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Chest,Smith Machine Bench Press,Intermediate,Smith Machine,Moderate,Chest,Triceps,12 minutes,3 minutes,Strength,110,Increase weight,Moderate
+Biceps,Cable Concentration Curl,Intermediate,Cable Machine,Moderate,Biceps,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Chest,Smith Machine Incline Bench Press,Intermediate,Smith Machine,Moderate,Chest,Shoulders,12 minutes,3 minutes,Strength,110,Increase weight,Moderate
+Back / Wing,Reverse Grip Machine Row,Intermediate,Machine,Moderate,Back,None,12 minutes,3 minutes,Strength,100,Increase resistance,Moderate
+Biceps,Reverse Grip EZ-Bar Curl,Intermediate,EZ-Bar,Moderate,Biceps,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Biceps,Dumbbell Scott Hammer Curl,Intermediate,Dumbbell,Moderate,Biceps,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Triceps,Lever Triceps Extension,Intermediate,Lever Machine,Moderate,Triceps,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Triceps,Bench Dips on Floor,Beginner,None,Low,Triceps,None,8 minutes,1 minute,Strength,70,Increase reps,Low
+Abs,Teaser Pilates,Intermediate,None,Moderate,Core,None,8 minutes,2 minutes,Strength,80,Increase duration,Low
+Abs,Seated Oblique Twist,Intermediate,None,Moderate,Core,Obliques,8 minutes,2 minutes,Strength,80,Increase reps,Low
+Chest,Lever Crossovers,Intermediate,Lever Machine,Moderate,Chest,None,12 minutes,3 minutes,Strength,100,Increase resistance,Moderate
+Shoulders,Incline Dumbbell Reverse Fly,Intermediate,Dumbbell,Moderate,Shoulders,Rear Deltoid,10 minutes,2 minutes,Strength,85,Increase weight,Low
+Shoulders,Incline Dumbbell Y-Raise,Intermediate,Dumbbell,Moderate,Shoulders,None,10 minutes,2 minutes,Strength,80,Increase weight,Low
+Shoulders,Dumbbell Incline T-Raise,Intermediate,Dumbbell,Moderate,Shoulders,None,10 minutes,2 minutes,Strength,80,Increase weight,Low
+Triceps,Dumbbell Skull Crusher,Intermediate,Dumbbell,Moderate,Triceps,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Triceps,Dumbbell Incline Two-Arm Extension,Intermediate,Dumbbell,Moderate,Triceps,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Triceps,One-Arm Pronated Dumbbell Triceps Extension,Intermediate,Dumbbell,Moderate,Triceps,None,10 minutes,2 minutes,Strength,85,Increase weight,Low
+Biceps,Cable Rope Hammer Curl,Intermediate,Cable Machine,Moderate,Biceps,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Triceps,Seated EZ-Bar Overhead Triceps Extension,Intermediate,EZ-Bar,Moderate,Triceps,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Back / Wing,Incline Barbell Row,Intermediate,Barbell,Moderate,Back,None,12 minutes,3 minutes,Strength,110,Increase weight,Moderate
+Erector Spinae,Smith Machine Good Morning,Intermediate,Smith Machine,Moderate,Lower Back,None,12 minutes,3 minutes,Strength,100,Increase weight,Moderate
+Chest,Reverse Grip Dumbbell Bench Press,Intermediate,Dumbbell,Moderate,Chest,Triceps,12 minutes,3 minutes,Strength,100,Increase weight,Moderate
+Erector Spinae,Cable Pull Through,Intermediate,Cable Machine,Moderate,Lower Back,Glutes,12 minutes,3 minutes,Strength,100,Increase resistance,Moderate
+Shoulders,Bench Supported Dumbbell External Rotation,Intermediate,Dumbbell,Moderate,Shoulders,Rotator Cuff,10 minutes,2 minutes,Strength,85,Increase weight,Low
+Back / Wing,Kneeling Single Arm High Pulley Row,Intermediate,Cable Machine,Moderate,Back,None,12 minutes,3 minutes,Strength,100,Increase resistance,Moderate
+Abs,Barbell Side Bend,Intermediate,Barbell,Moderate,Core,Obliques,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Abs,Seated Barbell Twist,Intermediate,Barbell,Moderate,Core,Obliques,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Abs,Bent Over Twist,Intermediate,Barbell,Moderate,Core,Obliques,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Shoulders,Dumbbell Seated Bent Over Rear Delt Row,Intermediate,Dumbbell,Moderate,Shoulders,Rear Deltoid,10 minutes,2 minutes,Strength,85,Increase weight,Low
+Triceps,Cable Incline Triceps Extension,Intermediate,Cable Machine,Moderate,Triceps,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Chest,Lever Chest Press,Intermediate,Lever Machine,Moderate,Chest,None,12 minutes,3 minutes,Strength,100,Increase resistance,Moderate
+Chest,Incline Push-up,Beginner,None,Low,Chest,Triceps,5 minutes,1 minute,Strength,50,Increase reps,Low
+Chest,Svend Press,Intermediate,Weight Plate,Moderate,Chest,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Abs,Dumbbell V-up,Intermediate,Dumbbell,Moderate,Core,Lower Abs,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Calisthenic,Reverse Push-up,Beginner,None,Low,Upper Body,None,8 minutes,1 minute,Strength,70,Increase reps,Low
+Shoulders,Dumbbell Standing Palms In Press,Intermediate,Dumbbell,Moderate,Shoulders,Triceps,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Cardio,Side Shuttle,Beginner,None,Low,Cardio,None,10 minutes,2 minutes,Aerobic,80,None,Low
+Biceps,Biceps Curl Machine,Intermediate,Curl Machine,Moderate,Biceps,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Biceps,Dumbbell High Curl,Intermediate,Dumbbell,Moderate,Biceps,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Shoulders,Lying Shoulder Press,Intermediate,Dumbbell,Moderate,Shoulders,Triceps,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Triceps,Cable Side Triceps Extension,Intermediate,Cable Machine,Moderate,Triceps,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Shoulders,Dumbbell Rear Delt Row,Intermediate,Dumbbell,Moderate,Shoulders,Rear Deltoid,10 minutes,2 minutes,Strength,85,Increase weight,Low
+Abs,Lever Lying Crunch,Intermediate,Lever Machine,Moderate,Core,None,8 minutes,2 minutes,Strength,80,Increase resistance,Low
+Shoulders,Lever Lateral Raise,Intermediate,Lever Machine,Moderate,Shoulders,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Chest,Alternate Dumbbell Bench Press,Intermediate,Dumbbell,Moderate,Chest,Triceps,12 minutes,3 minutes,Strength,100,Increase weight,Moderate
+Abs,Twisting Hyperextension,Intermediate,Hyperextension Bench,Moderate,Core,Obliques,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Calf,Squat Hold Calf Raise,Beginner,None,Low,Calves,None,8 minutes,1 minute,Strength,70,Increase duration,Low
+Abs,Ab Roller Crunch,Intermediate,Ab Roller,Moderate,Core,None,8 minutes,2 minutes,Strength,80,Increase duration,Low
+Triceps,Incline EZ-Bar Triceps Extension,Intermediate,EZ-Bar,Moderate,Triceps,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Leg,Bodyweight Walking Lunge,Beginner,None,Low,Legs,None,10 minutes,2 minutes,Strength,80,Increase duration,Low
+Triceps,High Pulley Overhead Tricep Extension,Intermediate,Cable Machine,Moderate,Triceps,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Triceps,Rope Pushdown,Intermediate,Cable Machine,Moderate,Triceps,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Triceps,Reverse Grip Pushdown,Intermediate,Cable Machine,Moderate,Triceps,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Abs,Standing Cable High-To-Low Twist,Intermediate,Cable Machine,Moderate,Core,Obliques,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Abs,Standing Cable Low-To-High Twist,Intermediate,Cable Machine,Moderate,Core,Obliques,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Abs,Standing Cable Twist,Intermediate,Cable Machine,Moderate,Core,Obliques,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Calisthenic,Cross Arm Push-up,Intermediate,None,Moderate,Upper Body,None,8 minutes,2 minutes,Strength,80,Increase reps,Low
+Back / Wing,Upside Down Pull-up,Advanced,None,High,Back,Biceps,10 minutes,3 minutes,Strength,120,Increase reps,High
+Triceps,Cable Concentration Extension on Knee,Intermediate,Cable Machine,Moderate,Triceps,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Cardio,Tuck Jump,Beginner,None,Low,Cardio,None,10 minutes,2 minutes,Aerobic,80,None,Low
+Abs,L-Sit,Advanced,None,High,Core,None,10 minutes,3 minutes,Isometric,100,Increase duration,High
+Chest,Close-Grip Dumbbell Press,Intermediate,Dumbbell,Moderate,Chest,Triceps,12 minutes,3 minutes,Strength,100,Increase weight,Moderate
+Hip,Wall Sit,Beginner,None,Low,Hips,Quads,8 minutes,1 minute,Isometric,70,Increase duration,Low
+Abs,High Knee Squat,Beginner,None,Low,Core,Quads,8 minutes,1 minute,Strength,70,Increase reps,Low
+Back / Wing,Swimming,Beginner,None,Low,Back,None,10 minutes,2 minutes,Aerobic,80,None,Low
+Cardio,Boxer Shuffle Cardio,Beginner,None,Low,Cardio,None,10 minutes,2 minutes,Aerobic,80,None,Low
+Cardio,Jab Boxing,Beginner,None,Low,Cardio,None,10 minutes,2 minutes,Aerobic,80,None,Low
+Cardio,Punches,Beginner,None,Low,Cardio,None,10 minutes,2 minutes,Aerobic,80,None,Low
+Cardio,Right Uppercut,Beginner,None,Low,Cardio,None,10 minutes,2 minutes,Aerobic,80,None,Low
+Cardio,Right Cross,Beginner,None,Low,Cardio,None,10 minutes,2 minutes,Aerobic,80,None,Low
+Cardio,Hook Kick,Beginner,None,Low,Cardio,None,10 minutes,2 minutes,Aerobic,80,None,Low
+Cardio,Boxing Right Cross,Beginner,None,Low,Cardio,None,10 minutes,2 minutes,Aerobic,80,None,Low
+Calisthenic,Clap Push-Up,Intermediate,None,Moderate,Upper Body,None,8 minutes,2 minutes,Strength,80,Increase reps,Low
+Cardio,Walking High Knee Lunges,Beginner,None,Low,Cardio,None,10 minutes,2 minutes,Aerobic,80,None,Low
+Cardio,High Knees Lift Run,Beginner,None,Low,Cardio,None,10 minutes,2 minutes,Aerobic,80,None,Low
+Chest,Above Head Chest Stretch,Beginner,None,Low,Chest,None,5 minutes,1 minute,Stretch,10,None,Low
+Chest,Dynamic Chest Stretch,Beginner,None,Low,Chest,None,5 minutes,1 minute,Stretch,10,None,Low
+Leg,Kettlebell Pistol Squats,Advanced,Kettlebell,High,Legs,None,15 minutes,3 minutes,Strength,200,Increase weight,High
+Shoulders,Kettlebell One-Arm Military Press,Intermediate,Kettlebell,Moderate,Shoulders,Triceps,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Erector Spinae,Frog Reverse Hyperextension,Intermediate,None,Moderate,Lower Back,Glutes,12 minutes,3 minutes,Strength,100,Increase duration,Moderate
+Hip,Kettlebell Split Snatch,Advanced,Kettlebell,High,Hips,Shoulders,15 minutes,3 minutes,Strength,200,Increase weight,High
+Abs,Kettlebell Windmill,Intermediate,Kettlebell,Moderate,Core,Obliques,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Abs,Kettlebell Swings,Intermediate,Kettlebell,Moderate,Core,Glutes,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Shoulders,Kettlebell Arnold Press,Intermediate,Kettlebell,Moderate,Shoulders,Triceps,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Shoulders,Bent Over Rear Delt Fly | Gymstick,Intermediate,Gymstick,Moderate,Shoulders,Rear Deltoid,10 minutes,2 minutes,Strength,85,Increase resistance,Low
+Hip,Bodyweight Single Leg Deadlift,Beginner,None,Low,Hips,Glutes,8 minutes,1 minute,Strength,70,Increase duration,Low
+Back / Wing,Brachialis Pull-up,Advanced,None,High,Back,Biceps,10 minutes,3 minutes,Strength,120,Increase reps,High
+Abs,Full Crunch Machine,Intermediate,Crunch Machine,Moderate,Core,None,8 minutes,2 minutes,Strength,80,Increase resistance,Low
+Hip,Bodyweight Box Squat,Beginner,None,Low,Hips,Quads,8 minutes,1 minute,Strength,70,Increase duration,Low
+Chest,Single Dumbbell Close-grip Press,Intermediate,Dumbbell,Moderate,Chest,Triceps,12 minutes,3 minutes,Strength,100,Increase weight,Moderate
+Abs,Front Plank with Arm Lift,Intermediate,None,Moderate,Core,Shoulders,8 minutes,2 minutes,Isometric,80,Increase duration,Low
+Abs,Bhujangasana | Cobra Abdominal Stretch,Beginner,None,Low,Core,None,5 minutes,1 minute,Stretch,10,None,Low
+Hip,Step Up Single Leg Balance with Bicep Curl,Intermediate,Dumbbell,Moderate,Hips,Biceps,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Erector Spinae,Bird Dog,Beginner,None,Low,Lower Back,None,8 minutes,1 minute,Strength,70,Increase duration,Low
+Abs,Ab Straps Leg Raise,Intermediate,Ab Straps,Moderate,Core,Lower Abs,8 minutes,2 minutes,Strength,80,Increase reps,Low
+Hip,Dumbbell Step-Up,Intermediate,Dumbbell,Moderate,Hips,Glutes,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Hip,Belt Squat,Intermediate,Belt,Moderate,Hips,Quads,12 minutes,3 minutes,Strength,100,Increase weight,Moderate
+Back / Wing,Close Grip Lat-Pulldown,Intermediate,Lat-Pulldown Machine,Moderate,Back,None,12 minutes,3 minutes,Strength,100,Increase resistance,Moderate
+Back / Wing,Seated Cable Rope Row,Intermediate,Cable Machine,Moderate,Back,None,12 minutes,3 minutes,Strength,100,Increase resistance,Moderate
+Leg,Lever Single Leg Curl,Intermediate,Lever Machine,Moderate,Legs,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Hip,Reverse Lunge,Intermediate,None,Moderate,Hips,Quads,10 minutes,2 minutes,Strength,90,Increase reps,Low
+Chest,Kneeling Diamond Push-Up,Beginner,None,Low,Chest,Triceps,5 minutes,1 minute,Strength,50,Increase reps,Low
+Cardio,Jack Burpees,Intermediate,None,Moderate,Cardio,None,10 minutes,2 minutes,Aerobic,90,None,Low
+Leg,Single Leg Step Down,Intermediate,None,Moderate,Legs,None,10 minutes,2 minutes,Strength,90,Increase reps,Low
+Forearm,Behind The Back Barbell Wrist Curl,Intermediate,Barbell,Moderate,Forearms,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Calisthenic,Dips Between Chairs,Beginner,None,Low,Upper Body,None,8 minutes,1 minute,Strength,70,Increase reps,Low
+Shoulders,Cable Seated Shoulder Internal Rotation,Intermediate,Cable Machine,Moderate,Shoulders,Rotator Cuff,10 minutes,2 minutes,Strength,85,Increase resistance,Low
+Shoulders,Half Kneeling Cable External Rotation,Intermediate,Cable Machine,Moderate,Shoulders,Rotator Cuff,10 minutes,2 minutes,Strength,85,Increase resistance,Low
+Shoulders,Landmine Lateral Raise,Intermediate,Landmine,Moderate,Shoulders,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Back / Wing,Cable Seated Pullover,Intermediate,Cable Machine,Moderate,Back,Chest,12 minutes,3 minutes,Strength,100,Increase resistance,Moderate
+Shoulders,Seated Dumbbell Front Raise,Intermediate,Dumbbell,Moderate,Shoulders,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Cardio,Astride Jumps,Beginner,None,Low,Cardio,None,10 minutes,2 minutes,Aerobic,80,None,Low
+Abs,Boat Pose,Beginner,None,Low,Core,None,5 minutes,1 minute,Isometric,50,Increase duration,Low
+Back / Wing,Scapular Protraction and Retraction,Beginner,None,Low,Back,None,8 minutes,1 minute,Strength,70,Increase duration,Low
+Hip,Dumbbell Glute Bridge,Intermediate,Dumbbell,Moderate,Hips,Glutes,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Back / Wing,Ring Inverted Row,Intermediate,Rings,Moderate,Back,None,10 minutes,2 minutes,Strength,90,Increase reps,Low
+Chest,Push-up With Push-up Bars,Beginner,Push-up Bars,Low,Chest,Triceps,5 minutes,1 minute,Strength,50,Increase reps,Low
+Abs,Seated Twist Machine,Intermediate,Twist Machine,Moderate,Core,Obliques,8 minutes,2 minutes,Strength,80,Increase resistance,Low
+Cardio,Long Jump,Beginner,None,Low,Cardio,None,10 minutes,2 minutes,Aerobic,80,None,Low
+Leg,Lever Assisted Single Leg Press,Intermediate,Lever Machine,Moderate,Legs,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Triceps,Cable One-Arm Overhead Triceps Extension,Intermediate,Cable Machine,Moderate,Triceps,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Triceps,Standing Barbell Triceps Extension,Intermediate,Barbell,Moderate,Triceps,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Leg,Nordic Hamstring Curl,Advanced,None,High,Legs,Hamstrings,12 minutes,3 minutes,Strength,120,Increase reps,High
+Back / Wing,Inverted Row,Intermediate,None,Moderate,Back,None,10 minutes,2 minutes,Strength,90,Increase reps,Low
+Chest,Smith Machine Decline Bench Press,Intermediate,Smith Machine,Moderate,Chest,Triceps,12 minutes,3 minutes,Strength,110,Increase weight,Moderate
+Chest,One Arm Decline Cable Fly,Intermediate,Cable Machine,Moderate,Chest,None,12 minutes,3 minutes,Strength,100,Increase resistance,Moderate
+Full Body,One Arm Kettlebell Snatch,Advanced,Kettlebell,High,Full Body,Shoulders,15 minutes,3 minutes,Strength,200,Increase weight,High
+Back / Wing,Lever Cable Rear Pulldown,Intermediate,Cable Machine,Moderate,Back,None,12 minutes,3 minutes,Strength,100,Increase resistance,Moderate
+Biceps,Close Grip Z-Bar Curl,Intermediate,Z-Bar,Moderate,Biceps,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Biceps,Dumbbell Scott Curl,Intermediate,Dumbbell,Moderate,Biceps,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Shoulders,Cross Cable Face Pull,Intermediate,Cable Machine,Moderate,Shoulders,Rear Deltoid,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Back / Wing,Shotgun Row,Intermediate,Cable Machine,Moderate,Back,None,12 minutes,3 minutes,Strength,100,Increase resistance,Moderate
+Back / Wing,Elbow Reverse Push-Up,Intermediate,None,Moderate,Back,None,10 minutes,2 minutes,Strength,90,Increase reps,Low
+Calisthenic,Impossible Dips,Advanced,None,High,Upper Body,None,10 minutes,3 minutes,Strength,120,Increase reps,High
+Calisthenic,Korean Dips,Advanced,None,High,Upper Body,None,10 minutes,3 minutes,Strength,120,Increase reps,High
+Calisthenic,Straight Bar Dip,Advanced,None,High,Upper Body,None,10 minutes,3 minutes,Strength,120,Increase reps,High
+Abs,Inchworm,Beginner,None,Low,Core,None,8 minutes,1 minute,Strength,70,Increase duration,Low
+Back / Wing,Weighted One Arm Pull-up,Advanced,Weight Plate,High,Back,Biceps,10 minutes,3 minutes,Strength,150,Increase weight,High
+Chest,Dumbbell One Arm Reverse Grip Press,Intermediate,Dumbbell,Moderate,Chest,Triceps,12 minutes,3 minutes,Strength,100,Increase weight,Moderate
+Back / Wing,Cable Crossover Lat Pulldown,Intermediate,Cable Machine,Moderate,Back,None,12 minutes,3 minutes,Strength,100,Increase resistance,Moderate
+Back / Wing,One Arm Landmine Row,Intermediate,Landmine,Moderate,Back,None,12 minutes,3 minutes,Strength,100,Increase weight,Moderate
+Abs,Front Plank With Arm And Leg Lift,Advanced,None,High,Core,Shoulders,10 minutes,3 minutes,Isometric,100,Increase duration,High
+Leg,Horizontal Leg Press,Intermediate,Leg Press Machine,Moderate,Legs,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Hip,Resistance Band Reverse Hyperextension,Intermediate,Resistance Band,Moderate,Hips,Glutes,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Shoulders,Resistance Band Seated Shoulder Press,Intermediate,Resistance Band,Moderate,Shoulders,Triceps,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Hip,Resistance Band Toe Touch,Beginner,Resistance Band,Low,Hips,Glutes,8 minutes,1 minute,Strength,70,Increase duration,Low
+Biceps,Barbell Curl On Arm Blaster,Intermediate,Barbell,Moderate,Biceps,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Biceps,Arm Blaster Hammer Curl,Intermediate,Dumbbell,Moderate,Biceps,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Biceps,Dumbbell Curl On Arm Blaster,Intermediate,Dumbbell,Moderate,Biceps,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Chest,Lever One-Arm Chest Press,Intermediate,Lever Machine,Moderate,Chest,None,12 minutes,3 minutes,Strength,100,Increase resistance,Moderate
+Abs,Weighted Lying Twist,Intermediate,Weight Plate,Moderate,Core,Obliques,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Biceps,Standing One Arm Chest Stretch,Beginner,None,Low,Biceps,None,5 minutes,1 minute,Stretch,10,None,Low
+Hip,Kneeling Hip Flexor Stretch,Beginner,None,Low,Hips,None,5 minutes,1 minute,Stretch,10,None,Low
+Leg,Standing Quadriceps Stretch,Beginner,None,Low,Legs,None,5 minutes,1 minute,Stretch,10,None,Low
+Chest,Single-Arm Medicine Ball Push-Up,Intermediate,Medicine Ball,Moderate,Chest,Triceps,10 minutes,2 minutes,Strength,90,Increase weight,Moderate
+Chest,Stability Ball Decline Push-Up,Intermediate,Stability Ball,Moderate,Chest,Triceps,10 minutes,2 minutes,Strength,90,Increase duration,Moderate
+Chest,Dumbbell Pullover On Stability Ball,Intermediate,Dumbbell,Moderate,Chest,Back,12 minutes,3 minutes,Strength,100,Increase weight,Moderate
+Chest,Stability Ball Push-Up,Beginner,Stability Ball,Low,Chest,Triceps,5 minutes,1 minute,Strength,50,Increase duration,Low
+Abs,Swiss Ball Rollout,Intermediate,Swiss Ball,Moderate,Core,None,8 minutes,2 minutes,Strength,80,Increase duration,Low
+Hip,Exercise Ball Wall Squat,Beginner,Exercise Ball,Low,Hips,Quads,8 minutes,1 minute,Strength,70,Increase duration,Low
+Abs,Weighted Side Bend On Stability Ball,Intermediate,Weight Plate,Moderate,Core,Obliques,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Triceps,Exercise Ball Triceps Extension,Intermediate,Exercise Ball,Moderate,Triceps,None,10 minutes,2 minutes,Strength,90,Increase duration,Low
+Abs,Stability Ball V-Up,Intermediate,Stability Ball,Moderate,Core,Lower Abs,10 minutes,2 minutes,Strength,90,Increase duration,Low
+Abs,Exercise Ball Frog Crunch,Intermediate,Exercise Ball,Moderate,Core,None,8 minutes,2 minutes,Strength,80,Increase duration,Low
+Leg,Leg Curl On Stability Ball,Intermediate,Stability Ball,Moderate,Legs,Hamstrings,10 minutes,2 minutes,Strength,90,Increase duration,Low
+Chest,Dumbbell Decline One-Arm Hammer Press,Intermediate,Dumbbell,Moderate,Chest,Triceps,12 minutes,3 minutes,Strength,100,Increase weight,Moderate
+Calisthenic,Bench Pike Push-up,Intermediate,None,Moderate,Upper Body,None,8 minutes,2 minutes,Strength,80,Increase reps,Low
+Calisthenic,Pike Push-up,Intermediate,None,Moderate,Upper Body,None,8 minutes,2 minutes,Strength,80,Increase reps,Low
+Shoulders,Tall Kneeling One Arm Kettlebell Press,Intermediate,Kettlebell,Moderate,Shoulders,Triceps,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Cardio,Kettlebell Clean and Jerk,Advanced,Kettlebell,High,Cardio,Shoulders,15 minutes,3 minutes,Strength,200,Increase weight,High
+Hip,Kettlebell Goblet Squat,Intermediate,Kettlebell,Moderate,Hips,Quads,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Back / Wing,Lever Reverse T-Bar Row,Intermediate,Lever Machine,Moderate,Back,None,12 minutes,3 minutes,Strength,100,Increase resistance,Moderate
+Biceps,One Arm Biceps Curl,Intermediate,Dumbbell,Moderate,Biceps,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Erector Spinae,Kettlebell Deadlift,Intermediate,Kettlebell,Moderate,Lower Back,Glutes,12 minutes,3 minutes,Strength,100,Increase weight,Moderate
+Back / Wing,Kettlebell Bent Over Row,Intermediate,Kettlebell,Moderate,Back,None,12 minutes,3 minutes,Strength,100,Increase weight,Moderate
+Leg,Barbell Bench Front Squat,Advanced,Barbell,High,Legs,None,15 minutes,3 minutes,Strength,200,Increase weight,High
+Cardio,Dumbbell Burpees,Intermediate,Dumbbell,Moderate,Cardio,None,10 minutes,2 minutes,Aerobic,100,None,Moderate
+Erector Spinae,Standing Toe Touches,Beginner,None,Low,Lower Back,None,5 minutes,1 minute,Stretch,10,None,Low
+Leg,Standing Side Toe Touching,Beginner,None,Low,Legs,None,5 minutes,1 minute,Stretch,10,None,Low
+Chest,Weighted Push-up,Intermediate,Weight Plate,Moderate,Chest,Triceps,10 minutes,2 minutes,Strength,90,Increase weight,Moderate
+Hip,Band Lying Hip External Rotation,Beginner,Resistance Band,Low,Hips,Glutes,8 minutes,1 minute,Strength,70,Increase duration,Low
+Back / Wing,Full Range Of Motion Lat Pulldown,Intermediate,Lat-Pulldown Machine,Moderate,Back,None,12 minutes,3 minutes,Strength,100,Increase resistance,Moderate
+Cardio,Ski Step,Beginner,None,Low,Cardio,None,10 minutes,2 minutes,Aerobic,80,None,Low
+Cardio,Dumbbell Split Jump,Intermediate,Dumbbell,Moderate,Cardio,None,10 minutes,2 minutes,Aerobic,100,None,Moderate
+Hip,Banded Step-up,Intermediate,Resistance Band,Moderate,Hips,Glutes,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Leg,Barbell Curtsey Lunge,Intermediate,Barbell,Moderate,Legs,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Cardio,Dumbbell Jump Squat,Intermediate,Dumbbell,Moderate,Cardio,None,10 minutes,2 minutes,Aerobic,100,None,Moderate
+Leg,Barbell Split Squat,Intermediate,Barbell,Moderate,Legs,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Shoulders,Lever Shoulder Press (Hammer Grip),Intermediate,Lever Machine,Moderate,Shoulders,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Abs,Cable Seated Cross Arm Twist,Intermediate,Cable Machine,Moderate,Core,Obliques,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Leg,All Fours Squad Stretch,Beginner,None,Low,Legs,None,5 minutes,1 minute,Stretch,10,None,Low
+Back / Wing,Chin-Up,Intermediate,None,Moderate,Back,Biceps,10 minutes,2 minutes,Strength,110,Increase reps,Moderate
+Forearm,Wrist Ulnar Deviator And Extensor Stretch,Beginner,None,Low,Forearms,None,5 minutes,1 minute,Stretch,10,None,Low
+Forearm,Reverse Wrist Stretch,Beginner,None,Low,Forearms,None,5 minutes,1 minute,Stretch,10,None,Low
+Forearm,Wrist Stretch,Beginner,None,Low,Forearms,None,5 minutes,1 minute,Stretch,10,None,Low
+Abs,Burpees,Beginner,None,Low,Core,None,8 minutes,1 minute,Strength,70,Increase duration,Low
+Shoulders,Dumbbell Lying Rear Lateral Raise,Intermediate,Dumbbell,Moderate,Shoulders,Rear Deltoid,10 minutes,2 minutes,Strength,85,Increase weight,Low
+Biceps,Lever Biceps Curl,Intermediate,Lever Machine,Moderate,Biceps,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Not specified,Barbell Glute Bridge On Bench,Intermediate,Barbell,Moderate,Glutes,Hamstrings,12 minutes,3 minutes,Strength,100,Increase weight,Moderate
+Biceps,Cable Incline Biceps Curl,Intermediate,Cable Machine,Moderate,Biceps,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Shoulders,Lever Reverse Shoulder Press,Intermediate,Lever Machine,Moderate,Shoulders,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Leg,Lever Kneeling Leg Curl,Intermediate,Lever Machine,Moderate,Legs,Hamstrings,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Abs,Standing Twist Machine,Intermediate,Twist Machine,Moderate,Core,Obliques,8 minutes,2 minutes,Strength,80,Increase resistance,Low
+Shoulders,Side Lying Rear Delt Dumbbell Raise,Intermediate,Dumbbell,Moderate,Shoulders,Rear Deltoid,10 minutes,2 minutes,Strength,85,Increase weight,Low
+Shoulders,Scapula Dips,Beginner,None,Low,Shoulders,None,8 minutes,1 minute,Strength,70,Increase reps,Low
+Triceps,Triceps Extension Machine,Intermediate,Extension Machine,Moderate,Triceps,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Shoulders,Ez-Bar Incline Front Raise,Intermediate,EZ-Bar,Moderate,Shoulders,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Triceps,Triceps Dip Machine,Intermediate,Dip Machine,Moderate,Triceps,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Abs,Seated Crunch Machine,Intermediate,Crunch Machine,Moderate,Core,None,8 minutes,2 minutes,Strength,80,Increase resistance,Low
+Chest,Push-Up Plus,Beginner,None,Low,Chest,Triceps,5 minutes,1 minute,Strength,50,Increase reps,Low
+Back / Wing,Seated Toe Touches,Beginner,None,Low,Back,None,5 minutes,1 minute,Stretch,10,None,Low
+Cardio,Vibration Plate,Beginner,None,Low,Cardio,None,10 minutes,2 minutes,Aerobic,80,None,Low
+Back / Wing,L-Sit Pull-Up,Advanced,None,High,Back,Biceps,10 minutes,3 minutes,Strength,120,Increase reps,High
+Back / Wing,Back Lever,Advanced,None,High,Back,None,10 minutes,3 minutes,Strength,120,Increase duration,High
+Back / Wing,Swing 360,Advanced,None,High,Back,None,10 minutes,3 minutes,Strength,120,Increase duration,High
+Back / Wing,Front Lever Pull-up,Advanced,None,High,Back,Biceps,10 minutes,3 minutes,Strength,120,Increase reps,High
+Shoulders,Barbell Front Raise Twist,Intermediate,Barbell,Moderate,Shoulders,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Hip,Reverse Hack Squat,Intermediate,Hack Squat Machine,Moderate,Hips,Quads,12 minutes,3 minutes,Strength,100,Increase resistance,Moderate
+Hip,Duck Walk,Beginner,None,Low,Hips,Quads,8 minutes,1 minute,Strength,70,Increase duration,Low
+Calisthenic,Single-Arm Push-up,Advanced,None,High,Upper Body,None,10 minutes,3 minutes,Strength,120,Increase reps,High
+Shoulders,Kettlebell Shoulder Press,Intermediate,Kettlebell,Moderate,Shoulders,Triceps,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Leg,Trap Bar Deadlift,Advanced,Trap Bar,High,Legs,None,15 minutes,3 minutes,Strength,200,Increase weight,High
+Hip,Zercher Squat,Advanced,Barbell,High,Hips,Quads,15 minutes,3 minutes,Strength,200,Increase weight,High
+Leg,Front Squat,Advanced,Barbell,High,Legs,None,15 minutes,3 minutes,Strength,200,Increase weight,High
+Abs,Barbell Rollout,Advanced,Barbell,High,Core,None,10 minutes,3 minutes,Strength,120,Increase duration,High
+Abs,Landmine Twist,Intermediate,Landmine,Moderate,Core,Obliques,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Abs,Frog Crunch,Beginner,None,Low,Core,None,8 minutes,1 minute,Strength,70,Increase duration,Low
+Abs,Ab Wheel Rollout,Intermediate,Ab Wheel,Moderate,Core,None,8 minutes,2 minutes,Strength,80,Increase duration,Low
+Calisthenic,Wall-Supported Handstand Push-Ups,Advanced,None,High,Upper Body,None,10 minutes,3 minutes,Strength,120,Increase reps,High
+Cardio,High Knees Against Wall,Beginner,None,Low,Cardio,None,10 minutes,2 minutes,Aerobic,80,None,Low
+Back / Wing,Towel Shoulder Stretch,Beginner,None,Low,Back,None,5 minutes,1 minute,Stretch,10,None,Low
+Calf,Standing Hamstring Stretch,Beginner,None,Low,Calves,None,5 minutes,1 minute,Stretch,10,None,Low
+Hip,Kettlebell Thruster,Advanced,Kettlebell,High,Hips,Shoulders,15 minutes,3 minutes,Strength,200,Increase weight,High
+Full Body,One Arm Dumbbell Snatch,Advanced,Dumbbell,High,Full Body,Shoulders,15 minutes,3 minutes,Strength,200,Increase weight,High
+Leg,Single Leg Press,Intermediate,Leg Press Machine,Moderate,Legs,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Cardio,Vertical Mountain Climber,Beginner,None,Low,Cardio,None,10 minutes,2 minutes,Aerobic,80,None,Low
+Hip,Landmine Lunge,Intermediate,Landmine,Moderate,Hips,Quads,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Chest,One-Arm Kettlebell Chest Press,Intermediate,Kettlebell,Moderate,Chest,Triceps,12 minutes,3 minutes,Strength,100,Increase weight,Moderate
+Chest,Kettlebell Chest Press on the Floor,Intermediate,Kettlebell,Moderate,Chest,Triceps,12 minutes,3 minutes,Strength,100,Increase weight,Moderate
+Calf,Weighted Seated Calf Raise,Intermediate,Weight Plate,Moderate,Calves,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Chest,Wide Grip Bench Press,Intermediate,Barbell,Moderate,Chest,Triceps,12 minutes,3 minutes,Strength,110,Increase weight,Moderate
+Chest,Decline Barbell Bench Press,Intermediate,Barbell,Moderate,Chest,Triceps,12 minutes,3 minutes,Strength,110,Increase weight,Moderate
+Leg,Single Leg Extension,Intermediate,Leg Extension Machine,Moderate,Legs,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Leg,Smith Machine Leg Press,Intermediate,Smith Machine,Moderate,Legs,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Shoulders,Band Front Lateral Raise,Intermediate,Resistance Band,Moderate,Shoulders,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Hip,Smith Machine Lunge,Intermediate,Smith Machine,Moderate,Hips,Quads,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Leg,Skater Squat,Intermediate,None,Moderate,Legs,None,10 minutes,2 minutes,Strength,90,Increase reps,Low
+Shoulders,Shoulder Pendulum,Beginner,None,Low,Shoulders,None,5 minutes,1 minute,Stretch,10,None,Low
+Chest,One Arm Push Ups With Support,Intermediate,None,Moderate,Chest,Triceps,10 minutes,2 minutes,Strength,90,Increase reps,Low
+Chest,Band Standing Chest Press,Intermediate,Resistance Band,Moderate,Chest,Triceps,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Leg,Shrimp Squat,Advanced,None,High,Legs,None,10 minutes,3 minutes,Strength,120,Increase reps,High
+Shoulders,90-Degree Cable External Rotation,Intermediate,Cable Machine,Moderate,Shoulders,Rotator Cuff,10 minutes,2 minutes,Strength,85,Increase resistance,Low
+Shoulders,90-degree Cable Internal Rotation,Intermediate,Cable Machine,Moderate,Shoulders,Rotator Cuff,10 minutes,2 minutes,Strength,85,Increase resistance,Low
+Hip,Towel Leg Curl,Beginner,Towel,Low,Hips,Hamstrings,8 minutes,1 minute,Strength,70,Increase duration,Low
+Cardio,Single Leg Hip Thrust Jump,Intermediate,None,Moderate,Cardio,None,10 minutes,2 minutes,Aerobic,90,None,Low
+Chest,Seated Chest Stretch,Beginner,None,Low,Chest,None,5 minutes,1 minute,Stretch,10,None,Low
+Shoulders,Seated Ballerina Exercise,Beginner,None,Low,Shoulders,None,5 minutes,1 minute,Stretch,10,None,Low
+Shoulders,Seated Scapular Retraction Exercise,Beginner,None,Low,Shoulders,None,5 minutes,1 minute,Stretch,10,None,Low
+Leg,Foam Roller IT (iliotibial Band) Stretch,Beginner,Foam Roller,Low,Legs,None,5 minutes,1 minute,Stretch,10,None,Low
+Back / Wing,Foam Roller Back Stretch,Beginner,Foam Roller,Low,Back,None,5 minutes,1 minute,Stretch,10,None,Low
+Back / Wing,Foam Roller Rhomboids,Beginner,Foam Roller,Low,Back,None,5 minutes,1 minute,Stretch,10,None,Low
+Hip,Foam Roller Glutes,Beginner,Foam Roller,Low,Hips,None,5 minutes,1 minute,Stretch,10,None,Low
+Leg,Foam Roller Quads,Beginner,Foam Roller,Low,Legs,None,5 minutes,1 minute,Stretch,10,None,Low
+Shoulders,Foam Roller Posterior Shoulder,Beginner,Foam Roller,Low,Shoulders,None,5 minutes,1 minute,Stretch,10,None,Low
+Chest,Foam Roller Chest Stretch,Beginner,Foam Roller,Low,Chest,None,5 minutes,1 minute,Stretch,10,None,Low
+Back / Wing,Foam Roller Upper Back,Beginner,Foam Roller,Low,Back,None,5 minutes,1 minute,Stretch,10,None,Low
+Back / Wing,Foam Roller Lat Stretch,Beginner,Foam Roller,Low,Back,None,5 minutes,1 minute,Stretch,10,None,Low
+Hip,Foam Roller Inner Thigh Adductor Stretch,Beginner,Foam Roller,Low,Hips,None,5 minutes,1 minute,Stretch,10,None,Low
+Leg,Foam Roller Hamstrings,Beginner,Foam Roller,Low,Legs,None,5 minutes,1 minute,Stretch,10,None,Low
+Chest,Foam Roller Front Shoulder and Chest,Beginner,Foam Roller,Low,Chest,None,5 minutes,1 minute,Stretch,10,None,Low
+Leg,Foam Roller Plantar Fasciitis,Beginner,Foam Roller,Low,Legs,None,5 minutes,1 minute,Stretch,10,None,Low
+Calf,Foam Roller Calves,Beginner,Foam Roller,Low,Calves,None,5 minutes,1 minute,Stretch,10,None,Low
+Shoulders,Rotator Cuff Stretch,Beginner,None,Low,Shoulders,None,5 minutes,1 minute,Stretch,10,None,Low
+Chest,Assisted Reverse Stretch (Chest And Shoulder),Beginner,None,Low,Chest,Shoulders,5 minutes,1 minute,Stretch,10,None,Low
+Calf,Band Foot External Rotation,Beginner,Resistance Band,Low,Calves,None,5 minutes,1 minute,Stretch,10,None,Low
+Abs,Lying Upper Body Rotation,Beginner,None,Low,Core,None,5 minutes,1 minute,Stretch,10,None,Low
+Back / Wing,Lever Pullover,Intermediate,Lever Machine,Moderate,Back,Chest,12 minutes,3 minutes,Strength,100,Increase resistance,Moderate
+Hip,90/90 Hip Stretch,Beginner,None,Low,Hips,None,5 minutes,1 minute,Stretch,10,None,Low
+Back / Wing,One Arm Chin-Up,Advanced,None,High,Back,Biceps,10 minutes,3 minutes,Strength,150,Increase reps,High
+Back / Wing,Scapula Pull-up,Intermediate,None,Moderate,Back,None,10 minutes,2 minutes,Strength,90,Increase reps,Low
+Back / Wing,Archer Pull-up,Advanced,None,High,Back,Biceps,10 minutes,3 minutes,Strength,120,Increase reps,High
+Back / Wing,Jumping Pull-up,Beginner,None,Low,Back,Biceps,10 minutes,2 minutes,Strength,80,Increase reps,Low
+Back / Wing,Commando Pull-up,Intermediate,None,Moderate,Back,Biceps,10 minutes,2 minutes,Strength,90,Increase reps,Low
+Back / Wing,Behind The Neck Pull-up,Advanced,None,High,Back,Biceps,10 minutes,3 minutes,Strength,120,Increase reps,High
+Chest,Lever Decline Chest Press,Intermediate,Lever Machine,Moderate,Chest,None,12 minutes,3 minutes,Strength,100,Increase resistance,Moderate
+Back / Wing,Cable One-Arm Pulldown,Intermediate,Cable Machine,Moderate,Back,None,12 minutes,3 minutes,Strength,100,Increase resistance,Moderate
+Abs,Bicycle Twisting Crunch,Intermediate,None,Moderate,Core,Obliques,8 minutes,2 minutes,Strength,80,Increase reps,Low
+Triceps,Decline Close-Grip Bench To Skull Crusher,Intermediate,Barbell,Moderate,Triceps,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Back / Wing,Barbell Decline Bent Arm Pullover,Intermediate,Barbell,Moderate,Back,Chest,12 minutes,3 minutes,Strength,110,Increase weight,Moderate
+Erector Spinae,Stiff Leg Deadlift,Intermediate,Barbell,Moderate,Lower Back,Hamstrings,12 minutes,3 minutes,Strength,110,Increase weight,Moderate
+Back / Wing,Dead Hang,Beginner,None,Low,Back,None,5 minutes,1 minute,Stretch,10,None,Low
+Erector Spinae,Kneeling Back Rotation,Beginner,None,Low,Lower Back,None,5 minutes,1 minute,Stretch,10,None,Low
+Shoulders,Serratus Wall Slide With Foam Roller,Beginner,Foam Roller,Low,Shoulders,None,5 minutes,1 minute,Stretch,10,None,Low
+Abs,Fish Pose,Beginner,None,Low,Core,None,5 minutes,1 minute,Stretch,10,None,Low
+Abs,Hands In Air Dead Bug,Beginner,None,Low,Core,None,5 minutes,1 minute,Strength,10,Increase duration,Low
+Cardio,Cross Body Push-up,Intermediate,None,Moderate,Cardio,None,10 minutes,2 minutes,Aerobic,90,None,Low
+Shoulders,Wall Supported Arm Raises,Beginner,None,Low,Shoulders,None,5 minutes,1 minute,Stretch,10,None,Low
+Shoulders,Backhand Raise,Intermediate,Dumbbell,Moderate,Shoulders,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Abs,4 Point Tummy Vacuum Exercise,Beginner,None,Low,Core,None,5 minutes,1 minute,Isometric,10,Increase duration,Low
+Back / Wing,Isometric Pull-Up,Advanced,None,High,Back,Biceps,10 minutes,3 minutes,Strength,120,Increase duration,High
+Biceps,Dumbbell Preacher Hammer (Scott) Curl,Intermediate,Dumbbell,Moderate,Biceps,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Biceps,One Arm Prone Dumbbell Curl,Intermediate,Dumbbell,Moderate,Biceps,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Biceps,Dumbbell Alternate Preacher Curl,Intermediate,Dumbbell,Moderate,Biceps,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Biceps,Two Dumbbell Preacher Curl,Intermediate,Dumbbell,Moderate,Biceps,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Abs,Seated Flutter Kick,Beginner,None,Low,Core,None,8 minutes,1 minute,Strength,70,Increase duration,Low
+Abs,Seated Cable Twist,Intermediate,Cable Machine,Moderate,Core,Obliques,8 minutes,2 minutes,Strength,80,Increase resistance,Low
+Shoulders,Dumbbell Seated Cuban Press,Intermediate,Dumbbell,Moderate,Shoulders,Rotator Cuff,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Shoulders,Kneeling Cable Shoulder Press,Intermediate,Cable Machine,Moderate,Shoulders,Triceps,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Biceps,Flexor Incline Dumbbell Curls,Intermediate,Dumbbell,Moderate,Biceps,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Trapezius,Dip Shrugs (Serratus Shrugs),Intermediate,None,Moderate,Trapezius,None,10 minutes,2 minutes,Strength,90,Increase reps,Low
+Leg,Dumbbell Goblet Curtsey Lunge,Intermediate,Dumbbell,Moderate,Legs,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Hip,Cable Forward Lunge,Intermediate,Cable Machine,Moderate,Hips,Quads,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Hip,Kneeling Cable Pull Through,Intermediate,Cable Machine,Moderate,Hips,Glutes,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Leg,Cable Lunge,Intermediate,Cable Machine,Moderate,Legs,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Hip,Cable Front Squat,Intermediate,Cable Machine,Moderate,Hips,Quads,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Triceps,Barbell One Arm Floor Press,Intermediate,Barbell,Moderate,Triceps,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Biceps,Barbell Alternate Biceps Curl,Intermediate,Barbell,Moderate,Biceps,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Forearm,Weighted Neutral Wrist Curl,Intermediate,Weight Plate,Moderate,Forearms,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Chest,Incline Chest Press Machine,Intermediate,Chest Press Machine,Moderate,Chest,Triceps,12 minutes,3 minutes,Strength,110,Increase resistance,Moderate
+Chest,İncline Cable Fly,Intermediate,Cable Machine,Moderate,Chest,None,12 minutes,3 minutes,Strength,100,Increase resistance,Moderate
+Abs,Bodyweight Kneeling Sissy Squat,Beginner,None,Low,Core,Quads,8 minutes,1 minute,Strength,70,Increase duration,Low
+Back / Wing,Wide Grip Barbell Bent Over Row Plus,Intermediate,Barbell,Moderate,Back,None,12 minutes,3 minutes,Strength,110,Increase weight,Moderate
+Back / Wing,Wide Grip Alternate Barbell Bent Over Row Plus,Intermediate,Barbell,Moderate,Back,None,12 minutes,3 minutes,Strength,110,Increase weight,Moderate
+Full Body,Trap Bar Jump Squat,Advanced,Trap Bar,High,Full Body,None,15 minutes,3 minutes,Strength,200,Increase weight,High
+Cardio,Box Jump to Pistol Squat,Advanced,None,High,Cardio,Legs,15 minutes,3 minutes,Strength,200,Increase reps,High
+Cardio,Box Jump 2 to 1,Advanced,None,High,Cardio,Legs,15 minutes,3 minutes,Strength,200,Increase reps,High
+Cardio,Box Jump 1 to 2,Advanced,None,High,Cardio,Legs,15 minutes,3 minutes,Strength,200,Increase reps,High
+Cardio,Single Leg Box Jump,Advanced,None,High,Cardio,Legs,15 minutes,3 minutes,Strength,200,Increase reps,High
+Abs,Bow Pose,Beginner,None,Low,Core,None,5 minutes,1 minute,Stretch,10,None,Low
+Erector Spinae,Cat Cow Pose,Beginner,None,Low,Lower Back,None,5 minutes,1 minute,Stretch,10,None,Low
+Back / Wing,Wall Slides,Beginner,None,Low,Back,None,5 minutes,1 minute,Stretch,10,None,Low
+Abs,Kneeling T-spine Rotation,Beginner,None,Low,Core,None,5 minutes,1 minute,Stretch,10,None,Low
+Shoulders,Plate Loaded Shoulder Press,Intermediate,Plate Loaded Machine,Moderate,Shoulders,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Calf,Toe Extensor Stretch,Beginner,None,Low,Calves,None,5 minutes,1 minute,Stretch,10,None,Low
+Abs,Standing Barbell Rollout,Advanced,Barbell,High,Core,None,10 minutes,3 minutes,Strength,120,Increase duration,High
+Triceps,Asisted Triceps Dips,Beginner,Assisted Machine,Low,Triceps,None,8 minutes,1 minute,Strength,70,None,Low
+Abs,Side Plank Oblique Crunch,Intermediate,None,Moderate,Core,Obliques,8 minutes,2 minutes,Strength,80,Increase reps,Low
+Chest,Reverse Chest Stretch,Beginner,None,Low,Chest,None,5 minutes,1 minute,Stretch,10,None,Low
+Abs,Medicine Ball-Sit-up Throw,Intermediate,Medicine Ball,Moderate,Core,None,8 minutes,2 minutes,Strength,80,Increase weight,Low
+Calf,Standing Dorsiflexion,Beginner,None,Low,Calves,None,5 minutes,1 minute,Stretch,10,None,Low
+Calf,Standing Wall Calf Stretch,Beginner,None,Low,Calves,None,5 minutes,1 minute,Stretch,10,None,Low
+Calf,Standing Toe Up Achilles Stretch,Beginner,None,Low,Calves,None,5 minutes,1 minute,Stretch,10,None,Low
+Calf,Standing Toe Flexor Stretch,Beginner,None,Low,Calves,None,5 minutes,1 minute,Stretch,10,None,Low
+Calf,Standing Gastrocnemius Calf Stretch,Beginner,None,Low,Calves,None,5 minutes,1 minute,Stretch,10,None,Low
+Calf,Single Heel Drop Calf Stretch,Beginner,None,Low,Calves,None,5 minutes,1 minute,Stretch,10,None,Low
+Calf,Seated Straight Leg Calf Stretch,Beginner,None,Low,Calves,None,5 minutes,1 minute,Stretch,10,None,Low
+Calf,Lunging Straight Leg Calf Stretch,Beginner,None,Low,Calves,None,5 minutes,1 minute,Stretch,10,None,Low
+Calf,Posterior Tibialis Stretch,Beginner,None,Low,Calves,None,5 minutes,1 minute,Stretch,10,None,Low
+Calf,Foot and Ankles Stretches,Beginner,None,Low,Calves,None,5 minutes,1 minute,Stretch,10,None,Low
+Calf,Foot and Ankle Rotation,Beginner,None,Low,Calves,None,5 minutes,1 minute,Stretch,10,None,Low
+Calf,Calves Stretch Static Position,Beginner,None,Low,Calves,None,5 minutes,1 minute,Stretch,10,None,Low
+Calf,Single Leg Calves Stretch,Beginner,None,Low,Calves,None,5 minutes,1 minute,Stretch,10,None,Low
+Calf,Calf Stretch With Rope,Beginner,None,Low,Calves,None,5 minutes,1 minute,Stretch,10,None,Low
+Calf,Crouching Heel Back Calf Stretch,Beginner,None,Low,Calves,None,5 minutes,1 minute,Stretch,10,None,Low
+Shoulders,Chest Supported Dumbbell Front Raises,Intermediate,Dumbbell,Moderate,Shoulders,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Full Body,Barbell Jump Squat,Advanced,Barbell,High,Full Body,None,15 minutes,3 minutes,Strength,200,Increase weight,High
+Abs,Side Bent,Beginner,None,Low,Core,Obliques,8 minutes,1 minute,Strength,70,Increase duration,Low
+Shoulders,One-Arm Dumbbell Upright Row,Intermediate,Dumbbell,Moderate,Shoulders,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Abs,Leg Scissors,Beginner,None,Low,Core,None,8 minutes,1 minute,Strength,70,Increase duration,Low
+Abs,Abdominal Bracing,Beginner,None,Low,Core,None,5 minutes,1 minute,Isometric,10,Increase duration,Low
+Shoulders,Single Arm Arnold Press,Intermediate,Dumbbell,Moderate,Shoulders,Triceps,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Biceps,Cable Kneeling Biceps Curl,Intermediate,Cable Machine,Moderate,Biceps,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Yoga,Double Pigeon Pose,Beginner,None,Low,Hips,None,5 minutes,1 minute,Stretch,10,None,Low
+Hip,Frog Pose,Beginner,None,Low,Hips,None,5 minutes,1 minute,Stretch,10,None,Low
+Chest,Kneeling Landmine Press,Intermediate,Landmine,Moderate,Chest,Shoulders,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Chest,Pike Push-Up Between Chairs,Intermediate,None,Moderate,Chest,Shoulders,8 minutes,2 minutes,Strength,80,Increase reps,Low
+Calisthenic,Handstand Walk,Advanced,None,High,Upper Body,None,10 minutes,3 minutes,Strength,120,Increase duration,High
+Calisthenic,Handstand,Advanced,None,High,Upper Body,None,10 minutes,3 minutes,Strength,120,Increase duration,High
+Hip,ATG Split Squat,Advanced,None,High,Hips,Quads,15 minutes,3 minutes,Strength,200,Increase reps,High
+Full Body,Kettlebell Clean and Press,Advanced,Kettlebell,High,Full Body,Shoulders,15 minutes,3 minutes,Strength,200,Increase weight,High
+Shoulders,Dumbbell Z Press,Intermediate,Dumbbell,Moderate,Shoulders,Triceps,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Hip,Seated Piriformis Stretch,Beginner,None,Low,Hips,None,5 minutes,1 minute,Stretch,10,None,Low
+Hip,Barbell Pin Front Squat,Advanced,Barbell,High,Hips,Quads,15 minutes,3 minutes,Strength,200,Increase weight,High
+Shoulders,Cable Y Raise,Intermediate,Cable Machine,Moderate,Shoulders,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Abs,Lying Toe Touches,Beginner,None,Low,Core,None,8 minutes,1 minute,Strength,70,Increase duration,Low
+Back / Wing,Climbing Monkey Bars,Beginner,None,Low,Back,None,10 minutes,2 minutes,Strength,80,None,Low
+Back / Wing,Supine Spinal Twist,Beginner,None,Low,Back,None,5 minutes,1 minute,Stretch,10,None,Low
+Leg,Heel Touch Side Kick Squat,Intermediate,None,Moderate,Legs,None,10 minutes,2 minutes,Strength,90,Increase reps,Low
+Shoulders,Alternate Dumbbell Lateral Raise,Intermediate,Dumbbell,Moderate,Shoulders,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Back / Wing,Back Slaps Wrap Around Stretch,Beginner,None,Low,Back,None,5 minutes,1 minute,Stretch,10,None,Low
+Chest,Reaction Ball Throw,Beginner,Reaction Ball,Low,Chest,None,8 minutes,1 minute,Strength,70,Increase duration,Low
+Shoulders,Front Rack PVC Stretch,Beginner,None,Low,Shoulders,None,5 minutes,1 minute,Stretch,10,None,Low
+Back / Wing,Bodyweight Row in Doorway,Beginner,None,Low,Back,None,10 minutes,2 minutes,Strength,80,None,Low
+Back / Wing,Lever High Row,Intermediate,Lever Machine,Moderate,Back,None,12 minutes,3 minutes,Strength,100,Increase resistance,Moderate
+Abs,Dumbbell Floor Wipers,Intermediate,Dumbbell,Moderate,Core,None,8 minutes,2 minutes,Strength,80,Increase weight,Low
+Hip,Hip Extension On Bench,Beginner,None,Low,Hips,Glutes,8 minutes,1 minute,Strength,70,Increase duration,Low
+Calf,Seated Calf Press on Leg Press Machine,Intermediate,Leg Press Machine,Moderate,Calves,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Calf,Single Calf Raise on Leg Press Machine,Intermediate,Leg Press Machine,Moderate,Calves,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Hip,Donkey Kick on Smith Machine,Intermediate,Smith Machine,Moderate,Hips,Glutes,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Hip,Glute Bridge on Bench,Intermediate,None,Moderate,Hips,Glutes,10 minutes,2 minutes,Strength,90,Increase duration,Low
+Cardio,Stationary Bike Run,Beginner,Stationary Bike,Low,Cardio,None,10 minutes,2 minutes,Aerobic,80,None,Low
+Hip,Donkey Kick on Leg Extension Machine,Intermediate,Leg Extension Machine,Moderate,Hips,Glutes,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Hip,Hip Thrust on The Leg Extension Machine,Intermediate,Leg Extension Machine,Moderate,Hips,Glutes,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Hip,Hip Thrust Machine,Intermediate,Hip Thrust Machine,Moderate,Hips,Glutes,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Hip,Squat on The Abductor Machine,Intermediate,Abductor Machine,Moderate,Hips,Quads,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Hip,Barbell Single Leg Hip Thrust,Intermediate,Barbell,Moderate,Hips,Glutes,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Back / Wing,Incline Dumbbell Hammer Row,Intermediate,Dumbbell,Moderate,Back,None,12 minutes,3 minutes,Strength,100,Increase weight,Moderate
+Hip,Pelvic Tilt,Beginner,None,Low,Hips,None,5 minutes,1 minute,Strength,10,Increase duration,Low
+Hip,Glute Bridge One Leg on Bench,Intermediate,None,Moderate,Hips,Glutes,10 minutes,2 minutes,Strength,90,Increase duration,Low
+Hip,Unilateral Bridge,Intermediate,None,Moderate,Hips,Glutes,10 minutes,2 minutes,Strength,90,Increase duration,Low
+Abs,Side Bridge Hip Abduction,Intermediate,None,Moderate,Core,Glutes,8 minutes,2 minutes,Strength,80,Increase reps,Low
+Hip,Straight Leg Kickback,Beginner,None,Low,Hips,Glutes,8 minutes,1 minute,Strength,70,Increase duration,Low
+Cardio,Hands Bike,Beginner,Hands Bike,Low,Cardio,None,10 minutes,2 minutes,Aerobic,80,None,Low
+Chest,Seated Cable Chest Press,Intermediate,Cable Machine,Moderate,Chest,Triceps,12 minutes,3 minutes,Strength,100,Increase resistance,Moderate
+Chest,Seated Cable Close Grip Chest Press,Intermediate,Cable Machine,Moderate,Chest,Triceps,12 minutes,3 minutes,Strength,100,Increase resistance,Moderate
+Abs,Cable Half Kneeling Pallof Press,Intermediate,Cable Machine,Moderate,Core,None,8 minutes,2 minutes,Strength,80,Increase resistance,Low
+Cardio,Squat Tuck Jump,Beginner,None,Low,Cardio,None,10 minutes,2 minutes,Aerobic,80,None,Low
+Hip,Decline Bench Dumbbell Lunge,Intermediate,Dumbbell,Moderate,Hips,Quads,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Triceps,Standing Triceps Stretch,Beginner,None,Low,Triceps,None,5 minutes,1 minute,Stretch,10,None,Low
+Chest,Chest and Front of Shoulder Stretch,Beginner,None,Low,Chest,Shoulders,5 minutes,1 minute,Stretch,10,None,Low
+Calisthenic,Forearm Push-up,Intermediate,None,Moderate,Upper Body,None,8 minutes,2 minutes,Strength,80,Increase reps,Low
+Back / Wing,Plate Loaded Seated Row,Intermediate,Plate Loaded Machine,Moderate,Back,None,12 minutes,3 minutes,Strength,100,Increase resistance,Moderate
+Biceps,Cable Two Arm Curl on Incline Bench,Intermediate,Cable Machine,Moderate,Biceps,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Back / Wing,Chin Up Around the Bar,Advanced,None,High,Back,Biceps,10 minutes,3 minutes,Strength,120,Increase reps,High
+Hip,Banded Standing Glute Kickback,Intermediate,Resistance Band,Moderate,Hips,Glutes,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Hip,Banded Seated Hip Abduction,Intermediate,Resistance Band,Moderate,Hips,Glutes,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Hip,Banded Single Leg Glute Bridge,Intermediate,Resistance Band,Moderate,Hips,Glutes,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Hip,Banded Glute Bridge,Intermediate,Resistance Band,Moderate,Hips,Glutes,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Back / Wing,EZ-Bar Bent Arm Pullover,Intermediate,EZ-Bar,Moderate,Back,Chest,12 minutes,3 minutes,Strength,100,Increase weight,Moderate
+Hip,Lateral Leg Swings,Beginner,None,Low,Hips,None,5 minutes,1 minute,Strength,10,Increase duration,Low
+Biceps,Elbow Flexion,Beginner,None,Low,Biceps,None,5 minutes,1 minute,Strength,10,Increase duration,Low
+Shoulders,Shoulder External Rotation,Beginner,None,Low,Shoulders,None,5 minutes,1 minute,Strength,10,Increase duration,Low
+Shoulders,Shoulder Internal Rotation,Beginner,None,Low,Shoulders,None,5 minutes,1 minute,Strength,10,Increase duration,Low
+Shoulders,Lateral Raise with Towel on Wall,Beginner,Towel,Low,Shoulders,None,5 minutes,1 minute,Strength,10,Increase duration,Low
+Shoulders,Alternating Shoulder Flexion,Beginner,None,Low,Shoulders,None,5 minutes,1 minute,Strength,10,Increase duration,Low
+Hip,Banded Walk,Beginner,Resistance Band,Low,Hips,Glutes,8 minutes,1 minute,Strength,70,Increase duration,Low
+Hip,Band Side Lying Clam,Beginner,Resistance Band,Low,Hips,Glutes,8 minutes,1 minute,Strength,70,Increase duration,Low
+Hip,Resistance Band Lateral Walk,Beginner,Resistance Band,Low,Hips,Glutes,8 minutes,1 minute,Strength,70,Increase duration,Low
+Hip,Banded Glute Kickbacks,Intermediate,Resistance Band,Moderate,Hips,Glutes,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Hip,Banded Donkey Kicks,Intermediate,Resistance Band,Moderate,Hips,Glutes,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Hip,Banded Thigh Fly,Intermediate,Resistance Band,Moderate,Hips,Glutes,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Hip,Band Side Lying Leg Lift,Beginner,Resistance Band,Low,Hips,Glutes,8 minutes,1 minute,Strength,70,Increase duration,Low
+Hip,Banded Fire Hydrant,Intermediate,Resistance Band,Moderate,Hips,Glutes,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Biceps,Cable Pulldown Biceps Curl,Intermediate,Cable Machine,Moderate,Biceps,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Hip,Kneeling Jump Squat,Intermediate,None,Moderate,Hips,Quads,10 minutes,2 minutes,Strength,90,Increase reps,Low
+Leg,Banded Split Squat,Intermediate,Resistance Band,Moderate,Legs,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Hip,Banded Kettlebell Goblet Squat,Intermediate,Kettlebell,Moderate,Hips,Quads,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Leg,Banded Lunge,Intermediate,Resistance Band,Moderate,Legs,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Leg,Banded Leg Curl,Intermediate,Resistance Band,Moderate,Legs,Hamstrings,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Leg,Standing Single Leg Curl Machine,Intermediate,Single Leg Curl Machine,Moderate,Legs,Hamstrings,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Leg,Decline Dumbbell Leg Curl,Intermediate,Dumbbell,Moderate,Legs,Hamstrings,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Triceps,Low Cable Tricep Kickback,Intermediate,Cable Machine,Moderate,Triceps,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Shoulders,Banded Shoulder External Rotation,Intermediate,Resistance Band,Moderate,Shoulders,Rotator Cuff,10 minutes,2 minutes,Strength,85,Increase resistance,Low
+Shoulders,Banded Shoulder Flexion,Intermediate,Resistance Band,Moderate,Shoulders,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Back / Wing,Banded Shoulder Extension,Intermediate,Resistance Band,Moderate,Back,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Back / Wing,Banded Shoulder Adduction,Intermediate,Resistance Band,Moderate,Back,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Hip,Kettlebell Front Squat,Intermediate,Kettlebell,Moderate,Hips,Quads,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Hip,Single Knee To Chest,Beginner,None,Low,Hips,None,5 minutes,1 minute,Stretch,10,None,Low
+Hip,Pistol Squat to Box,Advanced,None,High,Hips,Quads,15 minutes,3 minutes,Strength,200,Increase reps,High
+Hip,Frog Pump,Beginner,None,Low,Hips,Glutes,8 minutes,1 minute,Strength,70,Increase duration,Low
+Hip,Landmine Deadlift,Intermediate,Landmine,Moderate,Hips,Glutes,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Back / Wing,Landmine T-Bar Row,Intermediate,Landmine,Moderate,Back,None,12 minutes,3 minutes,Strength,100,Increase weight,Moderate
+Cardio,1-2 Stick Drill,Beginner,None,Low,Cardio,None,10 minutes,2 minutes,Aerobic,80,None,Low
+Back / Wing,Cable Twisting Standing High Row,Intermediate,Cable Machine,Moderate,Back,None,12 minutes,3 minutes,Strength,100,Increase resistance,Moderate
+Biceps,Band Biceps Curl,Intermediate,Resistance Band,Moderate,Biceps,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Triceps,Band Skull Crusher,Intermediate,Resistance Band,Moderate,Triceps,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Back / Wing,Single Arm Twisting Seated Cable Row,Intermediate,Cable Machine,Moderate,Back,None,12 minutes,3 minutes,Strength,100,Increase resistance,Moderate
+Back / Wing,Band Alternating Lat Pulldown,Intermediate,Resistance Band,Moderate,Back,None,12 minutes,3 minutes,Strength,100,Increase resistance,Moderate
+Back / Wing,Band Alternating Low Row with Twist,Intermediate,Resistance Band,Moderate,Back,None,12 minutes,3 minutes,Strength,100,Increase resistance,Moderate
+Chest,Band Alternate Incline Chest Press,Intermediate,Resistance Band,Moderate,Chest,None,12 minutes,3 minutes,Strength,100,Increase resistance,Moderate
+Shoulders,Band Single Arm Shoulder Press,Intermediate,Resistance Band,Moderate,Shoulders,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Hip,Band Seated Hip External Rotation,Beginner,Resistance Band,Low,Hips,None,8 minutes,1 minute,Strength,70,Increase duration,Low
+Hip,Band Seated Hip Internal Rotation,Beginner,Resistance Band,Low,Hips,None,8 minutes,1 minute,Strength,70,Increase duration,Low
+Back / Wing,Band Seated Row,Intermediate,Resistance Band,Moderate,Back,None,12 minutes,3 minutes,Strength,100,Increase resistance,Moderate
+Triceps,Band Pushdown,Intermediate,Resistance Band,Moderate,Triceps,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Hip,Landmine Squat,Intermediate,Landmine,Moderate,Hips,Quads,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Leg,Sissy Squat,Advanced,None,High,Legs,None,10 minutes,3 minutes,Strength,120,Increase reps,High
+Biceps,Single Dumbbell Spider Hammer Curl,Intermediate,Dumbbell,Moderate,Biceps,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Triceps,Decline Dumbbell Triceps Extension,Intermediate,Dumbbell,Moderate,Triceps,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Triceps,Dumbbell Tate Press,Intermediate,Dumbbell,Moderate,Triceps,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Hip,Rack Pull,Advanced,Barbell,High,Hips,Glutes,15 minutes,3 minutes,Strength,200,Increase weight,High
+Calisthenic,Handstand Push-ups Between Benches,Advanced,None,High,Upper Body,None,10 minutes,3 minutes,Strength,120,Increase reps,High
+Calisthenic,Kipping Handstand Push-up,Advanced,None,High,Upper Body,None,10 minutes,3 minutes,Strength,120,Increase reps,High
+Back / Wing,Barbell Pendlay Row,Intermediate,Barbell,Moderate,Back,None,12 minutes,3 minutes,Strength,110,Increase weight,Moderate
+Hip,Standing Knee Hugs,Beginner,None,Low,Hips,None,5 minutes,1 minute,Stretch,10,None,Low
+Erector Spinae,Superman,Beginner,None,Low,Lower Back,None,8 minutes,1 minute,Strength,70,Increase duration,Low
+Hip,Fire Hydrant,Beginner,None,Low,Hips,Glutes,8 minutes,1 minute,Strength,70,Increase duration,Low
+Cardio,Step Up with Knee Raises,Beginner,None,Low,Cardio,None,10 minutes,2 minutes,Aerobic,80,None,Low
+Abs,Snap Jumps,Beginner,None,Low,Core,None,8 minutes,1 minute,Strength,70,Increase duration,Low
+Hip,Piriformis Stretch,Beginner,None,Low,Hips,None,5 minutes,1 minute,Stretch,10,None,Low
+Hip,Half Kneeling Hip Flexor Stretch,Beginner,None,Low,Hips,None,5 minutes,1 minute,Stretch,10,None,Low
+Hip,Barbell Glute Bridge,Intermediate,Barbell,Moderate,Hips,Glutes,12 minutes,3 minutes,Strength,100,Increase weight,Moderate
+Hip,Cable Hip Extension,Intermediate,Cable Machine,Moderate,Hips,Glutes,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Hip,Cable Hip Abduction,Intermediate,Cable Machine,Moderate,Hips,Glutes,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Hip,Donkey Kicks,Beginner,None,Low,Hips,Glutes,8 minutes,1 minute,Strength,70,Increase duration,Low
+Shoulders,Bent-Over Dumbbell Rear Delt Raise With Head On Bench,Intermediate,Dumbbell,Moderate,Shoulders,Rear Deltoid,10 minutes,2 minutes,Strength,85,Increase weight,Low
+Abs,Hanging Leg Raises,Intermediate,None,Moderate,Core,Lower Abs,8 minutes,2 minutes,Strength,80,Increase reps,Low
+Abs,Side Plank Leg Raises,Intermediate,None,Moderate,Core,Obliques,8 minutes,2 minutes,Strength,80,Increase reps,Low
+Abs,Reverse Plank Kicks,Intermediate,None,Moderate,Core,Lower Abs,8 minutes,2 minutes,Strength,80,Increase reps,Low
+Abs,Hindu Push-ups,Intermediate,None,Moderate,Core,Shoulders,10 minutes,2 minutes,Strength,90,Increase reps,Moderate
+Abs,Bear Crawl,Beginner,None,Low,Core,None,8 minutes,1 minute,Strength,70,Increase duration,Low
+Cardio,High Knee Run,Beginner,None,Low,Cardio,None,10 minutes,2 minutes,Aerobic,80,None,Low
+Abs,High Knee Skips,Beginner,None,Low,Core,None,8 minutes,1 minute,Strength,70,Increase duration,Low
+Abs,Double Crunches,Intermediate,None,Moderate,Core,None,8 minutes,2 minutes,Strength,80,Increase reps,Low
+Abs,Toe Reaches,Beginner,None,Low,Core,None,8 minutes,1 minute,Strength,70,Increase duration,Low
+Calf,Inner Thigh Side Stretch,Beginner,None,Low,Calves,None,5 minutes,1 minute,Stretch,10,None,Low
+Abs,Sit-ups,Beginner,None,Low,Core,None,8 minutes,1 minute,Strength,70,Increase duration,Low
+Abs,Side Plank,Beginner,None,Low,Core,Obliques,5 minutes,1 minute,Isometric,50,Increase duration,Low
+Abs,Plank Leg Lift,Intermediate,None,Moderate,Core,None,8 minutes,2 minutes,Strength,80,Increase duration,Low
+Abs,Plank Knee to Elbow,Intermediate,None,Moderate,Core,Obliques,8 minutes,2 minutes,Strength,80,Increase reps,Low
+Abs,Russian Twist,Intermediate,Medicine Ball,Moderate,Core,Obliques,8 minutes,2 minutes,Strength,80,Increase weight,Low
+Abs,Plank,Beginner,None,Low,Core,None,5 minutes,1 minute,Isometric,50,Increase duration,Low
+Cardio,Skater,Beginner,None,Low,Cardio,None,10 minutes,2 minutes,Aerobic,80,None,Low
+Abs,Leg Pull-in Knee-ups,Beginner,None,Low,Core,Lower Abs,8 minutes,1 minute,Strength,70,Increase reps,Low
+Hip,Butterfly Stretch,Beginner,None,Low,Hips,None,5 minutes,1 minute,Stretch,10,None,Low
+Abs,Glute Bridge,Beginner,None,Low,Glutes,Hamstrings,8 minutes,1 minute,Strength,70,Increase duration,Low
+Erector Spinae,Arm Leg Raises,Beginner,None,Low,Lower Back,None,8 minutes,1 minute,Strength,70,Increase duration,Low
+Abs,Hollow Hold,Beginner,None,Low,Core,None,5 minutes,1 minute,Isometric,50,Increase duration,Low
+Abs,Long Arm Crunch,Beginner,None,Low,Core,Upper Abs,8 minutes,1 minute,Strength,70,Increase reps,Low
+Abs,Half Wipers,Intermediate,None,Moderate,Core,Obliques,8 minutes,2 minutes,Strength,80,Increase reps,Low
+Abs,Jackknife Sit-ups (V-Up),Intermediate,None,Moderate,Core,Lower Abs,10 minutes,2 minutes,Strength,90,Increase reps,Low
+Abs,Flutter Kick,Beginner,None,Low,Core,Lower Abs,8 minutes,1 minute,Strength,70,Increase duration,Low
+Hip,Dumbbell Forward Leaning Lunge,Intermediate,Dumbbell,Moderate,Hips,Quads,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Hip,Dumbbell Reverse Lunge,Intermediate,Dumbbell,Moderate,Hips,Quads,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Leg,Dumbbell Pistol Squat,Advanced,Dumbbell,High,Legs,None,15 minutes,3 minutes,Strength,200,Increase weight,High
+Abs,Standing side bend,Beginner,None,Low,Core,Obliques,8 minutes,1 minute,Strength,70,Increase duration,Low
+Triceps,Bent Over Kickback,Intermediate,Dumbbell,Moderate,Triceps,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Chest,Incline Close-Grip Bench Press,Intermediate,Barbell,Moderate,Chest,Triceps,12 minutes,3 minutes,Strength,110,Increase weight,Moderate
+Chest,Close Grip Bench Press,Intermediate,Barbell,Moderate,Chest,Triceps,12 minutes,3 minutes,Strength,110,Increase weight,Moderate
+Triceps,Dumbbell Triceps Extension,Intermediate,Dumbbell,Moderate,Triceps,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Calisthenic,Diamond Push-up,Beginner,None,Low,Upper Body,None,8 minutes,1 minute,Strength,70,Increase reps,Low
+Biceps,Cable Curl,Intermediate,Cable Machine,Moderate,Biceps,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Forearm,Reverse Wrist Curl,Intermediate,Barbell,Moderate,Forearms,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Forearm,Wrist Curl,Intermediate,Barbell,Moderate,Forearms,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Biceps,Z-Bar Curl,Intermediate,Z-Bar,Moderate,Biceps,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Shoulders,Barbell Upright Row,Intermediate,Barbell,Moderate,Shoulders,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Shoulders,Barbell Front Raise,Intermediate,Barbell,Moderate,Shoulders,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Hip,Bodyweight Bulgarian Split Squat,Beginner,None,Low,Hips,Quads,8 minutes,1 minute,Strength,70,Increase duration,Low
+Hip,Dumbbell Sumo Squat,Intermediate,Dumbbell,Moderate,Hips,Quads,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Hip,Hip Adduction Machine,Intermediate,Adduction Machine,Moderate,Hips,Inner Thigh,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Hip,Hip Abduction Machine,Intermediate,Abduction Machine,Moderate,Hips,Glutes,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Calisthenic,Push-Up,Beginner,None,Low,Upper Body,None,8 minutes,1 minute,Strength,70,Increase reps,Low
+Chest,Hammer Press,Intermediate,Dumbbell,Moderate,Chest,Triceps,12 minutes,3 minutes,Strength,100,Increase weight,Moderate
+Chest,Chest Press Machine,Intermediate,Chest Press Machine,Moderate,Chest,Triceps,12 minutes,3 minutes,Strength,110,Increase resistance,Moderate
+Chest,Corner Wall Stretch,Beginner,None,Low,Chest,None,5 minutes,1 minute,Stretch,10,None,Low
+Leg,Seated Banded Leg Extension,Intermediate,Resistance Band,Moderate,Legs,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Biceps,Hammer Curl with Resistance Band,Intermediate,Resistance Band,Moderate,Biceps,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Triceps,Triceps Extension with Resistance Bands,Intermediate,Resistance Band,Moderate,Triceps,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Chest,Barbell Floor Press,Intermediate,Barbell,Moderate,Chest,Triceps,12 minutes,3 minutes,Strength,110,Increase weight,Moderate
+Abs,Suspended Ab Fall-out,Intermediate,Suspension Trainer,Moderate,Core,None,8 minutes,2 minutes,Strength,80,Increase duration,Low
+Abs,TRX Mountain Climber,Intermediate,Suspension Trainer,Moderate,Core,None,8 minutes,2 minutes,Strength,80,Increase duration,Low
+Abs,Side Plank Knee to Elbow,Intermediate,None,Moderate,Core,Obliques,8 minutes,2 minutes,Strength,80,Increase reps,Low
+Hip,Zercher Deadlift,Advanced,Barbell,High,Hips,Glutes,15 minutes,3 minutes,Strength,200,Increase weight,High
+Leg,Supported Pistol Squat,Intermediate,None,Moderate,Legs,None,10 minutes,2 minutes,Strength,90,Increase reps,Low
+Chest,Landmine Floor Chest Fly,Intermediate,Landmine,Moderate,Chest,None,12 minutes,3 minutes,Strength,100,Increase weight,Moderate
+Full Body,Barbell Thruster,Advanced,Barbell,High,Full Body,Shoulders,15 minutes,3 minutes,Strength,200,Increase weight,High
+Erector Spinae,Dumbbell Pull Through,Intermediate,Dumbbell,Moderate,Lower Back,Glutes,12 minutes,3 minutes,Strength,100,Increase weight,Moderate
+Calf,Single Leg Donkey Calf Raise,Intermediate,None,Moderate,Calves,None,10 minutes,2 minutes,Strength,90,Increase reps,Low
+Chest,Decline Hammer Press,Intermediate,Dumbbell,Moderate,Chest,Triceps,12 minutes,3 minutes,Strength,100,Increase weight,Moderate
+Hip,Jefferson Squat,Advanced,Barbell,High,Hips,Quads,15 minutes,3 minutes,Strength,200,Increase weight,High
+Triceps,Alternating Lying Dumbbell Triceps Extension,Intermediate,Dumbbell,Moderate,Triceps,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Triceps,Barbell Reverse Grip Skullcrusher,Intermediate,Barbell,Moderate,Triceps,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Triceps,Barbell Lying Back of the Head Tricep Extension,Intermediate,Barbell,Moderate,Triceps,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Triceps,EZ Bar Lying Close Grip Triceps Extension Behind Head,Intermediate,EZ-Bar,Moderate,Triceps,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Triceps,Kneeling Cable Triceps Extension,Intermediate,Cable Machine,Moderate,Triceps,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Chest,Close-Grip Reverse Bench Press,Intermediate,Barbell,Moderate,Chest,Triceps,12 minutes,3 minutes,Strength,110,Increase weight,Moderate
+Triceps,One Arm High Pulley Overhead Tricep Extension,Intermediate,Cable Machine,Moderate,Triceps,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Triceps,Cable Crossover Triceps Extension,Intermediate,Cable Machine,Moderate,Triceps,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Triceps,Side One Arm Reverse Pushdown,Intermediate,Cable Machine,Moderate,Triceps,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Biceps,Cable Reverse Grip EZ-bar Biceps Curl,Intermediate,Cable Machine,Moderate,Biceps,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Abs,Bodyweight Skull Crushers,Beginner,None,Low,Core,None,8 minutes,1 minute,Strength,70,Increase reps,Low
+Triceps,V-bar Pushdown,Intermediate,Cable Machine,Moderate,Triceps,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Triceps,Cable Rope Lying Tricep Extension,Intermediate,Cable Machine,Moderate,Triceps,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Triceps,Cable Lying Triceps Extension,Intermediate,Cable Machine,Moderate,Triceps,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Not specified,Barbell Lying Close grip Triceps Extension,Intermediate,Barbell,Moderate,Triceps,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Erector Spinae,Glute Ham Raise,Intermediate,None,Moderate,Lower Back,Glutes,12 minutes,3 minutes,Strength,100,Increase duration,Moderate
+Chest,Wide-Grip Reverse Bench Press,Intermediate,Barbell,Moderate,Chest,Triceps,12 minutes,3 minutes,Strength,110,Increase weight,Moderate
+Calisthenic,Straddle Planche,Advanced,None,High,Upper Body,None,10 minutes,3 minutes,Strength,120,Increase duration,High
+Hip,TRX Pistol Squat,Advanced,Suspension Trainer,High,Hips,Quads,15 minutes,3 minutes,Strength,200,Increase reps,High
+Hip,Sitting Wide Leg Adductor Stretch,Beginner,None,Low,Hips,None,5 minutes,1 minute,Stretch,10,None,Low
+Hip,Standing Wide Knees Adductor Stretch,Beginner,None,Low,Hips,None,5 minutes,1 minute,Stretch,10,None,Low
+Hip,Standing Wide Leg Adductor Stretch,Beginner,None,Low,Hips,None,5 minutes,1 minute,Stretch,10,None,Low
+Leg,Knee Circles,Beginner,None,Low,Legs,None,5 minutes,1 minute,Strength,10,Increase duration,Low
+Hip,Hip Circles,Beginner,None,Low,Hips,None,5 minutes,1 minute,Strength,10,Increase duration,Low
+Yoga,Parsva Balasana | Thread the Needle Pose,Beginner,None,Low,Hips,None,5 minutes,1 minute,Stretch,10,None,Low
+Full Body,One Arm Kettlebell Swing,Advanced,Kettlebell,High,Full Body,Shoulders,15 minutes,3 minutes,Strength,200,Increase weight,High
+Abs,Half Cross Crunch,Beginner,None,Low,Core,None,8 minutes,1 minute,Strength,70,Increase duration,Low
+Chest,Close Grip Knee Push-up,Beginner,None,Low,Chest,Triceps,5 minutes,1 minute,Strength,50,Increase reps,Low
+Abs,Cable Seated Twist on Floor,Intermediate,Cable Machine,Moderate,Core,Obliques,8 minutes,2 minutes,Strength,80,Increase resistance,Low
+Abs,Butterfly Sit-up,Beginner,None,Low,Core,Lower Abs,8 minutes,1 minute,Strength,70,Increase reps,Low
+Back / Wing,Neutral Grip Pull-up,Intermediate,None,Moderate,Back,Biceps,10 minutes,2 minutes,Strength,110,Increase reps,Moderate
+Biceps,Standing Reverse Shoulder Stretch,Beginner,None,Low,Biceps,None,5 minutes,1 minute,Stretch,10,None,Low
+Shoulders,Resistance Band Bent Over Rear Delt Fly,Intermediate,Resistance Band,Moderate,Shoulders,Rear Deltoid,10 minutes,2 minutes,Strength,85,Increase resistance,Low
+Abs,Push-up With Rotation,Intermediate,None,Moderate,Core,Shoulders,10 minutes,2 minutes,Strength,90,Increase reps,Moderate
+Abs,Side Plank Rotation,Intermediate,None,Moderate,Core,Obliques,8 minutes,2 minutes,Strength,80,Increase reps,Low
+Hip,Resistance Band Overhead Squat,Intermediate,Resistance Band,Moderate,Hips,Shoulders,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Back / Wing,Medicine ball Overhead Slam,Intermediate,Medicine Ball,Moderate,Back,Shoulders,10 minutes,2 minutes,Strength,90,Increase weight,Moderate
+Chest,Supine Medicine Ball Chest Throw,Beginner,Medicine Ball,Low,Chest,None,8 minutes,1 minute,Strength,70,Increase weight,Low
+Chest,Reverse Dips,Beginner,None,Low,Chest,Triceps,8 minutes,1 minute,Strength,70,Increase reps,Low
+Chest,Trx Chest Press,Intermediate,Suspension Trainer,Moderate,Chest,Triceps,10 minutes,2 minutes,Strength,90,Increase duration,Low
+Back / Wing,Dumbbell Seal Row,Intermediate,Dumbbell,Moderate,Back,None,12 minutes,3 minutes,Strength,100,Increase weight,Moderate
+Hip,Lever Standing Hip Extension,Intermediate,Lever Machine,Moderate,Hips,Glutes,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Chest,Dumbbell Straight Arm Pullover (knees at 90 degrees),Intermediate,Dumbbell,Moderate,Chest,Back,12 minutes,3 minutes,Strength,100,Increase weight,Moderate
+Chest,Trx Chest Fly,Intermediate,Suspension Trainer,Moderate,Chest,None,10 minutes,2 minutes,Strength,90,Increase duration,Low
+Chest,Doorway Pec and Shoulder Stretch,Beginner,None,Low,Chest,Shoulders,5 minutes,1 minute,Stretch,10,None,Low
+Abs,Prone Abdominal Hollowing,Beginner,None,Low,Core,None,5 minutes,1 minute,Isometric,10,Increase duration,Low
+Abs,Hell Slide,Beginner,None,Low,Core,None,8 minutes,1 minute,Strength,70,Increase duration,Low
+Full Body,Wall Ball,Beginner,Medicine Ball,Low,Full Body,None,10 minutes,2 minutes,Strength,80,None,Low
+Hip,Kicks Leg Bent,Beginner,None,Low,Hips,None,8 minutes,1 minute,Strength,70,Increase duration,Low
+Hip,Kneeling Leg Out Adductor Stretch,Beginner,None,Low,Hips,None,5 minutes,1 minute,Stretch,10,None,Low
+Shoulders,Resistance Band Pull Apart,Beginner,Resistance Band,Low,Shoulders,None,8 minutes,1 minute,Strength,70,Increase resistance,Low
+Abs,Half Frog Pose,Beginner,None,Low,Core,None,5 minutes,1 minute,Stretch,10,None,Low
+Hip,Happy Baby Pose,Beginner,None,Low,Hips,None,5 minutes,1 minute,Stretch,10,None,Low
+Biceps,Barbell Drag Curl,Intermediate,Barbell,Moderate,Biceps,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Back / Wing,Kettlebell Renegade Row,Intermediate,Kettlebell,Moderate,Back,None,12 minutes,3 minutes,Strength,100,Increase weight,Moderate
+Back / Wing,Push-Up to Renegade Row,Intermediate,Dumbbell,Moderate,Back,Shoulders,10 minutes,2 minutes,Strength,90,Increase weight,Moderate
+Chest,Modified Hindu Push-up,Intermediate,None,Moderate,Chest,Shoulders,10 minutes,2 minutes,Strength,90,Increase reps,Moderate
+Chest,Knuckle Push-Up,Beginner,None,Low,Chest,Triceps,8 minutes,1 minute,Strength,70,Increase reps,Low
+Calisthenic,Planche Push-Up,Advanced,None,High,Upper Body,None,10 minutes,3 minutes,Strength,120,Increase reps,High
+Calisthenic,Finger Push-up,Advanced,None,High,Upper Body,None,10 minutes,3 minutes,Strength,120,Increase reps,High
+Calisthenic,Chest Tap Push-up,Intermediate,None,Moderate,Upper Body,None,8 minutes,2 minutes,Strength,80,Increase reps,Low
+Chest,Kettlebell Deep Push-Up,Intermediate,Kettlebell,Moderate,Chest,Triceps,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Calisthenic,Archer Push-Up,Advanced,None,High,Upper Body,None,10 minutes,3 minutes,Strength,120,Increase reps,High
+Chest,One Leg Push-Up,Intermediate,None,Moderate,Chest,Triceps,8 minutes,2 minutes,Strength,80,Increase reps,Low
+Abs,Medicine Ball Crunch,Intermediate,Medicine Ball,Moderate,Core,None,8 minutes,2 minutes,Strength,80,Increase weight,Low
+Chest,Bosu Ball Push-Up,Intermediate,Bosu Ball,Moderate,Chest,Triceps,10 minutes,2 minutes,Strength,90,Increase duration,Low
+Chest,Resistance Band Alternating Chest Fly,Intermediate,Resistance Band,Moderate,Chest,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Abs,Kettlebell Figure 8,Intermediate,Kettlebell,Moderate,Core,None,8 minutes,2 minutes,Strength,80,Increase weight,Low
+Hip,Smith Machine Hip Thrust,Intermediate,Smith Machine,Moderate,Hips,Glutes,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Hip,Resistance Band Hip Thrust,Intermediate,Resistance Band,Moderate,Hips,Glutes,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Hip,Resistance Band Hip Thrusts on Knees,Intermediate,Resistance Band,Moderate,Hips,Glutes,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Forearm,Barbell Finger Curl,Intermediate,Barbell,Moderate,Forearms,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Forearm,Dumbbell Finger Curl,Intermediate,Dumbbell,Moderate,Forearms,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Back / Wing,Dumbbell Renegade Row,Intermediate,Dumbbell,Moderate,Back,None,12 minutes,3 minutes,Strength,100,Increase weight,Moderate
+Abs,Ball Russian Twist throw with partner,Intermediate,Medicine Ball,Moderate,Core,Obliques,8 minutes,2 minutes,Strength,80,Increase weight,Low
+Shoulders,Kettlebell Lateral Raise,Intermediate,Kettlebell,Moderate,Shoulders,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Erector Spinae,Barbell Single Leg Deadlift,Intermediate,Barbell,Moderate,Lower Back,Glutes,12 minutes,3 minutes,Strength,100,Increase weight,Moderate
+Erector Spinae,Dumbbell Single Leg Deadlift,Intermediate,Dumbbell,Moderate,Lower Back,Glutes,12 minutes,3 minutes,Strength,100,Increase weight,Moderate
+Chest,Dumbbell Reverse Grip 30 Degrees Incline Bench Press,Intermediate,Dumbbell,Moderate,Chest,Triceps,12 minutes,3 minutes,Strength,100,Increase weight,Moderate
+Biceps,Close Grip Barbell Curl,Intermediate,Barbell,Moderate,Biceps,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Leg,Seated Leg Extension with Resistance Band,Intermediate,Resistance Band,Moderate,Legs,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Erector Spinae,Good Morning With Resistance Band,Intermediate,Resistance Band,Moderate,Lower Back,None,12 minutes,3 minutes,Strength,100,Increase resistance,Moderate
+Hip,Dumbbell Bench Squat,Intermediate,Dumbbell,Moderate,Hips,Quads,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Abs,Seated Ab Crunch Machine,Intermediate,Crunch Machine,Moderate,Core,None,8 minutes,2 minutes,Strength,80,Increase resistance,Low
+Hip,Pendulum Squat,Intermediate,None,Moderate,Hips,Quads,10 minutes,2 minutes,Strength,90,Increase reps,Low
+Back / Wing,Band Assisted Pull-up,Beginner,Resistance Band,Low,Back,Biceps,10 minutes,2 minutes,Strength,90,None,Low
+Abs,Dumbbell Windmill,Intermediate,Dumbbell,Moderate,Core,Obliques,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Erector Spinae,Rolling Like a Ball,Beginner,None,Low,Lower Back,None,8 minutes,1 minute,Strength,70,Increase duration,Low
+Full Body,Dumbbell Iron Cross,Advanced,Dumbbell,High,Full Body,None,15 minutes,3 minutes,Strength,200,Increase weight,High
+Chest,Incline Landmine Press,Intermediate,Landmine,Moderate,Chest,Shoulders,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Hip,Box Pistol Squat,Advanced,None,High,Hips,Quads,15 minutes,3 minutes,Strength,200,Increase reps,High
+Calisthenic,Ring Dips,Advanced,Rings,High,Upper Body,None,10 minutes,3 minutes,Strength,120,Increase reps,High
+Hip,Sitting Rotation Hip Stretch,Beginner,None,Low,Hips,None,5 minutes,1 minute,Stretch,10,None,Low
+Hip,Supported One Leg Standing Hip Flexor And Knee Extensor Stretch,Beginner,None,Low,Hips,None,5 minutes,1 minute,Stretch,10,None,Low
+Hip,Squat mobility Complex,Beginner,None,Low,Hips,None,5 minutes,1 minute,Stretch,10,None,Low
+Chest,Cobra Push-up,Beginner,None,Low,Chest,Triceps,5 minutes,1 minute,Strength,50,Increase reps,Low
+Chest,Shoulder Tap Push-up,Intermediate,None,Moderate,Chest,Shoulders,8 minutes,2 minutes,Strength,80,Increase reps,Low
+Calisthenic,Single Arm Raise Push-up,Intermediate,None,Moderate,Upper Body,None,8 minutes,2 minutes,Strength,80,Increase reps,Low
+Chest,Suspended Push-Up,Intermediate,Suspension Trainer,Moderate,Chest,Triceps,10 minutes,2 minutes,Strength,90,Increase duration,Low
+Chest,Close-grip Dumbbell Push-Up,Intermediate,Dumbbell,Moderate,Chest,Triceps,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Chest,Medicine Ball Push-Up,Intermediate,Medicine Ball,Moderate,Chest,Triceps,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Chest,Single Arm Push-Up on Medicine Ball,Intermediate,Medicine Ball,Moderate,Chest,Triceps,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Chest,Weighted Vest Push-up,Intermediate,Weighted Vest,Moderate,Chest,Triceps,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Biceps,One Arm Cable Bicep Curl,Intermediate,Cable Machine,Moderate,Biceps,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Biceps,Single Arm Reverse Grip Cable Bicep Curl,Intermediate,Cable Machine,Moderate,Biceps,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Cardio,Assault AirBike,Beginner,Assault AirBike,Low,Cardio,None,10 minutes,2 minutes,Aerobic,80,None,Low
+Cardio,Recumbent Exercise Bike,Beginner,Recumbent Bike,Low,Cardio,None,10 minutes,2 minutes,Aerobic,80,None,Low
+Chest,Medicine Ball Overhead Throw,Beginner,Medicine Ball,Low,Chest,None,8 minutes,1 minute,Strength,70,Increase weight,Low
+Chest,Standing Medicine Ball Chest Pass,Beginner,Medicine Ball,Low,Chest,Shoulders,8 minutes,1 minute,Strength,70,Increase weight,Low
+Abs,One Arm Medicine Ball Slam,Intermediate,Medicine Ball,Moderate,Core,Shoulders,10 minutes,2 minutes,Strength,90,Increase weight,Moderate
+Forearm,Barbell Reverse Wrist Curl Over a Bench,Intermediate,Barbell,Moderate,Forearms,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Biceps,Water Bottle Hammer Curl,Beginner,Water Bottle,Low,Biceps,None,8 minutes,1 minute,Strength,70,Increase reps,Low
+Biceps,Seated Alternating Dumbbell Curl,Intermediate,Dumbbell,Moderate,Biceps,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Shoulders,Dumbbell Single Arm Lateral Raise,Intermediate,Dumbbell,Moderate,Shoulders,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Shoulders,Dumbbell Seated Alternate Front Raise,Intermediate,Dumbbell,Moderate,Shoulders,None,10 minutes,2 minutes,Strength,90,Increase weight,Low
+Hip,Side Lying Hip Adduction,Beginner,None,Low,Hips,Inner Thigh,8 minutes,1 minute,Strength,70,Increase reps,Low
+Hip,Side Hip Abduction,Beginner,None,Low,Hips,Glutes,8 minutes,1 minute,Strength,70,Increase reps,Low
+Abs,Side Lying Feet Raise,Beginner,None,Low,Core,Obliques,8 minutes,1 minute,Strength,70,Increase reps,Low
+Biceps,Seated Bicep Curl With Resistance Band,Intermediate,Resistance Band,Moderate,Biceps,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Abs,Dhanurasana | Rocking Bow Pose,Beginner,None,Low,Core,None,5 minutes,1 minute,Stretch,10,None,Low
+Back / Wing,Standing Banded Row,Intermediate,Resistance Band,Moderate,Back,None,12 minutes,3 minutes,Strength,100,Increase resistance,Moderate
+Triceps,Rear Drive With Resistance Band,Intermediate,Resistance Band,Moderate,Triceps,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Biceps,One-Arm Biceps Curl With Resistance Band,Intermediate,Resistance Band,Moderate,Biceps,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Hip,Single Stiff Leg Deadlift With Resistance Band,Intermediate,Resistance Band,Moderate,Hips,Glutes,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Hip,Pull through With Resistance Band,Intermediate,Resistance Band,Moderate,Hips,Glutes,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Abs,Seated Twist With Resistance Band,Intermediate,Resistance Band,Moderate,Core,Obliques,8 minutes,2 minutes,Strength,80,Increase resistance,Low
+Abs,Twist With Resistance Band,Intermediate,Resistance Band,Moderate,Core,Obliques,8 minutes,2 minutes,Strength,80,Increase resistance,Low
+Abs,Twist down up With Resistance Band,Intermediate,Resistance Band,Moderate,Core,Obliques,8 minutes,2 minutes,Strength,80,Increase resistance,Low
+Chest,Standing incline chest press With Resistance Band,Intermediate,Resistance Band,Moderate,Chest,None,12 minutes,3 minutes,Strength,100,Increase resistance,Moderate
+Erector Spinae,Swing | Gymstick,Intermediate,Gymstick,Moderate,Lower Back,None,12 minutes,3 minutes,Strength,100,Increase resistance,Moderate
+Leg,Standing Straight Leg Raise With Resistance Band,Intermediate,Resistance Band,Moderate,Legs,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Leg,Standing Leg Raise With Resistance Band,Intermediate,Resistance Band,Moderate,Legs,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Leg,Standing Leg Extension With Resistance Band,Intermediate,Resistance Band,Moderate,Legs,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Leg,Standing Leg Curl With Resistance Band,Intermediate,Resistance Band,Moderate,Legs,Hamstrings,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Shoulders,Side Bend Press | Gymstick,Intermediate,Gymstick,Moderate,Shoulders,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Triceps,Standing Triceps Extension | Gymstick,Intermediate,Gymstick,Moderate,Triceps,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Shoulders,Single Arm Upright Row | Gymstick,Intermediate,Gymstick,Moderate,Shoulders,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Erector Spinae,Single Leg Reverse Hyperextension | Gymstick,Intermediate,Gymstick,Moderate,Lower Back,Glutes,12 minutes,3 minutes,Strength,100,Increase resistance,Moderate
+Abs,Standing Side Bend | Gymstick,Intermediate,Gymstick,Moderate,Core,Obliques,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Shoulders,Behind the Head Military Press | Gymstick,Intermediate,Gymstick,Moderate,Shoulders,Triceps,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Hip,Split Squat | Gymstick,Intermediate,Gymstick,Moderate,Hips,Quads,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Hip,Squat | Gymstick,Intermediate,Gymstick,Moderate,Hips,Quads,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Triceps,Banded Overhead Triceps Extension,Intermediate,Resistance Band,Moderate,Triceps,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Triceps,Overhead Triceps Extension | Gymstick,Intermediate,Gymstick,Moderate,Triceps,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Shoulders,Skier | Gymstick,Intermediate,Gymstick,Moderate,Shoulders,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Abs,Banded Lying leg and hip raise,Intermediate,Resistance Band,Moderate,Core,Lower Abs,8 minutes,2 minutes,Strength,80,Increase resistance,Low
+Leg,Banded Lying Leg Curl,Intermediate,Resistance Band,Moderate,Legs,Hamstrings,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Chest,Middle Chest fly With Resistance Band,Intermediate,Resistance Band,Moderate,Chest,None,12 minutes,3 minutes,Strength,100,Increase resistance,Moderate
+Leg,Lying Alternate Leg Press | Gymstick,Intermediate,Gymstick,Moderate,Legs,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Hip,Kneeling Single Leg Kick | Gymstick,Intermediate,Gymstick,Moderate,Hips,Glutes,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Abs,Banded Jack knife sit-up,Intermediate,Resistance Band,Moderate,Core,Lower Abs,8 minutes,2 minutes,Strength,80,Increase resistance,Low
+Chest,Kneeling Incline Press | Gymstick,Intermediate,Gymstick,Moderate,Chest,None,12 minutes,3 minutes,Strength,100,Increase resistance,Moderate
+Chest,Low Chest Fly With Resistance Band,Intermediate,Resistance Band,Moderate,Chest,None,12 minutes,3 minutes,Strength,100,Increase resistance,Moderate
+Back / Wing,Kneeling Pulldown With Resistance Band,Intermediate,Resistance Band,Moderate,Back,None,12 minutes,3 minutes,Strength,100,Increase resistance,Moderate
+Shoulders,Face Pull With Resistance Band,Intermediate,Resistance Band,Moderate,Shoulders,None,10 minutes,2 minutes,Strength,90,Increase resistance,Low
+Abs,Down to Up Twist |Gymstick,Intermediate,Gymstick,Moderate,Core,Obliques,8 minutes,2 minutes,Strength,80,Increase resistance,Low
+Back / Wing,Bent Over Row | Gymstick,Intermediate,Gymstick,Moderate,Back,None,12 minutes,3 minutes,Strength,100,Increase resistance,Moderate
+Chest,High Chest Fly With Resistance Band,Intermediate,Resistance Band,Moderate,Chest,None,12 minutes,3 minutes,Strength,100,Increase resistance,Moderate
+Abs,Bicycle Crunch | Gymstick,Intermediate,Gymstick,Moderate,Core,Obliques,8 minutes,2 minutes,Strength,80,Increase resistance,Low
+Hip,Pin Squat,Advanced,Barbell,High,Hips,Quads,15 minutes,3 minutes,Strength,200,Increase weight,High
+Cardio,The Box Jump,Beginner,None,Low,Cardio,None,10 minutes,2 minutes,Aerobic,80,None,Low
+Chest,Decline Push-up,Beginner,None,Low,Chest,Triceps,5 minutes,1 minute,Strength,50,Increase reps,Low
+Abs,Plank Jacks / Extended Leg,Intermediate,None,Moderate,Core,None,8 minutes,2 minutes,Strength,80,Increase reps,Low
+Back / Wing,Battle Rope,Intermediate,Battle Rope,Moderate,Back,None,10 minutes,2 minutes,Strength,90,Increase duration,Low

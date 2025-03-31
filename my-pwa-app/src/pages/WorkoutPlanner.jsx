@@ -18,8 +18,13 @@ import {
 } from "@mui/material";
 import { syncData } from "../utils/sheetsApi";
 import WorkoutLogModal from "./WorkoutLogModal";
+import {
+  prepareData,
+  trainModel,
+  predictFatigue,
+} from "../utils/tensorflowModel";
 
-const WorkoutPlanner = ({ accessToken, onNavigate }) => {
+const WorkoutPlanner = ({ accessToken, onNavigate, logs }) => {
   const [selectedMuscles, setSelectedMuscles] = useState([]);
   const [exercises, setExercises] = useState([]);
   const [muscleGroups, setMuscleGroups] = useState([]);
@@ -34,6 +39,7 @@ const WorkoutPlanner = ({ accessToken, onNavigate }) => {
   const [openModal, setOpenModal] = useState(false);
   const [modalEditLog, setModalEditLog] = useState(null);
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
+  const [aiGeneratedPlan, setAiGeneratedPlan] = useState(null);
 
   // Fetch exercises from Google Sheets
   useEffect(() => {
@@ -103,6 +109,8 @@ const WorkoutPlanner = ({ accessToken, onNavigate }) => {
       const muscleExercises = exercises.filter(
         (ex) => ex.muscleGroup.toLowerCase() === muscle.toLowerCase()
       );
+      if (muscleExercises.length === 0) return; // Skip if no exercises available
+
       const selectedExercises = muscleExercises
         .sort(() => 0.5 - Math.random())
         .slice(0, Math.min(3, muscleExercises.length));
@@ -135,6 +143,93 @@ const WorkoutPlanner = ({ accessToken, onNavigate }) => {
 
     setWorkoutPlan(plan);
     localStorage.setItem("workoutPlan", JSON.stringify(plan));
+  };
+
+  // Generate AI workout plan
+  const generateAIWorkoutPlan = async () => {
+    if (!logs || logs.length === 0) {
+      alert("No historical data available to generate a plan.");
+      return;
+    }
+
+    const { inputTensor, labelTensor } = prepareData(logs);
+    const model = await trainModel(inputTensor, labelTensor);
+
+    const muscleGroups = [...new Set(exercises.map((ex) => ex.muscleGroup))];
+    const plan = [];
+
+    for (const muscle of muscleGroups) {
+      const muscleExercises = exercises.filter(
+        (ex) => ex.muscleGroup.toLowerCase() === muscle.toLowerCase()
+      );
+
+      const selectedExercise =
+        muscleExercises[Math.floor(Math.random() * muscleExercises.length)];
+
+      // Use historical data to predict optimal reps and weight
+      const historicalInputs = logs
+        .filter((log) => log[1].toLowerCase() === muscle.toLowerCase())
+        .map((log) => [parseFloat(log[3]) || 0, parseFloat(log[4]) || 0]);
+
+      const predictions = predictFatigue(model, historicalInputs);
+      const optimalIndex = predictions.indexOf(Math.min(...predictions));
+      const recommendedReps = historicalInputs[optimalIndex]?.[0] || 10;
+      const recommendedWeight = historicalInputs[optimalIndex]?.[1] || 50;
+
+      // Analyze fatigue levels for the muscle group
+      const fatigueLogs = logs.filter(
+        (log) => log[1].toLowerCase() === muscle.toLowerCase()
+      );
+      const totalFatigue = fatigueLogs.reduce(
+        (sum, log) => sum + (parseFloat(log[5]) || 0),
+        0
+      );
+      const averageFatigue = (totalFatigue / fatigueLogs.length).toFixed(2);
+
+      // Calculate progression rate
+      const previousVolume = fatigueLogs.reduce(
+        (sum, log) =>
+          sum + (parseFloat(log[3]) || 0) * (parseFloat(log[4]) || 0),
+        0
+      );
+      const progressionRate = previousVolume
+        ? (
+            ((recommendedReps * recommendedWeight - previousVolume) /
+              previousVolume) *
+            100
+          ).toFixed(2)
+        : "N/A";
+
+      // Adjust workload based on progression rate and fatigue
+      const adjustedReps =
+        progressionRate !== "N/A" && progressionRate < 10
+          ? recommendedReps + 2
+          : recommendedReps;
+      const adjustedWeight =
+        progressionRate !== "N/A" && progressionRate < 10
+          ? recommendedWeight + 5
+          : recommendedWeight;
+
+      // Provide actionable insights
+      const insight =
+        averageFatigue > 7
+          ? "High fatigue detected. Consider reducing intensity or taking a rest day."
+          : "Fatigue levels are manageable. Proceed with the workout.";
+
+      plan.push({
+        muscleGroup: muscle,
+        exercise: selectedExercise.exercise,
+        sets: 3,
+        reps: adjustedReps,
+        weight: `${adjustedWeight} kg`,
+        fatigue: averageFatigue,
+        progressionRate,
+        insight,
+        imageLink: selectedExercise.imageLink,
+      });
+    }
+
+    setAiGeneratedPlan(plan);
   };
 
   // Handle card click to open modal with today's date
@@ -267,6 +362,84 @@ const WorkoutPlanner = ({ accessToken, onNavigate }) => {
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
                       Weight: {exercise.weight}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        )}
+      </Paper>
+
+      <Typography variant="h6" gutterBottom>
+        AI-Generated Weekly Workout Plan
+      </Typography>
+      <Paper elevation={3} sx={{ p: 2, flex: 1 }}>
+        <Box sx={{ mb: 4 }}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={generateAIWorkoutPlan}
+          >
+            Generate AI Workout Plan
+          </Button>
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={() => onNavigate("dashboard")}
+            sx={{ ml: 2 }}
+          >
+            Back to Dashboard
+          </Button>
+        </Box>
+
+        {aiGeneratedPlan && (
+          <Grid container spacing={3}>
+            {aiGeneratedPlan.map((exercise, index) => (
+              <Grid item xs={12} sm={6} md={4} key={index}>
+                <Card
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    cursor: "pointer",
+                  }}
+                >
+                  <CardMedia
+                    component="img"
+                    image={exercise.imageLink}
+                    alt={exercise.exercise}
+                    sx={{
+                      width: "100%",
+                      height: "auto",
+                      objectFit: "contain",
+                      maxHeight: "300px",
+                    }}
+                    onError={(e) => {
+                      e.target.src = "https://via.placeholder.com/300x200";
+                    }}
+                  />
+                  <CardContent>
+                    <Typography variant="h6">{exercise.exercise}</Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Muscle Group: {exercise.muscleGroup}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Sets: {exercise.sets}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Reps: {exercise.reps}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Weight: {exercise.weight}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Fatigue: {exercise.fatigue}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Progression Rate: {exercise.progressionRate}%
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Insight: {exercise.insight}
                     </Typography>
                   </CardContent>
                 </Card>
