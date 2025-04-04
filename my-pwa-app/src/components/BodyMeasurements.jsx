@@ -4,7 +4,6 @@ import {
   Box,
   TextField,
   Button,
-  Paper,
   Grid,
   Alert,
   Accordion,
@@ -12,14 +11,13 @@ import {
   AccordionDetails,
   FormControlLabel,
   Checkbox,
-  AppBar,
-  Toolbar,
   ToggleButton,
   ToggleButtonGroup,
   MenuItem,
   Select,
   InputLabel,
   FormControl,
+  Avatar,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -284,18 +282,23 @@ const BodyMeasurements = ({ accessToken, onNavigate, themeMode }) => {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <Box sx={{ p: 3 }}>
-        <AppBar position="static" sx={{ mb: 3 }}>
-          <Toolbar>
-            <Button color="inherit" onClick={() => onNavigate("dashboard")}>
-              Back to Dashboard
-            </Button>
-            <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }}>
-              Body Measurements
-            </Typography>
-          </Toolbar>
-        </AppBar>
-        <Paper elevation={3} sx={{ p: 3 }}>
+      <Box className="main-container">
+        <Box className="header">
+          <Typography className="header-greeting">Body Measurements</Typography>
+          <TextField
+            className="header-search"
+            placeholder="Search anything here..."
+            variant="outlined"
+            size="small"
+          />
+          <Box className="header-profile">
+            <Avatar alt="User" src="/path-to-profile-pic.jpg" />
+            <Typography>User Name</Typography>
+          </Box>
+        </Box>
+
+        <Box className="card">
+          <Typography className="card-title">Body Measurements</Typography>
           {loading ? (
             <Typography variant="h6" align="center">
               Loading...
@@ -541,12 +544,12 @@ const BodyMeasurements = ({ accessToken, onNavigate, themeMode }) => {
                 ))}
               </Box>
 
-              <Box sx={{ height: 400 }}>
+              <Box className="chart-wrapper">
                 <Bar data={dynamicChartData} options={dynamicChartOptions} />
               </Box>
             </>
           )}
-        </Paper>
+        </Box>
       </Box>
     </LocalizationProvider>
   );

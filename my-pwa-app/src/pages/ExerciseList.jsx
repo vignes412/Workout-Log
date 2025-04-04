@@ -8,12 +8,11 @@ import {
   CardContent,
   CardActionArea,
   Grid,
-  AppBar,
-  Toolbar,
   Autocomplete,
   TextField,
   Box,
   IconButton,
+  Avatar,
 } from "@mui/material";
 import { Brightness4, Brightness7 } from "@mui/icons-material";
 import "../styles.css";
@@ -93,22 +92,25 @@ const ExerciseList = ({ accessToken, onNavigate, toggleTheme, themeMode }) => {
   }
 
   return (
-    <div className="exercise-list-container">
-      <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            Exercise List
-          </Typography>
-          <Button color="inherit" onClick={() => onNavigate("dashboard")}>
-            Back to Dashboard
-          </Button>
+    <Box className="main-container">
+      <Box className="header">
+        <Typography className="header-greeting">Exercise List</Typography>
+        <TextField
+          className="header-search"
+          placeholder="Search anything here..."
+          variant="outlined"
+          size="small"
+        />
+        <Box className="header-profile">
+          <Avatar alt="User" src="/path-to-profile-pic.jpg" />
+          <Typography>User Name</Typography>
           <IconButton color="inherit" onClick={toggleTheme}>
             {themeMode === "light" ? <Brightness4 /> : <Brightness7 />}
           </IconButton>
-        </Toolbar>
-      </AppBar>
+        </Box>
+      </Box>
 
-      <div className="exercise-list-content" style={{ padding: "20px" }}>
+      <Box className="card">
         <Box
           sx={{
             mb: 4,
@@ -147,14 +149,12 @@ const ExerciseList = ({ accessToken, onNavigate, toggleTheme, themeMode }) => {
         {Object.keys(filteredGroupedExercises).length > 0 ? (
           Object.keys(filteredGroupedExercises).map((muscleGroup) => (
             <div key={muscleGroup} style={{ marginBottom: "30px" }}>
-              <Typography variant="h5" gutterBottom>
-                {muscleGroup}
-              </Typography>
+              <Typography className="card-title">{muscleGroup}</Typography>
               <Grid container spacing={2}>
                 {filteredGroupedExercises[muscleGroup].map(
                   (exercise, index) => (
                     <Grid item xs={12} sm={6} md={4} key={index}>
-                      <Card>
+                      <Card className="card">
                         <CardActionArea
                           onClick={() =>
                             window.open(exercise.exerciseLink, "_blank")
@@ -229,8 +229,8 @@ const ExerciseList = ({ accessToken, onNavigate, toggleTheme, themeMode }) => {
             No exercises match your filters.
           </Typography>
         )}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 
