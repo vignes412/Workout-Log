@@ -4,6 +4,7 @@ import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { appendData, cacheData } from "../utils/sheetsApi";
 import WorkoutLogModal from "../pages/WorkoutLogModal";
 import config from "../config";
+import { format } from "date-fns"; // Add this import for date formatting
 
 const SPREADSHEET_ID = config.google.SPREADSHEET_ID;
 
@@ -28,7 +29,7 @@ const WorkoutLogsTable = ({ logs, setLogs, isOffline, exercises }) => {
   const workoutLogRows = useMemo(() => {
     if (!logs || !Array.isArray(logs)) return [];
     return logs.map((log, index) => ({
-      id: index + 1,
+      id: index + 1, // Ensure each row has a unique id
       date: log[0] || "",
       muscleGroup: log[1] || "",
       exercise: log[2] || "",
@@ -39,8 +40,35 @@ const WorkoutLogsTable = ({ logs, setLogs, isOffline, exercises }) => {
     }));
   }, [logs]);
 
+  const formattedLogs = logs.map((log) => {
+    let formattedDate = "Invalid Date";
+    try {
+      const parsedDate = new Date(log.date);
+      if (!isNaN(parsedDate)) {
+        formattedDate = format(parsedDate, "dd/MM/yyyy"); // Format date to dd/MM/yyyy
+      }
+    } catch {
+      formattedDate = "Invalid Date"; // Fallback for invalid dates
+    }
+
+    return {
+      ...log,
+      date: formattedDate, // Use formatted or fallback date
+    };
+  });
+
   const workoutLogColumns = [
-    { field: "date", headerName: "Date", width: 100, sortable: true },
+    {
+      field: "date",
+      headerName: "Date",
+      width: 120,
+      sortable: true,
+      sortComparator: (v1, v2) => {
+        const date1 = new Date(v1.split("/").reverse().join("/")); // Parse dd/MM/yyyy to Date
+        const date2 = new Date(v2.split("/").reverse().join("/"));
+        return date1 - date2;
+      },
+    },
     { field: "muscleGroup", headerName: "Muscle", width: 120, sortable: true },
     { field: "exercise", headerName: "Exercise", width: 120, sortable: true },
     { field: "reps", headerName: "Reps", width: 80, sortable: true },
@@ -150,8 +178,9 @@ const WorkoutLogsTable = ({ logs, setLogs, isOffline, exercises }) => {
       )}
       <div style={{ height: 400, width: "100%", marginBottom: 20 }}>
         <DataGrid
-          rows={workoutLogRows}
+          rows={workoutLogRows} // Use rows with unique ids
           columns={workoutLogColumns}
+          getRowId={(row) => row.id} // Specify custom id for each row
           initialState={{
             pagination: { paginationModel: { pageSize: -1, page: 0 } },
             sorting: { sortModel: [{ field: "date", sort: "desc" }] },

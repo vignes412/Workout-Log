@@ -4,30 +4,56 @@ import { Typography } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { ArrowUpward, ArrowDownward, CompareArrows } from "@mui/icons-material";
 import { computeDailyMetrics } from "../utils/computeDailyMetrics";
+import { format } from "date-fns"; // Add this import for date formatting
 
 const WorkoutSummaryTable = ({ logs }) => {
   const dailyMetrics = useMemo(() => computeDailyMetrics(logs), [logs]);
 
   const sanitizedRows = useMemo(() => {
-    return dailyMetrics.map((row) => ({
-      ...row,
-      totalVolume: parseFloat(row.totalVolume),
-      totalSets: parseFloat(row.totalSets),
-      totalReps: parseFloat(row.totalReps),
-      averageReps: parseFloat(row.averageReps),
-      averageWeight: parseFloat(row.averageWeight),
-      averageFatigue: parseFloat(row.averageFatigue),
-      maxWeight: parseFloat(row.maxWeight),
-      intensity: parseFloat(row.intensity),
-      fatigue: parseFloat(row.fatigue),
-      howIFeel: row.howIFeel || "N/A",
-      progressionRate:
-        row.progressionRate === "N/A" ? "N/A" : parseFloat(row.progressionRate),
-    }));
+    return dailyMetrics.map((row) => {
+      let formattedDate = "Invalid Date";
+      try {
+        const parsedDate = new Date(row.date);
+        if (!isNaN(parsedDate)) {
+          formattedDate = format(parsedDate, "dd/MM/yyyy"); // Format date to dd/MM/yyyy
+        }
+      } catch {
+        formattedDate = "Invalid Date"; // Fallback for invalid dates
+      }
+
+      return {
+        ...row,
+        date: formattedDate, // Use formatted or fallback date
+        totalVolume: parseFloat(row.totalVolume),
+        totalSets: parseFloat(row.totalSets),
+        totalReps: parseFloat(row.totalReps),
+        averageReps: parseFloat(row.averageReps),
+        averageWeight: parseFloat(row.averageWeight),
+        averageFatigue: parseFloat(row.averageFatigue),
+        maxWeight: parseFloat(row.maxWeight),
+        intensity: parseFloat(row.intensity),
+        fatigue: parseFloat(row.fatigue),
+        howIFeel: row.howIFeel || "N/A",
+        progressionRate:
+          row.progressionRate === "N/A"
+            ? "N/A"
+            : parseFloat(row.progressionRate),
+      };
+    });
   }, [dailyMetrics]);
 
   const summaryColumns = [
-    { field: "date", headerName: "Date", width: 120, sortable: true },
+    {
+      field: "date",
+      headerName: "Date",
+      width: 120,
+      sortable: true,
+      sortComparator: (v1, v2) => {
+        const date1 = new Date(v1.split("/").reverse().join("/")); // Parse dd/MM/yyyy to Date
+        const date2 = new Date(v2.split("/").reverse().join("/"));
+        return date1 - date2;
+      },
+    },
     {
       field: "muscleGroup",
       headerName: "Muscle Group",

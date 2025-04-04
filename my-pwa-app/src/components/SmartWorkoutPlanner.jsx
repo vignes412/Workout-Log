@@ -11,21 +11,33 @@ import {
   CardMedia,
   CircularProgress,
   Divider,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  TextField,
 } from "@mui/material";
 import { syncData } from "../utils/sheetsApi";
-import { computeDailyMetrics } from "../utils/computeDailyMetrics";
+import {
+  prepareEnhancedData,
+  trainEnhancedModel,
+  predictOptimalWorkout,
+  analyzeHistoricalData,
+} from "../utils/tensorflowModel";
 
 const SmartWorkoutPlanner = ({ accessToken, onNavigate }) => {
   const [workoutLogs, setWorkoutLogs] = useState([]);
   const [exercises, setExercises] = useState([]);
-  const [weeklyPlan, setWeeklyPlan] = useState([]);
+  const [weeklyPlan, setWeeklyPlan] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [daysPerWeek, setDaysPerWeek] = useState(6);
+  const [selectedEquipment, setSelectedEquipment] = useState([]);
+  const [targetVolume, setTargetVolume] = useState(15000); // Default target volume
+  const [analysis, setAnalysis] = useState(null);
 
-  // Fetch workout logs and exercises
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch workout logs
         await syncData(
           "Workout_Logs!A2:F",
           "/api/workout",
@@ -36,19 +48,33 @@ const SmartWorkoutPlanner = ({ accessToken, onNavigate }) => {
             exercise: row[2],
             reps: parseFloat(row[3]) || 0,
             weight: parseFloat(row[4]) || 0,
-            RPE: parseFloat(row[5]) || 7, // RPE as rating
+            RPE: parseFloat(row[5]) || 7,
           })
         );
 
-        // Fetch exercise list
         await syncData(
-          "Exercises!A2:O", // Include image_link column
+          "Exercises!A2:O",
           "/api/exercises",
           setExercises,
           (row) => ({
             muscleGroup: row[0],
             exercise: row[1],
-            image: row[14], // Extract image_link
+            difficultyLevel:
+              row[2] === "Hard" ? 3 : row[2] === "Medium" ? 2 : 1,
+            equipmentRequired: row[3] || "None",
+            targetIntensity:
+              row[4] === "N/A" ? 0 : parseFloat(row[4].replace("%", "")) / 100,
+            primaryMuscleGroup: row[5] || row[0],
+            secondaryMuscleGroup: row[6] || "",
+            exerciseDuration: parseFloat(row[7]) || 2,
+            recoveryTime: parseFloat(row[8]) || 60,
+            exerciseType: row[9] || "Strength",
+            caloriesBurned: parseFloat(row[10]) || 5,
+            exerciseProgression: row[11] || "Increase weight",
+            injuryRiskLevel:
+              row[12] === "High" ? 3 : row[12] === "Medium" ? 2 : 1,
+            exerciseLink: row[13],
+            image: row[14],
           })
         );
       } catch (error) {
@@ -58,201 +84,256 @@ const SmartWorkoutPlanner = ({ accessToken, onNavigate }) => {
     if (accessToken) fetchData();
   }, [accessToken]);
 
-  // Calculate 1RM using Epley formula
   const calculate1RM = (weight, reps) => weight * (1 + reps / 30);
 
-  // Prepare data and calculate fatigue from WorkoutSummaryTable logic
-  const prepareData = () => {
-    const dailyMetrics = computeDailyMetrics(workoutLogs); // Use existing utility
-    const muscleGroups = [
-      ...new Set(workoutLogs.map((log) => log.muscleGroup)),
-    ];
-    const groupedByExercise = workoutLogs.reduce((acc, log) => {
-      const key = `${log.muscleGroup}_${log.exercise}`;
-      if (!acc[key]) acc[key] = [];
-      acc[key].push(log);
-      return acc;
-    }, {});
-
-    // Calculate fatigue per muscle group (average from dailyMetrics)
-    const fatigueByMuscle = dailyMetrics.reduce((acc, metric) => {
-      acc[metric.muscleGroup] = acc[metric.muscleGroup] || {
-        totalFatigue: 0,
-        count: 0,
-      };
-      acc[metric.muscleGroup].totalFatigue += parseFloat(metric.fatigue);
-      acc[metric.muscleGroup].count += 1;
-      return acc;
-    }, {});
-
-    const avgFatigue = Object.keys(fatigueByMuscle).reduce((acc, muscle) => {
-      acc[muscle] =
-        fatigueByMuscle[muscle].totalFatigue / fatigueByMuscle[muscle].count;
-      return acc;
-    }, {});
-
-    // Last workout date per muscle for rest calculation
-    const lastWorkoutDates = muscleGroups.reduce((acc, muscle) => {
-      const lastLog = workoutLogs
-        .filter((log) => log.muscleGroup === muscle)
-        .sort((a, b) => new Date(b.date) - new Date(a.date))[0];
-      acc[muscle] = lastLog ? new Date(lastLog.date) : null;
-      return acc;
-    }, {});
-
-    return { muscleGroups, groupedByExercise, avgFatigue, lastWorkoutDates };
+  const prepareCombinedData = () => {
+    return workoutLogs.map((log) => {
+      const exerciseDetail =
+        exercises.find(
+          (ex) =>
+            ex.exercise === log.exercise && ex.muscleGroup === log.muscleGroup
+        ) || {};
+      return [
+        log.date,
+        log.muscleGroup,
+        log.exercise,
+        exerciseDetail.difficultyLevel || 1,
+        exerciseDetail.equipmentRequired || "None",
+        exerciseDetail.targetIntensity || 0,
+        exerciseDetail.primaryMuscleGroup || log.muscleGroup,
+        exerciseDetail.secondaryMuscleGroup || "",
+        exerciseDetail.exerciseDuration || 2,
+        exerciseDetail.recoveryTime || 60,
+        exerciseDetail.exerciseType || "Strength",
+        exerciseDetail.caloriesBurned || 5,
+        exerciseDetail.exerciseProgression || "Increase weight",
+        exerciseDetail.injuryRiskLevel || 1,
+        log.reps,
+        log.weight,
+        log.RPE,
+      ];
+    });
   };
 
-  // Train model to predict next weight
-  const trainModel = async (data) => {
-    // Refine model for better accuracy
-    const xs = tf.tensor2d(
-      data.map((d) => [d.reps, d.weight, d.RPE]),
-      [data.length, 3]
-    );
-    const ys = tf.tensor2d(
-      data.map((d) => [Math.min(d.weight * 1.05, d.weight + 2.5)]), // 5% or +2.5kg
-      [data.length, 1]
-    );
-    const model = tf.sequential();
-    model.add(
-      tf.layers.dense({ units: 16, inputShape: [3], activation: "relu" })
-    );
-    model.add(tf.layers.dense({ units: 8, activation: "relu" }));
-    model.add(tf.layers.dense({ units: 1 }));
-    model.compile({ optimizer: "adam", loss: "meanSquaredError" });
-    await model.fit(xs, ys, { epochs: 100, verbose: 0 });
-    return model;
-  };
-
-  // Generate a valid, progressive weekly plan
   const generateWeeklyPlan = async () => {
-    if (workoutLogs.length === 0) {
-      setWeeklyPlan([
-        {
-          day: "Day 1",
-          message: "No logs yet. Starting with beginner plan.",
-          exercises: [
-            {
-              muscleGroup: "Chest",
-              exercise: "Bench Press",
-              sets: 3,
-              reps: 10,
-              weight: 20,
-            },
-            {
-              muscleGroup: "Back",
-              exercise: "Lat Pulldown",
-              sets: 3,
-              reps: 10,
-              weight: 20,
-            },
-          ],
-        },
-      ]);
-      return;
-    }
-
     setLoading(true);
-    const { muscleGroups, groupedByExercise, avgFatigue, lastWorkoutDates } =
-      prepareData();
-    const today = new Date();
-    const workoutsPerWeek = 5; // Increase to 5 days for better progression
-    const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
-    let totalVolume = 0;
+    const combinedLogs = prepareCombinedData();
+    const { inputTensor, labelTensor } = prepareEnhancedData(combinedLogs);
+    const model = await trainEnhancedModel(inputTensor, labelTensor);
+    const historicalAnalysis = analyzeHistoricalData(combinedLogs);
 
-    const plan = [];
-    const majorGroups = ["Chest", "Back", "Legs", "Shoulders", "Arms"];
-    muscleGroups.push(...majorGroups.filter((g) => !muscleGroups.includes(g)));
-
-    for (let i = 0; i < workoutsPerWeek; i++) {
-      const dayPlan = { day: days[i], exercises: [] };
-      const musclesForDay = muscleGroups.slice(
-        (i * muscleGroups.length) / workoutsPerWeek,
-        ((i + 1) * muscleGroups.length) / workoutsPerWeek
+    const muscleGroupCombos = {
+      "Chest-Shoulders-Triceps": ["Chest", "Shoulders", "Triceps"],
+      "Back-Biceps": ["Back", "Biceps"],
+      "Legs-Abs": ["Legs", "Abs"],
+    };
+    const otherMuscles = exercises
+      .map((ex) => ex.muscleGroup)
+      .filter(
+        (mg) =>
+          ![
+            "Chest",
+            "Shoulders",
+            "Triceps",
+            "Back",
+            "Biceps",
+            "Legs",
+            "Abs",
+          ].includes(mg)
       );
 
-      for (const muscle of musclesForDay) {
-        const availableExercises = exercises.filter(
-          (e) => e.muscleGroup === muscle
-        );
-        const pastExercises = Object.keys(groupedByExercise)
-          .filter((key) => key.startsWith(muscle))
-          .map((key) => ({
-            exercise: key.split("_")[1],
-            logs: groupedByExercise[key],
-          }));
+    const availableExercises = exercises.filter(
+      (ex) =>
+        selectedEquipment.length === 0 ||
+        selectedEquipment.includes(ex.equipmentRequired)
+    );
+    const days = [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
+    const plan = [];
+    const usedExercises = new Set(["Push-Ups", "Pull-Ups"]);
+    let totalVolume = 0;
 
-        const numExercises = Math.min(
-          2,
-          pastExercises.length || availableExercises.length
-        );
-        const selectedExercises = pastExercises.length
-          ? pastExercises.slice(0, numExercises)
-          : availableExercises.slice(0, numExercises);
+    const dayAssignments = [
+      "Chest-Shoulders-Triceps",
+      "Back-Biceps",
+      "Legs-Abs",
+      "Chest-Shoulders-Triceps",
+      "Back-Biceps",
+      "Legs-Abs",
+    ];
 
-        for (const { exercise, logs } of selectedExercises) {
-          const latestLog = logs ? logs[logs.length - 1] : null;
-          const pastData = logs ? logs.slice(-5) : [];
-          const fatigue = avgFatigue[muscle] || 0;
-          const daysSinceLast = lastWorkoutDates[muscle]
-            ? Math.floor(
-                (today - lastWorkoutDates[muscle]) / (1000 * 60 * 60 * 24)
-              )
-            : Infinity;
+    // Step 1: Generate initial plan with base volumes
+    for (let i = 0; i < days.length; i++) {
+      const dayPlan = { day: days[i], exercises: [] };
+      const comboKey = dayAssignments[i];
+      const muscles = muscleGroupCombos[comboKey] || otherMuscles;
+      const exercisesForCombo = availableExercises.filter((ex) =>
+        muscles.includes(ex.muscleGroup)
+      );
+
+      for (const muscle of muscles) {
+        const muscleExercises = exercisesForCombo.filter(
+          (ex) => ex.muscleGroup === muscle
+        );
+        let exerciseCount = 0;
+
+        while (exerciseCount < 2 && muscleExercises.length > 0) {
+          let exercise;
+          do {
+            exercise =
+              muscleExercises[
+                Math.floor(Math.random() * muscleExercises.length)
+              ];
+          } while (
+            usedExercises.has(exercise.exercise) &&
+            muscleExercises.length > usedExercises.size
+          );
+
+          if (!exercise || usedExercises.has(exercise.exercise)) break;
+          usedExercises.add(exercise.exercise);
+
+          const pastLogs = combinedLogs.filter(
+            (log) => log[2] === exercise.exercise && log[1] === muscle
+          );
+          const latestLog = pastLogs.slice(-1)[0];
 
           let newWeight, newReps, newSets;
-          if (pastData.length > 0) {
-            const oneRM = calculate1RM(latestLog.weight, latestLog.reps);
-            const model = await trainModel(pastData);
-            const inputTensor = tf.tensor2d([
-              [latestLog.reps, latestLog.weight, latestLog.RPE],
-            ]);
-            const predictedWeight = model.predict(inputTensor).dataSync()[0];
-            tf.dispose([inputTensor, model]);
-
-            newWeight = Math.min(predictedWeight * 1.1, oneRM * 0.85); // Cap at 85% 1RM
-            newReps =
-              latestLog.RPE < 6 ? latestLog.reps + 2 : latestLog.reps + 1;
-            newSets = fatigue > 50 || daysSinceLast < 2 ? 3 : 4;
+          if (latestLog) {
+            const input = [
+              latestLog[14],
+              latestLog[15],
+              exercise.difficultyLevel,
+              exercise.targetIntensity,
+              exercise.exerciseDuration,
+              exercise.recoveryTime,
+              exercise.caloriesBurned,
+              exercise.injuryRiskLevel,
+            ];
+            const prediction = predictOptimalWorkout(model, [input])[0][0];
+            const oneRM = calculate1RM(latestLog[15], latestLog[14]);
+            newWeight = Math.min(prediction * 1.05, oneRM * 0.8);
+            newReps = latestLog[16] < 6 ? 10 : 8;
+            newSets = latestLog[16] > 7 ? 3 : 4;
           } else {
-            newWeight = 25; // Default for new exercises
-            newReps = 12;
-            newSets = 4;
+            newWeight = 15;
+            newReps = 10;
+            newSets = 3;
           }
 
-          const fatigueFactor = fatigue > 75 ? 0.8 : 1.0;
-          newWeight = Math.round(newWeight * fatigueFactor);
-          newReps = Math.max(6, Math.min(newReps, 15));
-
+          newReps = Math.max(6, Math.min(newReps, 12));
+          newWeight = Math.round(newWeight * 2) / 2;
           const volume = newSets * newReps * newWeight;
           totalVolume += volume;
 
           dayPlan.exercises.push({
             muscleGroup: muscle,
-            exercise: exercise || availableExercises[0]?.exercise || "Unknown",
+            exercise: exercise.exercise,
             sets: newSets,
             reps: newReps,
             weight: newWeight,
             volume,
+            image: exercise.image,
           });
+          exerciseCount++;
         }
       }
-      if (dayPlan.exercises.length > 0) plan.push(dayPlan);
+
+      // Add Push-Ups and Pull-Ups
+      ["Push-Ups", "Pull-Ups"].forEach((mandatory) => {
+        const exercise = availableExercises.find(
+          (ex) => ex.exercise === mandatory
+        ) || {
+          muscleGroup: mandatory === "Push-Ups" ? "Chest" : "Back",
+          exercise: mandatory,
+          difficultyLevel: 1,
+          equipmentRequired: "None",
+          targetIntensity: 0,
+          exerciseDuration: 2,
+          recoveryTime: 60,
+          caloriesBurned: 5,
+          injuryRiskLevel: 1,
+          image: "/default-exercise.jpg",
+        };
+        const pastLogs = combinedLogs.filter((log) => log[2] === mandatory);
+        const latestLog = pastLogs.slice(-1)[0];
+
+        let newWeight, newReps, newSets;
+        if (latestLog) {
+          const input = [
+            latestLog[14],
+            0,
+            exercise.difficultyLevel,
+            exercise.targetIntensity,
+            exercise.exerciseDuration,
+            exercise.recoveryTime,
+            exercise.caloriesBurned,
+            exercise.injuryRiskLevel,
+          ];
+          const prediction = predictOptimalWorkout(model, [input])[0][0];
+          newWeight = 0;
+          newReps = Math.min(Math.round(prediction / 2), 20);
+          newSets = latestLog[16] > 7 ? 3 : 4;
+        } else {
+          newWeight = 0;
+          newReps = 15;
+          newSets = 3;
+        }
+
+        const volume = newSets * newReps * 1;
+        totalVolume += volume;
+        dayPlan.exercises.push({
+          muscleGroup: exercise.muscleGroup,
+          exercise: mandatory,
+          sets: newSets,
+          reps: newReps,
+          weight: newWeight,
+          volume,
+          image: exercise.image,
+        });
+      });
+
+      if (dayPlan.exercises.length) plan.push(dayPlan);
     }
+
+    // Step 2: Adjust weights to match targetVolume
+    const currentVolume = totalVolume;
+    const volumeAdjustmentFactor = targetVolume / currentVolume || 1;
+    totalVolume = 0;
+
+    plan.forEach((dayPlan) => {
+      dayPlan.exercises.forEach((exercise) => {
+        if (exercise.weight > 0) {
+          // Skip bodyweight exercises
+          exercise.weight =
+            Math.round(exercise.weight * volumeAdjustmentFactor * 2) / 2;
+          exercise.volume = exercise.sets * exercise.reps * exercise.weight;
+        }
+        totalVolume += exercise.volume;
+      });
+    });
 
     const analysis = {
       totalVolume,
-      averageVolumePerDay: Math.round(totalVolume / workoutsPerWeek),
+      averageVolumePerDay: Math.round(totalVolume / daysPerWeek),
       recoveryRecommendation:
-        totalVolume > 25000
-          ? "Consider adding an extra rest day for recovery."
-          : "Recovery plan looks balanced.",
+        totalVolume > 18000 ? "Add a rest day" : "Balanced",
+      historical: historicalAnalysis,
     };
 
-    setWeeklyPlan({ plan, analysis });
+    setWeeklyPlan(plan);
+    setAnalysis(analysis);
     setLoading(false);
   };
+
+  const equipmentOptions = [
+    ...new Set(exercises.map((ex) => ex.equipmentRequired).filter(Boolean)),
+  ];
 
   return (
     <Box sx={{ p: 3, backgroundColor: "#f5f5f5", minHeight: "100vh" }}>
@@ -260,14 +341,53 @@ const SmartWorkoutPlanner = ({ accessToken, onNavigate }) => {
         Smart Workout Planner
       </Typography>
       <Paper elevation={4} sx={{ p: 3, borderRadius: 2 }}>
-        <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}>
+        <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
+          <FormControl sx={{ minWidth: 120 }}>
+            <InputLabel>Days/Week</InputLabel>
+            <Select
+              value={daysPerWeek}
+              onChange={(e) => setDaysPerWeek(e.target.value)}
+              label="Days/Week"
+            >
+              {[6].map((d) => (
+                <MenuItem key={d} value={d}>
+                  {d}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl sx={{ minWidth: 200 }}>
+            <InputLabel>Equipment</InputLabel>
+            <Select
+              multiple
+              value={selectedEquipment}
+              onChange={(e) => setSelectedEquipment(e.target.value)}
+              label="Equipment"
+              renderValue={(selected) => selected.join(", ")}
+            >
+              {equipmentOptions.map((equip) => (
+                <MenuItem key={equip} value={equip}>
+                  {equip}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <TextField
+            label="Target Total Volume (kg)"
+            type="number"
+            value={targetVolume}
+            onChange={(e) =>
+              setTargetVolume(Math.max(0, parseInt(e.target.value) || 0))
+            }
+            sx={{ minWidth: 200 }}
+          />
           <Button
             variant="contained"
             color="primary"
             onClick={generateWeeklyPlan}
-            disabled={loading}
+            disabled={loading || targetVolume <= 0}
           >
-            {loading ? <CircularProgress size={24} /> : "Generate Weekly Plan"}
+            {loading ? <CircularProgress size={24} /> : "Generate Plan"}
           </Button>
           <Button
             variant="outlined"
@@ -277,71 +397,62 @@ const SmartWorkoutPlanner = ({ accessToken, onNavigate }) => {
             Back to Dashboard
           </Button>
         </Box>
-        {weeklyPlan && weeklyPlan.analysis && (
-          <>
-            <Typography variant="h6" gutterBottom>
-              Weekly Plan Analysis
-            </Typography>
+
+        {analysis && (
+          <Box sx={{ mb: 3 }}>
+            <Typography variant="h6">Workout Analysis</Typography>
             <Divider sx={{ mb: 2 }} />
+            <Typography>Total Volume: {analysis.totalVolume} kg</Typography>
             <Typography>
-              Total Volume: {weeklyPlan.analysis.totalVolume} kg
+              Avg Volume/Day: {analysis.averageVolumePerDay} kg
+            </Typography>
+            <Typography>Recovery: {analysis.recoveryRecommendation}</Typography>
+            <Typography>
+              Total Workouts: {analysis.historical.totalWorkouts}
             </Typography>
             <Typography>
-              Average Volume Per Day: {weeklyPlan.analysis.averageVolumePerDay}{" "}
-              kg
+              Avg Intensity: {analysis.historical.averageIntensity.toFixed(2)}
             </Typography>
             <Typography>
-              {weeklyPlan.analysis.recoveryRecommendation}
+              Frequent Muscle: {analysis.historical.mostFrequentMuscleGroup}
             </Typography>
-          </>
+          </Box>
         )}
 
-        {weeklyPlan && weeklyPlan.plan && (
-          <Grid container spacing={2} sx={{ mt: 2 }}>
-            {weeklyPlan.plan.map((dayPlan, index) => (
+        {weeklyPlan && (
+          <Grid container spacing={2}>
+            {weeklyPlan.map((dayPlan, index) => (
               <Grid item xs={12} key={index}>
-                <Card elevation={3} sx={{ borderRadius: 2, mb: 2 }}>
+                <Card elevation={3} sx={{ borderRadius: 2 }}>
                   <CardContent>
                     <Typography variant="h5" color="primary" gutterBottom>
                       {dayPlan.day}
                     </Typography>
                     <Grid container spacing={2}>
-                      {dayPlan.exercises.map((item, i) => {
-                        const exerciseData = exercises.find(
-                          (e) => e.exercise === item.exercise
-                        );
-                        const image =
-                          exerciseData?.image || "/default-exercise.jpg"; // Use image_link or fallback
-
-                        return (
-                          <Grid item xs={12} sm={6} md={4} key={i}>
-                            <Card elevation={2} sx={{ borderRadius: 2 }}>
-                              <CardMedia
-                                component="img"
-                                height="140"
-                                image={image}
-                                alt={item.exercise}
-                              />
-                              <CardContent>
-                                <Typography variant="h6" gutterBottom>
-                                  {item.exercise}
-                                </Typography>
-                                <Typography>
-                                  Muscle: {item.muscleGroup}
-                                </Typography>
-                                <Typography>Sets: {item.sets}</Typography>
-                                <Typography>Reps: {item.reps}</Typography>
-                                <Typography>
-                                  Weight: {item.weight} kg
-                                </Typography>
-                                <Typography>
-                                  Volume: {item.volume} kg
-                                </Typography>
-                              </CardContent>
-                            </Card>
-                          </Grid>
-                        );
-                      })}
+                      {dayPlan.exercises.map((item, i) => (
+                        <Grid item xs={12} sm={6} md={4} key={i}>
+                          <Card elevation={2}>
+                            <CardMedia
+                              component="img"
+                              height="140"
+                              image={item.image || "/default-exercise.jpg"}
+                              alt={item.exercise}
+                            />
+                            <CardContent>
+                              <Typography variant="h6">
+                                {item.exercise}
+                              </Typography>
+                              <Typography>
+                                Muscle: {item.muscleGroup}
+                              </Typography>
+                              <Typography>Sets: {item.sets}</Typography>
+                              <Typography>Reps: {item.reps}</Typography>
+                              <Typography>Weight: {item.weight} kg</Typography>
+                              <Typography>Volume: {item.volume} kg</Typography>
+                            </CardContent>
+                          </Card>
+                        </Grid>
+                      ))}
                     </Grid>
                   </CardContent>
                 </Card>

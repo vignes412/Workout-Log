@@ -139,10 +139,8 @@ const WorkoutLogModal = ({
     }
 
     setLoading(true);
-    const [year, month, day] = log.date.split("-");
-    const formattedDate = `${day}/${month}/${year}`;
     const row = [
-      formattedDate,
+      log.date,
       log.muscleGroup,
       log.exercise,
       log.reps,
