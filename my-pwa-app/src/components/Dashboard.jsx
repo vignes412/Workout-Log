@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { googleLogout } from "@react-oauth/google";
 import {
   initClient,
   syncData,
@@ -42,24 +41,22 @@ import Charts from "./Charts";
 import { useAppState } from "../index";
 import "../styles.css";
 import { generateInsights } from "../utils/aiInsights";
-import {
-  prepareData,
-  trainModel,
-  predictFatigue,
-} from "../utils/tensorflowModel";
 
 const getRecentWorkoutLogs = (logs) => {
   if (!logs || logs.length === 0) return [];
   return logs
     .slice(-3)
-    .map((log) => ({
-      date: log[0],
-      muscleGroup: log[1],
-      exercise: log[2],
-      reps: log[3],
-      weight: log[4],
-      rating: log[5],
-    }))
+    .map((log) => {
+      const weight = log[4] === 0 ? "Bodyweight" : log[4]; // Handle zero weight
+      return {
+        date: log[0],
+        muscleGroup: log[1],
+        exercise: log[2],
+        reps: log[3],
+        weight,
+        rating: log[5],
+      };
+    })
     .reverse();
 };
 
@@ -157,61 +154,6 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
     }
   }, [logs]);
 
-  useEffect(() => {
-    const runTensorFlow = async () => {
-      if (logs && logs.length > 0) {
-        const { inputTensor, labelTensor } = prepareData(logs);
-        const model = await trainModel(inputTensor, labelTensor);
-
-        // Use the most recent 3 workout logs as input for prediction
-        const recentLogs = logs.slice(-3).map((log) => [
-          parseFloat(log[3]) || 0, // Reps
-          parseFloat(log[4]) || 0, // Weight
-        ]);
-
-        const predictions = predictFatigue(model, recentLogs);
-        setPredictedFatigue(predictions);
-      }
-    };
-
-    runTensorFlow();
-  }, [logs]);
-
-  const handlePredictFatigue = async () => {
-    if (!exerciseInput.reps || !exerciseInput.weight) {
-      alert("Please enter both reps and weight.");
-      return;
-    }
-
-    const inputs = [
-      [parseFloat(exerciseInput.reps), parseFloat(exerciseInput.weight)],
-    ];
-    console.log("Inputs for prediction:", inputs); // Debugging log
-
-    if (logs && logs.length > 0) {
-      const { inputTensor, labelTensor } = prepareData(logs);
-      console.log("Prepared data for training:", { inputTensor, labelTensor }); // Debugging log
-
-      const model = await trainModel(inputTensor, labelTensor);
-      console.log("Trained model:", model); // Debugging log
-
-      const predictions = predictFatigue(model, inputs);
-      console.log("Predictions:", predictions); // Debugging log
-
-      if (predictions && predictions.length > 0) {
-        const predictedFatigue = predictions[0];
-        const fatigueThreshold = 70; // Example threshold for high fatigue
-        const insight =
-          predictedFatigue > fatigueThreshold
-            ? "High fatigue predicted. Consider reducing intensity or taking a rest day."
-            : "Fatigue levels are within a safe range. You can proceed with your workout.";
-        setPredictedFatigueForInput({ value: predictedFatigue, insight });
-      } else {
-        setPredictedFatigueForInput(null);
-      }
-    }
-  };
-
   const handleLogout = () => {
     localStorage.removeItem("authToken");
     dispatch({
@@ -241,12 +183,16 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
       day: "2-digit",
       year: "numeric",
     });
+
+    const defaultWeight =
+      recentLog.weight === "Bodyweight" ? 0 : recentLog.weight; // Default weight for bodyweight exercises
+
     setModalEditLog({
       date,
       muscleGroup: recentLog.muscleGroup,
       exercise: recentLog.exercise,
       reps: "",
-      weight: "",
+      weight: defaultWeight,
       rating: "",
     });
     setOpenModal(true);
@@ -334,29 +280,12 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
                 </MenuItem>
                 <MenuItem
                   onClick={() => {
-                    onNavigate("workoutplanner");
-                    handleMobileMenuClose();
-                  }}
-                >
-                  Planner
-                </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    onNavigate("smart-planner");
-                    handleMobileMenuClose();
-                  }}
-                >
-                  Planner
-                </MenuItem>
-                <MenuItem
-                  onClick={() => {
                     onNavigate("bodymeasurements");
                     handleMobileMenuClose();
                   }}
                 >
                   Body Measurements
                 </MenuItem>
-
                 <MenuItem
                   onClick={() => {
                     handleLogout();
@@ -408,18 +337,6 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
               </Button>
               <Button
                 color="inherit"
-                onClick={() => onNavigate("workoutplanner")}
-              >
-                Planner
-              </Button>
-              <Button
-                color="inherit"
-                onClick={() => onNavigate("smart-planner")}
-              >
-                Smart Planner
-              </Button>
-              <Button
-                color="inherit"
                 onClick={() => onNavigate("bodymeasurements")}
               >
                 Body Measurements
@@ -433,12 +350,6 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
               <IconButton color="inherit" onClick={() => setSettingsOpen(true)}>
                 <Settings />
               </IconButton>
-              <Button
-                color="inherit"
-                onClick={() => onNavigate("advancedanalytics")}
-              >
-                Advanced Analytics
-              </Button>
             </Box>
           )}
         </Toolbar>
@@ -521,45 +432,6 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
           <Typography variant="body2" sx={{ mt: 2 }}>
             Last recorded: {lastRecordedDate || "Not recorded yet"}
           </Typography>
-        </Paper>
-      </Box>
-
-      <Box sx={{ mt: 4 }}>
-        <Typography variant="h5" gutterBottom>
-          Predict Fatigue for Custom Input
-        </Typography>
-        <Paper elevation={3} sx={{ p: 3, borderRadius: "10px" }}>
-          <Box sx={{ display: "flex", gap: 2, alignItems: "center", mb: 2 }}>
-            <TextField
-              label="Reps"
-              type="number"
-              value={exerciseInput.reps}
-              onChange={(e) =>
-                setExerciseInput({ ...exerciseInput, reps: e.target.value })
-              }
-            />
-            <TextField
-              label="Weight (kg)"
-              type="number"
-              value={exerciseInput.weight}
-              onChange={(e) =>
-                setExerciseInput({ ...exerciseInput, weight: e.target.value })
-              }
-            />
-            <Button variant="contained" onClick={handlePredictFatigue}>
-              Predict Fatigue
-            </Button>
-          </Box>
-          {predictedFatigueForInput !== null && (
-            <Alert severity="info">
-              Predicted Fatigue Level:{" "}
-              {typeof predictedFatigueForInput.value === "number"
-                ? predictedFatigueForInput.value.toFixed(2)
-                : "N/A"}
-              <br />
-              Insight: {predictedFatigueForInput.insight}
-            </Alert>
-          )}
         </Paper>
       </Box>
 

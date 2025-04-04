@@ -1,0 +1,62 @@
+Muscle_Group,Exercise,Difficulty_Level,Equipment_Required,Target_Intensity,Primary_Muscle_Group,Secondary_Muscle_Group,Exercise_Duration,Recovery_Time,Exercise_Type,Calories_Burned,Exercise_Progression,Injury_Risk_Level
+Erector Spinae,Floor Hyperextension,Medium,None,Moderate,Erector Spinae,None,30 seconds,15 seconds,Strength,50,Beginner,Low
+Neck,Floor Hyperextension,Medium,None,Moderate,Neck,None,30 seconds,15 seconds,Strength,50,Beginner,Low
+Erector Spinae,Flat Bench Hyperextension,Medium,Bench,Moderate,Erector Spinae,None,30 seconds,15 seconds,Strength,60,Beginner,Low
+Hip,Lying Glute Stretch,Easy,None,Low,Hip,None,20 seconds,10 seconds,Stretching,10,Beginner,Low
+Leg,Lying Glute Stretch,Easy,None,Low,Leg,None,20 seconds,10 seconds,Stretching,10,Beginner,Low
+Chest,Decline Chest Press Machine,Hard,Machine,High,Chest,Triceps,45 seconds,30 seconds,Strength,100,Intermediate,Medium
+Chest,Lying Chest Press Machine,Hard,Machine,High,Chest,Triceps,45 seconds,30 seconds,Strength,100,Intermediate,Medium
+Chest,Wall Push-up,Easy,None,Low,Chest,Triceps,20 seconds,10 seconds,Calisthenic,30,Beginner,Low
+Triceps,Wall Push-up,Easy,None,Low,Triceps,Chest,20 seconds,10 seconds,Calisthenic,30,Beginner,Low
+Triceps,Cable Lying Triceps Extensions,Medium,Cable,Moderate,Triceps,None,30 seconds,15 seconds,Strength,40,Beginner,Low
+Shoulders,Single Arm Circles,Easy,None,Low,Shoulders,None,20 seconds,10 seconds,Warm-up,10,Beginner,Low
+Leg,Lying Dumbbell Leg Curl,Medium,Dumbbell,Moderate,Leg,None,30 seconds,15 seconds,Strength,50,Beginner,Low
+Calf,Standing Barbell Calf Raise,Medium,Barbell,Moderate,Calf,None,30 seconds,15 seconds,Strength,60,Beginner,Low
+Back / Wing,Table Inverted Row,Medium,Table,Moderate,Back,None,30 seconds,15 seconds,Strength,50,Beginner,Low
+Triceps,Chair Dips,Medium,Chair,Moderate,Triceps,None,30 seconds,15 seconds,Strength,50,Beginner,Low
+Erector Spinae,Reverse Hyperextension Machine,Hard,Machine,High,Erector Spinae,None,45 seconds,30 seconds,Strength,80,Intermediate,Medium
+Hip,Reverse Hyperextension Machine,Hard,Machine,High,Hip,None,45 seconds,30 seconds,Strength,80,Intermediate,Medium
+Abs,Stability Ball Knee Tuck,Medium,Stability Ball,Moderate,Abs,None,30 seconds,15 seconds,Strength,60,Beginner,Low
+Chest,Smith Machine Hex Press,Hard,Smith Machine,High,Chest,Triceps,45 seconds,30 seconds,Strength,100,Intermediate,Medium
+Chest,Close-grip Incline Dumbbell Press,Hard,Dumbbell,High,Chest,Triceps,45 seconds,30 seconds,Strength,100,Intermediate,Medium
+Shoulders,Standing Alternating Dumbbell Shoulder Press,Medium,Dumbbell,Moderate,Shoulders,None,30 seconds,15 seconds,Strength,60,Beginner,Low
+Chest,Narrow Grip Wall Push-Up,Easy,None,Low,Chest,Triceps,20 seconds,10 seconds,Calisthenic,30,Beginner,Low
+Triceps,Narrow Grip Wall Push-Up,Easy,None,Low,Triceps,Chest,20 seconds,10 seconds,Calisthenic,30,Beginner,Low
+Shoulders,Cable External Shoulder Rotation,Medium,Cable,Moderate,Shoulders,None,30 seconds,15 seconds,Strength,40,Beginner,Low
+Shoulders,Cable Internal Shoulder Rotation,Medium,Cable,Moderate,Shoulders,None,30 seconds,15 seconds,Strength,40,Beginner,Low
+Full Body,Turkish Get-up,Hard,Kettlebell,High,Full Body,None,60 seconds,30 seconds,Strength,120,Advanced,Medium
+Calisthenic,Parallel Bar Dips,Medium,Parallel Bars,Moderate,Chest,Triceps,30 seconds,15 seconds,Calisthenic,60,Beginner,Low
+Chest,Parallel Bar Dips,Medium,Parallel Bars,Moderate,Chest,Triceps,30 seconds,15 seconds,Calisthenic,60,Beginner,Low
+Triceps,Parallel Bar Dips,Medium,Parallel Bars,Moderate,Triceps,Chest,30 seconds,15 seconds,Calisthenic,60,Beginner,Low
+Hip,Bodyweight Hip Thrust,Medium,None,Moderate,Hip,None,30 seconds,15 seconds,Strength,50,Beginner,Low
+Back / Wing,Close Grip Cable Row,Medium,Cable,Moderate,Back,None,30 seconds,15 seconds,Strength,60,Beginner,Low
+Back / Wing,Rope Straight Arm Pulldown,Medium,Cable,Moderate,Back,None,30 seconds,15 seconds,Strength,60,Beginner,Low
+Abs,Side Bridge,Medium,None,Moderate,Abs,None,30 seconds,15 seconds,Strength,50,Beginner,Low
+Back / Wing,V-bar Lat Pulldown,Medium,Lat Pulldown Machine,Moderate,Back,None,30 seconds,15 seconds,Strength,60,Beginner,Low
+Back / Wing,One-Arm Barbell Row,Medium,Barbell,Moderate,Back,None,30 seconds,15 seconds,Strength,60,Beginner,Low
+Abs,Plank With Arm And Leg Lift,Medium,None,Moderate,Abs,None,30 seconds,15 seconds,Strength,50,Beginner,Low
+Hip,Plank With Arm And Leg Lift,Medium,None,Moderate,Hip,None,30 seconds,15 seconds,Strength,50,Beginner,Low
+Leg,Plank With Arm And Leg Lift,Medium,None,Moderate,Leg,None,30 seconds,15 seconds,Strength,50,Beginner,Low
+Back / Wing,T-Bar Row,Medium,T-Bar Machine,Moderate,Back,None,30 seconds,15 seconds,Strength,60,Beginner,Low
+Erector Spinae,T-Bar Row,Medium,T-Bar Machine,Moderate,Erector Spinae,None,30 seconds,15 seconds,Strength,60,Beginner,Low
+Abs,Weighted Front Plank,Medium,Weight Plate,Moderate,Abs,None,30 seconds,15 seconds,Strength,60,Beginner,Low
+Leg,Weighted Front Plank,Medium,Weight Plate,Moderate,Leg,None,30 seconds,15 seconds,Strength,60,Beginner,Low
+Cardio,Backward Running,Medium,None,Moderate,Cardio,None,30 seconds,15 seconds,Cardio,50,Beginner,Low
+Shoulders,Dumbbell Lateral to Front Raise,Medium,Dumbbell,Moderate,Shoulders,None,30 seconds,15 seconds,Strength,40,Beginner,Low
+Not specified,Resistance Band Bicycle Crunch,Medium,Resistance Band,Moderate,Abs,None,30 seconds,15 seconds,Strength,40,Beginner,Low
+Back / Wing,Incline Cable Row,Medium,Cable,Moderate,Back,None,30 seconds,15 seconds,Strength,60,Beginner,Low
+Shoulders,One-Arm Bent Over Cable Lateral Raise,Medium,Cable,Moderate,Shoulders,None,30 seconds,15 seconds,Strength,40,Beginner,Low
+Back / Wing,Cable Bent Over Row,Medium,Cable,Moderate,Back,None,30 seconds,15 seconds,Strength,60,Beginner,Low
+Back / Wing,Standing Side Bend Stretch,Easy,None,Low,Back,None,20 seconds,10 seconds,Stretching,10,Beginner,Low
+Calisthenic,Handstand Push-Up,Hard,None,High,Shoulders,None,45 seconds,30 seconds,Calisthenic,100,Advanced,Medium
+Shoulders,Handstand Push-Up,Hard,None,High,Shoulders,None,45 seconds,30 seconds,Calisthenic,100,Advanced,Medium
+Shoulders,EZ Bar Underhand Press,Medium,EZ Bar,Moderate,Shoulders,None,30 seconds,15 seconds,Strength,40,Beginner,Low
+Back / Wing,Back and Pec Stretch,Easy,None,Low,Back,None,20 seconds,10 seconds,Stretching,10,Beginner,Low
+Chest,Back and Pec Stretch,Easy,None,Low,Chest,None,20 seconds,10 seconds,Stretching,10,Beginner,Low
+Biceps,Lying High Bench Barbell Curl,Medium,Barbell,Moderate,Biceps,None,30 seconds,15 seconds,Strength,40,Beginner,Low
+Hip,Single Leg Bridge,Medium,None,Moderate,Hip,None,30 seconds,15 seconds,Strength,50,Beginner,Low
+Calf,Weighted Donkey Calf Raise,Medium,Weight Plate,Moderate,Calf,None,30 seconds,15 seconds,Strength,60,Beginner,Low
+Back / Wing,Double Cable Neutral Grip Lat Pulldown On Floor,Medium,Cable,Moderate,Back,None,30 seconds,15 seconds,Strength,60,Beginner,Low
+Abs,Cable Side Bend,Medium,Cable,Moderate,Abs,None,30 seconds,15 seconds,Strength,40,Beginner,Low
+Shoulders,Dumbbell Lying External Shoulder Rotation,Medium,Dumbbell,Moderate,Shoulders,None,30 seconds,15 seconds,Strength,40,Beginner,Low
+Chest,Lever Incline Hammer Chest Press,Hard,Lever Machine,High,Chest,Triceps,45 seconds,30 seconds,Strength,100,Intermediate,Medium

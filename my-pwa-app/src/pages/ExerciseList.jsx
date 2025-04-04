@@ -36,6 +36,17 @@ const ExerciseList = ({ accessToken, onNavigate, toggleTheme, themeMode }) => {
             (row) => ({
               muscleGroup: row[0],
               exercise: row[1],
+              difficultyLevel: row[3],
+              equipmentRequired: row[4],
+              targetIntensity: row[5],
+              primaryMuscleGroup: row[6],
+              secondaryMuscleGroup: row[7],
+              exerciseDuration: row[8],
+              recoveryTime: row[9],
+              exerciseType: row[10],
+              caloriesBurned: row[11],
+              exerciseProgression: row[12],
+              injuryRiskLevel: row[13],
               exerciseLink: row[2],
               imageLink: row[14],
             })
@@ -170,6 +181,39 @@ const ExerciseList = ({ accessToken, onNavigate, toggleTheme, themeMode }) => {
                               align="center"
                             >
                               {exercise.muscleGroup}
+                            </Typography>
+                            <Typography variant="body2" color="textSecondary">
+                              Difficulty: {exercise.difficultyLevel}
+                            </Typography>
+                            <Typography variant="body2" color="textSecondary">
+                              Equipment: {exercise.equipmentRequired}
+                            </Typography>
+                            <Typography variant="body2" color="textSecondary">
+                              Intensity: {exercise.targetIntensity}
+                            </Typography>
+                            <Typography variant="body2" color="textSecondary">
+                              Primary Muscle: {exercise.primaryMuscleGroup}
+                            </Typography>
+                            <Typography variant="body2" color="textSecondary">
+                              Secondary Muscle: {exercise.secondaryMuscleGroup}
+                            </Typography>
+                            <Typography variant="body2" color="textSecondary">
+                              Duration: {exercise.exerciseDuration}
+                            </Typography>
+                            <Typography variant="body2" color="textSecondary">
+                              Recovery: {exercise.recoveryTime}
+                            </Typography>
+                            <Typography variant="body2" color="textSecondary">
+                              Type: {exercise.exerciseType}
+                            </Typography>
+                            <Typography variant="body2" color="textSecondary">
+                              Calories Burned: {exercise.caloriesBurned}
+                            </Typography>
+                            <Typography variant="body2" color="textSecondary">
+                              Progression: {exercise.exerciseProgression}
+                            </Typography>
+                            <Typography variant="body2" color="textSecondary">
+                              Injury Risk: {exercise.injuryRiskLevel}
                             </Typography>
                           </CardContent>
                         </CardActionArea>

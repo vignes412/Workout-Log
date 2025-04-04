@@ -38,6 +38,8 @@ const Charts = ({ logs, themeMode }) => {
         progressionData: [],
         fatigueByMuscle: [],
         fatigueTrend: { rest: "None", workout: "None" },
+        volumeOverTime: [],
+        muscleGroupDistributionPercent: [],
       };
     }
 
@@ -58,13 +60,13 @@ const Charts = ({ logs, themeMode }) => {
 
     // Filter logs for the last 10 days
     const currentDate = new Date();
-    const tenDaysAgo = new Date(currentDate);
-    tenDaysAgo.setDate(currentDate.getDate() - 4);
+    const threeDaysAgo = new Date(currentDate);
+    threeDaysAgo.setDate(currentDate.getDate() - 3);
 
     const last10DaysLogs = logs.filter((log) => {
       const [day, month, year] = log[0].split("/"); // Assuming DD/MM/YYYY
       const logDate = new Date(`${year}-${month}-${day}`);
-      return logDate >= tenDaysAgo && logDate <= currentDate;
+      return logDate >= threeDaysAgo && logDate <= currentDate;
     });
 
     // Fatigue per Muscle Group: Calculate fatigue based on total volume
@@ -129,6 +131,57 @@ const Charts = ({ logs, themeMode }) => {
       );
     });
 
+    // Progression Rate per Muscle Group: Calculate average progression rate
+    const progressionByMuscle = muscleGroups.map((group) => {
+      const groupMetrics = dailyMetrics.filter(
+        (metric) => metric.muscleGroup === group
+      );
+
+      // Calculate average progression rate for the muscle group
+      const avgProgressionRate =
+        groupMetrics.reduce((sum, metric) => {
+          const rate =
+            metric.progressionRate === "N/A"
+              ? 0
+              : parseFloat(metric.progressionRate) || 0;
+          return sum + rate;
+        }, 0) / (groupMetrics.length || 1);
+
+      return { muscleGroup: group, avgProgressionRate };
+    });
+
+    // Debugging: Log intermediate results
+    console.log("Progression Rate by Muscle Group:", progressionByMuscle);
+
+    // Volume Over Time: Calculate total volume for each date
+    const volumeOverTime = dates.map((date) => {
+      const dateLogs = logs.filter((log) => log[0] === date);
+      return dateLogs.reduce((sum, log) => {
+        const reps = parseFloat(log[3]) || 0;
+        const weight = parseFloat(log[4]) || 0;
+        return sum + reps * weight;
+      }, 0);
+    });
+
+    // Muscle Group Distribution: Calculate total volume per muscle group
+    const muscleGroupDistribution = muscleGroups.map((group) => {
+      const groupLogs = logs.filter((log) => log[1] === group);
+      return groupLogs.reduce((sum, log) => {
+        const reps = parseFloat(log[3]) || 0;
+        const weight = parseFloat(log[4]) || 0;
+        return sum + reps * weight;
+      }, 0);
+    });
+
+    // Normalize muscle group distribution to percentages
+    const totalVolume = muscleGroupDistribution.reduce(
+      (sum, volume) => sum + volume,
+      0
+    );
+    const muscleGroupDistributionPercent = muscleGroupDistribution.map(
+      (volume) => (volume / totalVolume) * 100 || 0
+    );
+
     return {
       dates,
       muscleGroups,
@@ -136,11 +189,14 @@ const Charts = ({ logs, themeMode }) => {
       progressionData,
       fatigueByMuscle,
       fatigueTrend: overallFatigueTrend,
+      progressionByMuscle,
+      volumeOverTime,
+      muscleGroupDistributionPercent,
     };
   }, [logs, dailyMetrics]);
 
-  // Overall Progression Rate Chart
-  const progressionRateData = {
+  // Combined Progression and Fatigue Over Time Chart Data
+  const combinedProgressionFatigueData = {
     labels: processedData.dates || [],
     datasets: [
       {
@@ -150,13 +206,6 @@ const Charts = ({ logs, themeMode }) => {
         backgroundColor: `${theme.palette.success.main}33`,
         tension: 0.3,
       },
-    ],
-  };
-
-  // Overall Fatigue Chart
-  const fatigueData = {
-    labels: processedData.dates || [],
-    datasets: [
       {
         label: "Fatigue (%)",
         data: processedData.fatigueData || [],
@@ -181,13 +230,71 @@ const Charts = ({ logs, themeMode }) => {
     ],
   };
 
+  // Progression Rate per Muscle Group Chart
+  const progressionByMuscleData = {
+    labels: processedData.progressionByMuscle.map((m) => m.muscleGroup) || [],
+    datasets: [
+      {
+        label: "Progression Rate (%) - Per Muscle Group",
+        data:
+          processedData.progressionByMuscle.map((m) => m.avgProgressionRate) ||
+          [],
+        backgroundColor: `${theme.palette.success.main}99`,
+        borderColor: theme.palette.success.main,
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  // Volume Over Time Chart Data
+  const volumeOverTimeData = {
+    labels: processedData.dates || [],
+    datasets: [
+      {
+        label: "Total Volume",
+        data: processedData.volumeOverTime || [],
+        borderColor: theme.palette.info.main,
+        backgroundColor: `${theme.palette.info.main}33`,
+        tension: 0.3,
+      },
+    ],
+  };
+
+  // Muscle Group Distribution Chart Data
+  const brightColors = [
+    "#FF6384",
+    "#36A2EB",
+    "#FFCE56",
+    "#4BC0C0",
+    "#9966FF",
+    "#FF9F40",
+    "#FF6384",
+  ];
+
+  const muscleGroupDistributionData = {
+    labels: processedData.muscleGroups || [],
+    datasets: [
+      {
+        label: "Volume Distribution (%)",
+        data: processedData.muscleGroupDistributionPercent || [],
+        backgroundColor: processedData.muscleGroups.map(
+          (_, i) => brightColors[i % brightColors.length]
+        ),
+        borderWidth: 1,
+      },
+    ],
+  };
+
   const lineChartOptions = (title, yLabel) => ({
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
       legend: {
         position: "top",
-        labels: { color: theme.palette.text.primary },
+        labels: {
+          color: theme.palette.text.primary,
+          font: { size: 14 }, // Increased font size
+        },
       },
       title: {
         display: true,
@@ -212,7 +319,10 @@ const Charts = ({ logs, themeMode }) => {
     plugins: {
       legend: {
         position: "top",
-        labels: { color: theme.palette.text.primary },
+        labels: {
+          color: theme.palette.text.primary,
+          font: { size: 14 }, // Increased font size
+        },
       },
       title: {
         display: true,
@@ -245,19 +355,11 @@ const Charts = ({ logs, themeMode }) => {
           <Grid item xs={12} md={6}>
             <Box sx={{ height: 350 }}>
               <Line
-                data={progressionRateData}
+                data={combinedProgressionFatigueData}
                 options={lineChartOptions(
-                  "Progression Rate Over Time",
-                  "Progression (%)"
+                  "Progression Rate and Fatigue Over Time",
+                  "Percentage (%)"
                 )}
-              />
-            </Box>
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <Box sx={{ height: 350 }}>
-              <Line
-                data={fatigueData}
-                options={lineChartOptions("Fatigue Over Time", "Fatigue (%)")}
               />
             </Box>
           </Grid>
@@ -268,6 +370,36 @@ const Charts = ({ logs, themeMode }) => {
                 options={barChartOptions(
                   "Fatigue per Muscle Group",
                   "Fatigue (%)"
+                )}
+              />
+            </Box>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Box sx={{ height: 350 }}>
+              <Bar
+                data={progressionByMuscleData}
+                options={barChartOptions(
+                  "Progression Rate per Muscle Group",
+                  "Progression Rate (%)"
+                )}
+              />
+            </Box>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Box sx={{ height: 350 }}>
+              <Line
+                data={volumeOverTimeData}
+                options={lineChartOptions("Volume Over Time", "Total Volume")}
+              />
+            </Box>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Box sx={{ height: 350 }}>
+              <Bar
+                data={muscleGroupDistributionData}
+                options={barChartOptions(
+                  "Muscle Group Volume Distribution",
+                  "Percentage (%)"
                 )}
               />
             </Box>

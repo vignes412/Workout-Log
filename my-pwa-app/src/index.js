@@ -13,15 +13,12 @@ import App from "./App";
 import Login from "./pages/Login";
 import Dashboard from "./components/Dashboard";
 import ExerciseList from "./pages/ExerciseList";
-import WorkoutPlanner from "./pages/WorkoutPlanner";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { initClient, syncData } from "./utils/sheetsApi";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import config from "./config";
 import "./index.css";
 import BodyMeasurements from "./components/BodyMeasurements";
-import AdvancedAnalytics from "./pages/AdvancedAnalytics";
-import SmartWorkoutPlanner from "./components/SmartWorkoutPlanner";
 
 const initialState = {
   isAuthenticated: !!localStorage.getItem("authToken"),
@@ -201,35 +198,12 @@ const Main = () => {
             themeMode={state.themeMode}
           />
         );
-      case "workoutplanner":
-        return (
-          <WorkoutPlanner
-            accessToken={state.accessToken}
-            onNavigate={(page) => dispatch({ type: "SET_PAGE", payload: page })}
-            logs={state.logs}
-            exercises={state.exercises}
-          />
-        );
       case "bodymeasurements":
         return (
           <BodyMeasurements
             accessToken={state.accessToken}
             onNavigate={(page) => dispatch({ type: "SET_PAGE", payload: page })}
             themeMode={state.themeMode}
-          />
-        );
-      case "smart-planner":
-        return (
-          <SmartWorkoutPlanner
-            accessToken={state.accessToken}
-            onNavigate={(page) => dispatch({ type: "SET_PAGE", payload: page })}
-          />
-        );
-      case "advancedanalytics":
-        return (
-          <AdvancedAnalytics
-            logs={state.logs}
-            onNavigate={(page) => dispatch({ type: "SET_PAGE", payload: page })}
           />
         );
       default:

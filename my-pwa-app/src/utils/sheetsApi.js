@@ -134,6 +134,10 @@ export const syncData = async (
   setData,
   mapFn = (row) => row
 ) => {
+  if (typeof setData !== "function") {
+    throw new Error("setData must be a function");
+  }
+
   try {
     const data = await fetchData(range, mapFn);
     setData(data);
@@ -166,4 +170,18 @@ export const appendData2 = async (range, values, accessToken) => {
     throw new Error(`Failed to append data: ${error.error.message}`);
   }
   return response.json();
+};
+
+
+export const saveBodyMeasurementToSheet = async (range, row, accessToken) => {
+  return retryOperation(async () => {
+    const formattedValues = Array.isArray(row[0]) ? row : [row];
+    await gapi.client.sheets.spreadsheets.values.append({
+      spreadsheetId: SPREADSHEET_ID,
+      range,
+      valueInputOption: "RAW",
+      resource: { values: formattedValues },
+    });
+    console.log(`Saved body measurement to ${range} successfully`);
+  });
 };

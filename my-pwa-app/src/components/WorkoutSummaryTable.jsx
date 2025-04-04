@@ -15,7 +15,7 @@ const WorkoutSummaryTable = ({ logs }) => {
       try {
         const parsedDate = new Date(row.date);
         if (!isNaN(parsedDate)) {
-          formattedDate = format(parsedDate, "dd/MM/yyyy"); // Format date to dd/MM/yyyy
+          formattedDate = format(parsedDate, "yyyy-MM-dd"); // Format date to yyyy-MM-dd
         }
       } catch {
         formattedDate = "Invalid Date"; // Fallback for invalid dates
@@ -49,8 +49,8 @@ const WorkoutSummaryTable = ({ logs }) => {
       width: 120,
       sortable: true,
       sortComparator: (v1, v2) => {
-        const date1 = new Date(v1.split("/").reverse().join("/")); // Parse dd/MM/yyyy to Date
-        const date2 = new Date(v2.split("/").reverse().join("/"));
+        const date1 = new Date(v1); // Parse yyyy-MM-dd to Date
+        const date2 = new Date(v2);
         return date1 - date2;
       },
     },

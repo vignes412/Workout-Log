@@ -27,7 +27,7 @@ const WorkoutLogsTable = ({ logs, setLogs, isOffline, exercises }) => {
   };
 
   const workoutLogRows = useMemo(() => {
-    if (!logs || !Array.isArray(logs)) return [];
+    if (!logs || !Array.isArray(logs)) return []; // Ensure logs is an array
     return logs.map((log, index) => ({
       id: index + 1, // Ensure each row has a unique id
       date: log[0] || "",
