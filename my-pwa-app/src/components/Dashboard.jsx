@@ -1,4 +1,22 @@
+// src/components/Dashboard.js
 import React, { useState, useEffect } from "react";
+import {
+  useTheme,
+  Box,
+  Grid,
+  Typography,
+  TextField,
+  Button,
+  Fab,
+  Menu,
+  MenuItem,
+  Avatar,
+  IconButton,
+  Badge,
+  Snackbar,
+  useMediaQuery,
+  CircularProgress,
+} from "@mui/material";
 import {
   initClient,
   syncData,
@@ -8,34 +26,12 @@ import {
 import WorkoutLogModal from "../pages/WorkoutLogModal";
 import SettingsModal from "./SettingsModal";
 import ProgressGoals from "./ProgressGoals";
-import ProgressionFatigueChart from "./charts/ProgressionFatigueChart"; // Updated path
+import ProgressionFatigueChart from "./charts/ProgressionFatigueChart";
 import ProgressionByMuscleChart from "./charts/ProgressionByMuscleChart";
 import VolumeOverTimeChart from "./charts/VolumeOverTimeChart";
 import MuscleGroupDistributionChart from "./charts/MuscleGroupDistributionChart";
 import FatigueByMuscleChart from "./charts/FatigueByMuscleChart";
 import TodoList from "./TodoList";
-import {
-  Button,
-  Typography,
-  Fab,
-  Menu,
-  MenuItem,
-  AppBar,
-  Toolbar,
-  IconButton,
-  Box,
-  Container,
-  Paper,
-  LinearProgress,
-  Badge,
-  useMediaQuery,
-  useTheme,
-  TextField,
-  Alert,
-  Grid,
-  Avatar,
-  Snackbar,
-} from "@mui/material";
 import {
   Add,
   Brightness4,
@@ -51,13 +47,9 @@ import {
   Settings as SettingsIcon,
   Refresh as RefreshIcon,
 } from "@mui/icons-material";
-import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
-import MonitorWeightIcon from "@mui/icons-material/MonitorWeight";
 import WorkoutLogsTable from "./WorkoutLogsTable";
 import WorkoutSummaryTable from "./WorkoutSummaryTable";
-import Charts from "./Charts";
 import { useAppState } from "../index";
-import "../styles.css";
 import { generateInsights } from "../utils/aiInsights";
 
 const getRecentWorkoutLogs = (logs) => {
@@ -309,81 +301,110 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
           justifyContent: "center",
           alignItems: "center",
           height: "100vh",
+          bgcolor: "background.default",
         }}
       >
-        <LinearProgress sx={{ width: "50%" }} />
+        <CircularProgress />
       </Box>
     );
   }
 
   return (
     <>
-      {/* Sidebar */}
-      <Box className="sidebar">
-        <Box className="sidebar-item" onClick={() => onNavigate("dashboard")}>
-          <DashboardIcon />
+      <Box className="sidebar" sx={{ bgcolor: "background.paper" }}>
+        <Box
+          className="sidebar-item"
+          onClick={() => onNavigate("dashboard")}
+          sx={{ "&:hover": { bgcolor: "action.hover" } }}
+        >
+          <DashboardIcon sx={{ color: "text.primary" }} />
           <span>Dashboard</span>
         </Box>
         <Box
           className="sidebar-item"
           onClick={() => onNavigate("exerciselist")}
+          sx={{ "&:hover": { bgcolor: "action.hover" } }}
         >
-          <WorkoutsIcon />
+          <WorkoutsIcon sx={{ color: "text.primary" }} />
           <span>Workouts</span>
         </Box>
         <Box
           className="sidebar-item"
           onClick={() => onNavigate("bodymeasurements")}
+          sx={{ "&:hover": { bgcolor: "action.hover" } }}
         >
-          <BodyMeasurementsIcon />
+          <BodyMeasurementsIcon sx={{ color: "text.primary" }} />
           <span>Body Measurements</span>
         </Box>
-        <Box className="sidebar-item">
-          <MessagesIcon />
+        <Box
+          className="sidebar-item"
+          sx={{ "&:hover": { bgcolor: "action.hover" } }}
+        >
+          <MessagesIcon sx={{ color: "text.primary" }} />
           <span>Messages</span>
         </Box>
-        <Box className="sidebar-item" onClick={() => setSettingsOpen(true)}>
-          <SettingsIcon />
+        <Box
+          className="sidebar-item"
+          onClick={() => setSettingsOpen(true)}
+          sx={{ "&:hover": { bgcolor: "action.hover" } }}
+        >
+          <SettingsIcon sx={{ color: "text.primary" }} />
           <span>Settings</span>
         </Box>
       </Box>
 
-      {/* Main Content */}
-      <Box className="main-container">
-        {/* Header */}
-        <Box className="header">
-          <Typography className="header-greeting">Hi, User!</Typography>
+      <Box className="main-container" sx={{ bgcolor: "background.default" }}>
+        <Box className="header" sx={{ bgcolor: "background.paper" }}>
+          <Typography
+            className="header-greeting"
+            sx={{ fontSize: "1.5rem", fontWeight: 600, color: "text.primary" }}
+          >
+            Hi, User!
+          </Typography>
           <TextField
             className="header-search"
             placeholder="Search anything here..."
             variant="outlined"
             size="small"
+            sx={{ flexGrow: 1, mx: 2 }}
           />
           <Button
             variant="contained"
             color="primary"
             onClick={handleReloadData}
-            sx={{ marginLeft: 2 }}
+            sx={{ mx: 2 }}
           >
             Reload Data
           </Button>
-          <Box className="header-profile">
+          <Box
+            className="header-profile"
+            sx={{ display: "flex", alignItems: "center", gap: 1 }}
+          >
             <Avatar alt="User" src="/path-to-profile-pic.jpg" />
-            <Typography>User Name</Typography>
+            <Typography sx={{ color: "text.primary" }}>User Name</Typography>
             <IconButton onClick={toggleTheme}>
-              {themeMode === "light" ? <Brightness4 /> : <Brightness7 />}
+              {themeMode === "light" ? (
+                <Brightness4 sx={{ color: "text.primary" }} />
+              ) : (
+                <Brightness7 sx={{ color: "text.primary" }} />
+              )}
             </IconButton>
-            <Button color="inherit" onClick={handleLogout}>
+            <Button
+              color="inherit"
+              onClick={handleLogout}
+              sx={{ color: "text.primary" }}
+            >
               Logout
             </Button>
           </Box>
         </Box>
 
-        {/* Main Grid */}
         <Grid container spacing={3}>
-          {/* Status Card */}
           <Grid item xs={12} sm={6} md={0.7}>
-            <Box className="card" sx={{ height: 100 }}>
+            <Box
+              className="card"
+              sx={{ height: 100, bgcolor: "background.paper" }}
+            >
               <Typography
                 className="card-subtitle"
                 color={isOffline ? "error" : "success"}
@@ -392,18 +413,17 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
                 {isOffline ? "Offline" : "Online"}
               </Typography>
               <Badge badgeContent={logs?.length || 0} color="primary">
-                <FitnessCenter />
+                <FitnessCenter sx={{ color: "text.primary" }} />
               </Badge>
             </Box>
           </Grid>
 
-          {/* Workout Logs */}
           {layout.showLogs && (
             <Grid item xs={12} md={6}>
-              <Box className="card">
+              <Box className="card" sx={{ bgcolor: "background.paper" }}>
                 <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                   <IconButton onClick={handleReloadLogs} size="small">
-                    <RefreshIcon />
+                    <RefreshIcon sx={{ color: "text.primary" }} />
                   </IconButton>
                 </Box>
                 <WorkoutLogsTable
@@ -417,10 +437,13 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
 
           {layout.showCharts && (
             <Grid item xs={12} md={3}>
-              <Box className="card" sx={{ height: 413 }}>
+              <Box
+                className="card"
+                sx={{ height: 413, bgcolor: "background.paper" }}
+              >
                 <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                   <IconButton onClick={handleReloadCharts} size="small">
-                    <RefreshIcon />
+                    <RefreshIcon sx={{ color: "text.primary" }} />
                   </IconButton>
                 </Box>
                 <MuscleGroupDistributionChart
@@ -430,11 +453,34 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
                   )}
                 />
               </Box>
-              <Box className="card hightLightBox" sx={{ marginRight: "5px" }}>
-                <p className="highLightLBL">{logs.length}</p> Workouts logged
+              <Box
+                className="card hightLightBox"
+                sx={{ marginRight: "5px", bgcolor: "background.paper" }}
+              >
+                <p
+                  className="highLightLBL"
+                  style={{
+                    fontSize: "40px",
+                    marginTop: "-18px",
+                    color: "text.primary",
+                  }}
+                >
+                  {logs.length}
+                </p>{" "}
+                Workouts logged
               </Box>
-              <Box className="card hightLightBox">
-                <p className="highLightLBL">
+              <Box
+                className="card hightLightBox"
+                sx={{ bgcolor: "background.paper" }}
+              >
+                <p
+                  className="highLightLBL"
+                  style={{
+                    fontSize: "40px",
+                    marginTop: "-18px",
+                    color: "text.primary",
+                  }}
+                >
                   {logs.reduce((p, c) => {
                     const reps = parseFloat(c[3]) || 0;
                     const weight = parseFloat(c[4]) || 0;
@@ -445,19 +491,22 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
               </Box>
             </Grid>
           )}
-          {/* Add TodoList Component */}
+
           <Grid item xs={12} md={2}>
-            <Box className="card" sx={{ maxHeight: 524 }}>
+            <Box
+              className="card"
+              sx={{ maxHeight: 524, bgcolor: "background.paper" }}
+            >
               <TodoList />
             </Box>
           </Grid>
-          {/* Workout Summary */}
+
           {layout.showSummary && (
             <Grid item xs={12} md={12}>
-              <Box className="card">
+              <Box className="card" sx={{ bgcolor: "background.paper" }}>
                 <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                   <IconButton onClick={handleReloadSummary} size="small">
-                    <RefreshIcon />
+                    <RefreshIcon sx={{ color: "text.primary" }} />
                   </IconButton>
                 </Box>
                 <WorkoutSummaryTable logs={logs} />
@@ -465,33 +514,46 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
             </Grid>
           )}
 
-          {/* Charts */}
           {layout.showCharts && (
             <>
               <Grid item xs={12} md={6}>
-                <Box className="card" sx={{ height: 400 }}>
-                  <Typography className="card-title">
+                <Box
+                  className="card"
+                  sx={{ height: 400, bgcolor: "background.paper" }}
+                >
+                  <Typography
+                    className="card-title"
+                    sx={{ color: "text.primary" }}
+                  >
                     Progression Fatigue Chart
                   </Typography>
                   <ProgressionFatigueChart logs={logs} dailyMetrics={logs} />
                 </Box>
               </Grid>
               <Grid item xs={12} md={6}>
-                <Box className="card" sx={{ height: 400 }}>
+                <Box
+                  className="card"
+                  sx={{ height: 400, bgcolor: "background.paper" }}
+                >
                   <ProgressionByMuscleChart logs={logs} dailyMetrics={logs} />
                 </Box>
               </Grid>
               <Grid item xs={12} md={6}>
-                <Box className="card" sx={{ height: 400 }}>
+                <Box
+                  className="card"
+                  sx={{ height: 400, bgcolor: "background.paper" }}
+                >
                   <VolumeOverTimeChart
                     logs={logs}
                     dates={logs.map((log) => log.date)}
                   />
                 </Box>
               </Grid>
-
               <Grid item xs={12} md={6}>
-                <Box className="card" sx={{ height: 400 }}>
+                <Box
+                  className="card"
+                  sx={{ height: 400, bgcolor: "background.paper" }}
+                >
                   <FatigueByMuscleChart
                     logs={logs}
                     muscleGroups={exercises.map(
@@ -503,76 +565,47 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
             </>
           )}
 
-          {/* Progress Goals */}
           <Grid item xs={12} md={6}>
-            <Box className="card">
-              <Typography className="card-title">Progress Goals</Typography>
+            <Box className="card" sx={{ bgcolor: "background.paper" }}>
+              <Typography className="card-title" sx={{ color: "text.primary" }}>
+                Progress Goals
+              </Typography>
               <ProgressGoals logs={logs} />
             </Box>
           </Grid>
-        </Grid>
-        {/* Record Body Weight */}
-        <Grid item xs={12} md={6}>
-          <Box className="card">
-            <Typography className="card-title">Record Body Weight</Typography>
-            <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-              <TextField
-                label="Body Weight (kg)"
-                type="number"
-                value={bodyWeight}
-                onChange={(e) => setBodyWeight(e.target.value)}
-              />
-              <Button variant="contained" onClick={handleRecordWeight}>
-                Record
-              </Button>
-            </Box>
-            <Typography variant="body2" sx={{ mt: 2 }}>
-              Last recorded: {lastRecordedDate || "Not recorded yet"}
-            </Typography>
-          </Box>
-        </Grid>
 
-        {/* AI Insights (Commented Out) */}
-        {/* {insights.length > 0 && (
-            <Grid item xs={12}>
-              <Box className="card">
-                <Typography className="card-title">AI Insights</Typography>
-                {insights.map((insight, index) => (
-                  <Alert
-                    key={index}
-                    severity={insight.type === "warning" ? "warning" : "success"}
-                    sx={{ mb: 2 }}
-                  >
-                    {insight.message}
-                  </Alert>
-                ))}
-              </Box>
-            </Grid>
-          )} */}
-
-        {/* Predicted Fatigue */}
-        {predictedFatigue.length > 0 && (
-          <Grid item xs={12}>
-            <Box className="card">
-              <Typography className="card-title">
-                Predicted Fatigue Levels
+          <Grid item xs={12} md={6}>
+            <Box className="card" sx={{ bgcolor: "background.paper" }}>
+              <Typography className="card-title" sx={{ color: "text.primary" }}>
+                Record Body Weight
               </Typography>
-              {predictedFatigue.map((fatigue, index) => (
-                <Alert key={index} severity="info" sx={{ mb: 2 }}>
-                  Workout {index + 1}: Predicted Fatigue Level -{" "}
-                  {typeof fatigue === "number" ? fatigue.toFixed(2) : "N/A"}
-                </Alert>
-              ))}
+              <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+                <TextField
+                  label="Body Weight (kg)"
+                  type="number"
+                  value={bodyWeight}
+                  onChange={(e) => setBodyWeight(e.target.value)}
+                />
+                <Button variant="contained" onClick={handleRecordWeight}>
+                  Record
+                </Button>
+              </Box>
+              <Typography
+                variant="body2"
+                sx={{ mt: 2, color: "text.secondary" }}
+              >
+                Last recorded: {lastRecordedDate || "Not recorded yet"}
+              </Typography>
             </Box>
           </Grid>
-        )}
+        </Grid>
 
-        {/* Floating Action Button */}
         <Fab
           color="primary"
           onClick={handleMenuOpen}
           aria-label="add"
           className="fab-add"
+          sx={{ "&:hover": { transform: "scale(1.1)" } }}
         >
           <Add />
         </Fab>
@@ -582,6 +615,7 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
           onClose={handleMenuClose}
           anchorOrigin={{ vertical: "top", horizontal: "center" }}
           transformOrigin={{ vertical: "bottom", horizontal: "center" }}
+          PaperProps={{ sx: { bgcolor: "background.paper" } }}
         >
           <MenuItem
             onClick={() => {
@@ -589,10 +623,13 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
               setOpenModal(true);
               handleMenuClose();
             }}
+            sx={{ color: "text.primary" }}
           >
             New Workout
           </MenuItem>
-          <MenuItem onClick={handleQuickAddOpen}>Quick Add</MenuItem>
+          <MenuItem onClick={handleQuickAddOpen} sx={{ color: "text.primary" }}>
+            Quick Add
+          </MenuItem>
         </Menu>
 
         <Menu
@@ -601,15 +638,22 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
           onClose={handleQuickAddClose}
           anchorOrigin={{ vertical: "top", horizontal: "left" }}
           transformOrigin={{ vertical: "top", horizontal: "right" }}
+          PaperProps={{ sx: { bgcolor: "background.paper" } }}
         >
           {recentLogs.length > 0 ? (
             recentLogs.map((log, index) => (
-              <MenuItem key={index} onClick={() => handleQuickAdd(log)}>
+              <MenuItem
+                key={index}
+                onClick={() => handleQuickAdd(log)}
+                sx={{ color: "text.primary" }}
+              >
                 {log.exercise} ({log.muscleGroup}) - {log.date}
               </MenuItem>
             ))
           ) : (
-            <MenuItem disabled>No recent workouts</MenuItem>
+            <MenuItem disabled sx={{ color: "text.secondary" }}>
+              No recent workouts
+            </MenuItem>
           )}
         </Menu>
 
@@ -628,8 +672,6 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
           onClose={() => setSettingsOpen(false)}
           onUpdateLayout={setLayout}
         />
-
-
       </Box>
       <Snackbar
         open={toast.open}

@@ -1,5 +1,5 @@
+// src/index.js
 import React, {
-  useState,
   useEffect,
   createContext,
   useContext,
@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import { createRoot } from "react-dom/client";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import App from "./App";
 import Login from "./pages/Login";
@@ -17,24 +17,16 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { initClient, syncData } from "./utils/sheetsApi";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import config from "./config";
-import "./index.css";
+import "./styles/global.css";
 import BodyMeasurements from "./components/BodyMeasurements";
+import { lightTheme, darkTheme } from "./themes/theme";
 import {
-  Add,
-  Brightness4,
-  Brightness7,
-  FitnessCenter,
-  Settings,
-  Menu as MenuIcon,
-  Search,
   Dashboard as DashboardIcon,
   FitnessCenter as WorkoutsIcon,
   DirectionsRun as BodyMeasurementsIcon,
-  Message as MessagesIcon,
   Settings as SettingsIcon,
-  Refresh as RefreshIcon,
-  Work,
 } from "@mui/icons-material";
+
 const initialState = {
   isAuthenticated: !!localStorage.getItem("authToken"),
   accessToken: localStorage.getItem("authToken"),
@@ -67,42 +59,6 @@ const reducer = (state, action) => {
 
 const AppContext = createContext();
 export const useAppState = () => useContext(AppContext);
-
-const lightTheme = createTheme({
-  palette: {
-    mode: "light",
-    primary: { main: "#1976d2" },
-    secondary: { main: "#dc004e" },
-    background: { default: "#fff", paper: "#f5f5f5" },
-    text: {
-      primary: "#000000", // Black for main text
-      secondary: "#555555", // Dark gray for secondary text
-    },
-  },
-  typography: {
-    h1: { color: "#000000" }, // Black for h1
-    h5: { color: "#000000" }, // Black for h5
-    h6: { color: "#000000" }, // Black for h6
-  },
-});
-
-const darkTheme = createTheme({
-  palette: {
-    mode: "dark",
-    primary: { main: "#64b5f6" },
-    secondary: { main: "#f06292" },
-    background: { default: "#212121", paper: "#424242" },
-    text: {
-      primary: "#ffffff", // Bright white for main text
-      secondary: "#b0bec5", // Light gray for secondary text
-    },
-  },
-  typography: {
-    h1: { color: "#ffffff" }, // Bright white for h1
-    h5: { color: "#ffffff" }, // Bright white for h5
-    h6: { color: "#ffffff" }, // Bright white for h6
-  },
-});
 
 const Main = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -144,10 +100,10 @@ const Main = () => {
     const scheduleNotification = () => {
       const now = new Date();
       const targetTime = new Date();
-      targetTime.setHours(8, 20, 0, 0); // Set time to 8:20 AM
+      targetTime.setHours(8, 20, 0, 0);
 
       if (now > targetTime) {
-        targetTime.setDate(targetTime.getDate() + 1); // Schedule for the next day
+        targetTime.setDate(targetTime.getDate() + 1);
       }
 
       const timeUntilNotification = targetTime - now;
@@ -158,7 +114,7 @@ const Main = () => {
             "Good Morning! Don't forget to log your workout today!"
           );
         }
-        scheduleNotification(); // Reschedule for the next day
+        scheduleNotification();
       }, timeUntilNotification);
     };
 
@@ -256,40 +212,44 @@ const Main = () => {
         >
           <ErrorBoundary>
             {renderPage()}
-            {state.currentPage != "login" ? <div className="bottom-menu">
-              <div
-                className="bottom-menu-item"
-                onClick={() =>
-                  dispatch({ type: "SET_PAGE", payload: "dashboard" })
-                }
-              >
-                <DashboardIcon />
+            {state.currentPage != "login" ? (
+              <div className="bottom-menu">
+                <div
+                  className="bottom-menu-item"
+                  onClick={() =>
+                    dispatch({ type: "SET_PAGE", payload: "dashboard" })
+                  }
+                >
+                  <DashboardIcon />
+                </div>
+                <div
+                  className="bottom-menu-item"
+                  onClick={() =>
+                    dispatch({ type: "SET_PAGE", payload: "exerciselist" })
+                  }
+                >
+                  <WorkoutsIcon />
+                </div>
+                <div
+                  className="bottom-menu-item"
+                  onClick={() =>
+                    dispatch({ type: "SET_PAGE", payload: "bodymeasurements" })
+                  }
+                >
+                  <BodyMeasurementsIcon />
+                </div>
+                <div
+                  className="bottom-menu-item"
+                  onClick={() =>
+                    dispatch({ type: "SET_PAGE", payload: "settings" })
+                  }
+                >
+                  <SettingsIcon />
+                </div>
               </div>
-              <div
-                className="bottom-menu-item"
-                onClick={() =>
-                  dispatch({ type: "SET_PAGE", payload: "exerciselist" })
-                }
-              >
-                <WorkoutsIcon />
-              </div>
-              <div
-                className="bottom-menu-item"
-                onClick={() =>
-                  dispatch({ type: "SET_PAGE", payload: "bodymeasurements" })
-                }
-              >
-                <BodyMeasurementsIcon />
-              </div>
-              <div
-                className="bottom-menu-item"
-                onClick={() =>
-                  dispatch({ type: "SET_PAGE", payload: "settings" })
-                }
-              >
-                <SettingsIcon />
-              </div>
-            </div> : <></>}
+            ) : (
+              <></>
+            )}
           </ErrorBoundary>
         </GoogleOAuthProvider>
       </ThemeProvider>
