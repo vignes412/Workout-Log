@@ -200,8 +200,9 @@ const FatigueByMuscleChart = ({ logs }) => {
   };
 
   return (
-    <Box className="chart-wrapper">
- Radar<Bar data={fatigueByMuscleData} options={barChartOptions} />
+    <Box className="chart-wrapper" style={{ height: 350 }}>
+      {/* Adjusted height */}
+      <Bar data={fatigueByMuscleData} options={barChartOptions} />
     </Box>
   );
 };

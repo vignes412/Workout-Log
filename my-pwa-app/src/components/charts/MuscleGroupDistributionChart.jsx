@@ -101,9 +101,10 @@ const MuscleGroupDistributionChart = ({ logs }) => {
   };
 
   return (
-    <Box className="chart-wrapper">
-      <Radar data={muscleGroupDistributionData} options={radarChartOptions} />{" "}
-      {/* Changed from Bar to Radar */}
+    <Box className="chart-wrapper" style={{ height: 350 }}>
+      {" "}
+      {/* Adjusted height */}
+      <Radar data={muscleGroupDistributionData} options={radarChartOptions} />
     </Box>
   );
 };

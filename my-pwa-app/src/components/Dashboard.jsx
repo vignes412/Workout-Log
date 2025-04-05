@@ -521,12 +521,6 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
                   className="card"
                   sx={{ height: 400, bgcolor: "background.paper" }}
                 >
-                  <Typography
-                    className="card-title"
-                    sx={{ color: "text.primary" }}
-                  >
-                    Progression Fatigue Chart
-                  </Typography>
                   <ProgressionFatigueChart logs={logs} dailyMetrics={logs} />
                 </Box>
               </Grid>

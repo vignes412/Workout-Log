@@ -67,7 +67,7 @@ const VolumeOverTimeChart = ({ logs }) => {
   };
 
   return (
-    <Box className="chart-wrapper">
+    <Box className="chart-wrapper" style={{ height: 350 }}>
       <Line data={volumeOverTimeData} options={lineChartOptions} />
     </Box>
   );

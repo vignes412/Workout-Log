@@ -151,10 +151,9 @@ const WorkoutSummaryTable = ({ logs, themeMode }) => {
 
   return (
     <>
-      <Typography variant="h6" gutterBottom>
-        Workout Summary by Date, Muscle Group, and Exercise
-      </Typography>
-      <div style={{ height: "50vh", width: "100%" }}>
+      <div style={{ height: 500, width: "100%" }}>
+        {" "}
+        {/* Adjusted height */}
         <DataGrid
           rows={sanitizedRows}
           columns={summaryColumns}

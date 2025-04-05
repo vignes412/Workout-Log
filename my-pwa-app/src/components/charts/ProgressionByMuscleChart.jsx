@@ -84,7 +84,13 @@ const ProgressionByMuscleChart = ({ logs }) => {
     },
   };
 
-  return <Bar data={chartData} options={chartOptions} />;
+  return (
+    <div style={{ height: 350 }}>
+      {" "}
+      {/* Adjusted height */}
+      <Bar data={chartData} options={chartOptions} />
+    </div>
+  );
 };
 
 export default ProgressionByMuscleChart;

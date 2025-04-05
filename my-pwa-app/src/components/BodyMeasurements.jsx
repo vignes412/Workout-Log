@@ -563,7 +563,9 @@ const BodyMeasurements = ({ accessToken, onNavigate, themeMode }) => {
                 ))}
               </Box>
 
-              <Box className="chart-wrapper">
+              <Box className="chart-wrapper" style={{ height: 350 }}>
+                {" "}
+                {/* Adjusted height */}
                 <Bar data={dynamicChartData} options={dynamicChartOptions} />
               </Box>
             </>

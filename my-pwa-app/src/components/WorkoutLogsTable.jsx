@@ -177,6 +177,8 @@ const WorkoutLogsTable = ({ logs, setLogs, isOffline, exercises }) => {
         <CircularProgress sx={{ display: "block", mx: "auto", my: 2 }} />
       )}
       <div style={{ height: 400, width: "100%", marginBottom: 20 }}>
+        {" "}
+        {/* Adjusted height */}
         <DataGrid
           rows={workoutLogRows} // Use rows with unique ids
           columns={workoutLogColumns}

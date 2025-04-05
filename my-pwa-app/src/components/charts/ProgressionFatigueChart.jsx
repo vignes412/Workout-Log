@@ -58,21 +58,21 @@ const ProgressionFatigueChart = ({ logs }) => {
         data: combinedProgressionFatigueData.progressionData || [],
         borderColor: theme.palette.success.main,
         backgroundColor: `${theme.palette.success.main}33`,
-        tension: 0.3,
+        tension: 0.5,
       },
       {
         label: "Fatigue (%)",
         data: combinedProgressionFatigueData.fatigueData || [],
         borderColor: theme.palette.error.main,
         backgroundColor: `${theme.palette.error.main}33`,
-        tension: 0.3,
+        tension: 0.5,
       },
     ],
   };
 
   const chartOptions = {
     responsive: true,
-    maintainAspectRatio: false,
+    maintainAspectRatio: true,
     plugins: {
       legend: {
         position: "top",
@@ -106,7 +106,13 @@ const ProgressionFatigueChart = ({ logs }) => {
     },
   };
 
-  return <Line data={chartData} options={chartOptions} />;
+  return (
+    <div style={{ height: 350 }}>
+      {" "}
+      {/* Adjusted height */}
+      <Line data={chartData} options={chartOptions} />
+    </div>
+  );
 };
 
 export default ProgressionFatigueChart;

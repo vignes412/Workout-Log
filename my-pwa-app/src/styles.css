@@ -225,7 +225,7 @@ body {
     }
 
     .chart-wrapper {
-        background: #4a5568;
+        background: content-box;
     }
 
     .bottom-menu {
