@@ -59,6 +59,15 @@ const lightTheme = createTheme({
     primary: { main: "#1976d2" },
     secondary: { main: "#dc004e" },
     background: { default: "#fff", paper: "#f5f5f5" },
+    text: {
+      primary: "#000000", // Black for main text
+      secondary: "#555555", // Dark gray for secondary text
+    },
+  },
+  typography: {
+    h1: { color: "#000000" }, // Black for h1
+    h5: { color: "#000000" }, // Black for h5
+    h6: { color: "#000000" }, // Black for h6
   },
 });
 
@@ -230,7 +239,43 @@ const Main = () => {
             process.env.REACT_APP_GOOGLE_CLIENT_ID || config.google.CLIENT_ID
           }
         >
-          <ErrorBoundary>{renderPage()}</ErrorBoundary>
+          <ErrorBoundary>
+            {renderPage()}
+            <div className="bottom-menu">
+              <div
+                className="bottom-menu-item"
+                onClick={() =>
+                  dispatch({ type: "SET_PAGE", payload: "dashboard" })
+                }
+              >
+                Dashboard
+              </div>
+              <div
+                className="bottom-menu-item"
+                onClick={() =>
+                  dispatch({ type: "SET_PAGE", payload: "exerciselist" })
+                }
+              >
+                Exercises
+              </div>
+              <div
+                className="bottom-menu-item"
+                onClick={() =>
+                  dispatch({ type: "SET_PAGE", payload: "bodymeasurements" })
+                }
+              >
+                Body Measurements
+              </div>
+              <div
+                className="bottom-menu-item"
+                onClick={() =>
+                  dispatch({ type: "SET_PAGE", payload: "settings" })
+                }
+              >
+                Settings
+              </div>
+            </div>
+          </ErrorBoundary>
         </GoogleOAuthProvider>
       </ThemeProvider>
     </AppContext.Provider>

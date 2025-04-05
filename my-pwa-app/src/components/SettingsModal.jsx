@@ -10,7 +10,7 @@ import {
   Checkbox,
 } from "@mui/material";
 
-const SettingsModal = ({ open, onClose, onUpdateLayout }) => {
+const SettingsModal = ({ open, onClose, onUpdateLayout, onNavigate }) => {
   const [layout, setLayout] = useState(() => {
     return (
       JSON.parse(localStorage.getItem("dashboardLayout")) || {
@@ -73,6 +73,32 @@ const SettingsModal = ({ open, onClose, onUpdateLayout }) => {
           Close
         </Button>
       </DialogActions>
+      <div className="bottom-menu">
+        <div
+          className="bottom-menu-item"
+          onClick={() => onNavigate("dashboard")}
+        >
+          Dashboard
+        </div>
+        <div
+          className="bottom-menu-item"
+          onClick={() => onNavigate("exerciselist")}
+        >
+          Exercises
+        </div>
+        <div
+          className="bottom-menu-item"
+          onClick={() => onNavigate("bodymeasurements")}
+        >
+          Body Measurements
+        </div>
+        <div
+          className="bottom-menu-item"
+          onClick={() => onNavigate("settings")}
+        >
+          Settings
+        </div>
+      </div>
     </Dialog>
   );
 };

@@ -172,7 +172,6 @@ export const appendData2 = async (range, values, accessToken) => {
   return response.json();
 };
 
-
 export const saveBodyMeasurementToSheet = async (range, row, accessToken) => {
   return retryOperation(async () => {
     const formattedValues = Array.isArray(row[0]) ? row : [row];
@@ -184,4 +183,22 @@ export const saveBodyMeasurementToSheet = async (range, row, accessToken) => {
     });
     console.log(`Saved body measurement to ${range} successfully`);
   });
+};
+
+export const fetchTodos = async () => {
+  return fetchData("ToDO", (row) => ({
+    text: row[0],
+    completed: row[1].toLowerCase() === "true",
+  }));
+};
+
+export const appendTodo = async (todo) => {
+  return appendData("ToDO", [[todo.text, todo.completed]]);
+};
+
+export const updateTodos = async (todos) => {
+  return updateData(
+    "ToDO",
+    todos.map((todo) => [todo.text, todo.completed])
+  );
 };

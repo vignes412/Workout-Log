@@ -269,13 +269,32 @@ const BodyMeasurements = ({ accessToken, onNavigate, themeMode }) => {
   const dynamicChartOptions = {
     responsive: true,
     plugins: {
-      legend: { position: "top" },
-      title: { display: true, text: "Selected Body Measurements Over Time" },
+      legend: {
+        position: "top",
+        labels: {
+          color: themeMode === "dark" ? "#ffffff" : "#000000", // Adjusted for dark mode
+        },
+      },
+      title: {
+        display: true,
+        text: "Selected Body Measurements Over Time",
+        color: themeMode === "dark" ? "#ffffff" : "#000000", // Adjusted for dark mode
+      },
     },
     scales: {
+      x: {
+        ticks: { color: themeMode === "dark" ? "#b0bec5" : "#000000" }, // Adjusted for dark mode
+        grid: { color: themeMode === "dark" ? "#424242" : "#e0e0e0" }, // Adjusted for dark mode
+      },
       y: {
+        ticks: { color: themeMode === "dark" ? "#b0bec5" : "#000000" }, // Adjusted for dark mode
+        grid: { color: themeMode === "dark" ? "#424242" : "#e0e0e0" }, // Adjusted for dark mode
         beginAtZero: true,
-        title: { display: true, text: "Measurement (cm)" },
+        title: {
+          display: true,
+          text: "Measurement (cm)",
+          color: themeMode === "dark" ? "#ffffff" : "#000000", // Adjusted for dark mode
+        },
       },
     },
   };
@@ -547,6 +566,32 @@ const BodyMeasurements = ({ accessToken, onNavigate, themeMode }) => {
               <Box className="chart-wrapper">
                 <Bar data={dynamicChartData} options={dynamicChartOptions} />
               </Box>
+              <div className="bottom-menu">
+                <div
+                  className="bottom-menu-item"
+                  onClick={() => onNavigate("dashboard")}
+                >
+                  Dashboard
+                </div>
+                <div
+                  className="bottom-menu-item"
+                  onClick={() => onNavigate("exerciselist")}
+                >
+                  Exercises
+                </div>
+                <div
+                  className="bottom-menu-item"
+                  onClick={() => onNavigate("bodymeasurements")}
+                >
+                  Body Measurements
+                </div>
+                <div
+                  className="bottom-menu-item"
+                  onClick={() => onNavigate("settings")}
+                >
+                  Settings
+                </div>
+              </div>
             </>
           )}
         </Box>

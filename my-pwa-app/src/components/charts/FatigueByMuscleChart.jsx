@@ -1,34 +1,11 @@
 import React, { useMemo } from "react";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
-import { Line, Bar } from "react-chartjs-2";
-import { Typography, Box, useTheme, Grid, Alert } from "@mui/material";
-import { computeDailyMetrics } from "../utils/computeDailyMetrics";
+import { Bar } from "react-chartjs-2";
+import { useTheme, Box } from "@mui/material";
+import { computeDailyMetrics } from "../../utils/computeDailyMetrics";
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-);
-
-const Charts = ({ logs, themeMode }) => {
+const FatigueByMuscleChart = ({ logs }) => {
   const theme = useTheme();
   const dailyMetrics = useMemo(() => computeDailyMetrics(logs), [logs]);
-
   const processedData = useMemo(() => {
     if (!logs || logs.length === 0) {
       return {
@@ -36,8 +13,10 @@ const Charts = ({ logs, themeMode }) => {
         muscleGroups: [],
         fatigueData: [],
         progressionData: [],
+        fatigueByMuscle: [],
         fatigueTrend: { rest: "None", workout: "None" },
-        progressionByMuscle: [],
+        volumeOverTime: [],
+        muscleGroupDistributionPercent: [],
       };
     }
 
@@ -77,6 +56,8 @@ const Charts = ({ logs, themeMode }) => {
       return { muscleGroup: group, fatigue: Math.min(fatigue, 200) };
     });
 
+    console.log("Fatigue by Muscle Group (Volume-Based):", fatigueByMuscle);
+
     const musclesToRest = fatigueByMuscle
       .filter((m) => m.fatigue > 30)
       .map((m) => m.muscleGroup);
@@ -115,104 +96,114 @@ const Charts = ({ logs, themeMode }) => {
       );
     });
 
-    const progressionByMuscle = []; // Removed calculation logic
+    const progressionByMuscle = muscleGroups.map((group) => {
+      const groupMetrics = dailyMetrics.filter(
+        (metric) => metric.muscleGroup === group
+      );
+      const avgProgressionRate =
+        groupMetrics.reduce((sum, metric) => {
+          const rate =
+            metric.progressionRate === "N/A"
+              ? 0
+              : parseFloat(metric.progressionRate) || 0;
+          return sum + rate;
+        }, 0) / (groupMetrics.length || 1);
+      return { muscleGroup: group, avgProgressionRate };
+    });
+
+    console.log("Progression Rate by Muscle Group:", progressionByMuscle);
+
+    const volumeOverTime = dates.map((date) => {
+      const dateLogs = logs.filter((log) => log[0] === date);
+      return dateLogs.reduce((sum, log) => {
+        const reps = parseFloat(log[3]) || 0;
+        const weight = parseFloat(log[4]) || 0;
+        return sum + reps * weight;
+      }, 0);
+    });
+
+    const muscleGroupDistribution = muscleGroups.map((group) => {
+      const groupLogs = logs.filter((log) => log[1] === group);
+      return groupLogs.reduce((sum, log) => {
+        const reps = parseFloat(log[3]) || 0;
+        const weight = parseFloat(log[4]) || 0;
+        return sum + reps * weight;
+      }, 0);
+    });
+
+    const totalVolume = muscleGroupDistribution.reduce(
+      (sum, volume) => sum + volume,
+      0
+    );
+    const muscleGroupDistributionPercent = muscleGroupDistribution.map(
+      (volume) => (volume / totalVolume) * 100 || 0
+    );
 
     return {
       dates,
       muscleGroups,
       fatigueData,
       progressionData,
+      fatigueByMuscle,
       fatigueTrend: overallFatigueTrend,
       progressionByMuscle,
+      volumeOverTime,
+      muscleGroupDistributionPercent,
     };
   }, [logs, dailyMetrics]);
-
-  const lineChartOptions = (title, yLabel) => ({
+  const fatigueByMuscleData = {
+    labels: processedData.muscleGroups || [],
+    datasets: [
+      {
+        label: "Fatigue (%) - Per Muscle Group",
+        data: processedData.fatigueByMuscle?.map((m) => m.fatigue) || [],
+        backgroundColor: `${theme.palette.error.main}99`,
+        borderColor: theme.palette.error.main,
+        borderWidth: 1,
+      },
+    ],
+  };
+  const barChartOptions = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
       legend: {
         position: "top",
         labels: {
-          color: theme.palette.text.primary, // Adjusted for dark mode
+          color: theme.palette.text.primary,
           font: { size: 14 },
         },
       },
       title: {
         display: true,
-        text: title,
-        color: theme.palette.text.primary, // Adjusted for dark mode
+        text: "Fatigue per Muscle Group",
+        color: theme.palette.text.primary,
         font: { size: 16 },
       },
     },
     scales: {
       x: {
-        ticks: { color: theme.palette.text.secondary }, // Adjusted for dark mode
-        grid: { color: theme.palette.divider }, // Adjusted for dark mode
+        ticks: { color: theme.palette.text.secondary },
+        grid: { color: theme.palette.divider },
       },
       y: {
-        ticks: { color: theme.palette.text.secondary }, // Adjusted for dark mode
-        grid: { color: theme.palette.divider }, // Adjusted for dark mode
+        ticks: { color: theme.palette.text.secondary },
+        grid: { color: theme.palette.divider },
         beginAtZero: true,
         title: {
           display: true,
-          text: yLabel,
+          text: "Fatigue (%)",
           color: theme.palette.text.primary,
-        }, // Adjusted for dark mode
-      },
-    },
-  });
-
-  const barChartOptions = (title, yLabel) => ({
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: "top",
-        labels: {
-          color: theme.palette.text.primary, // Adjusted for dark mode
-          font: { size: 14 },
         },
       },
-      title: {
-        display: true,
-        text: title,
-        color: theme.palette.text.primary, // Adjusted for dark mode
-        font: { size: 16 },
-      },
     },
-    scales: {
-      x: {
-        ticks: { color: theme.palette.text.secondary }, // Adjusted for dark mode
-        grid: { color: theme.palette.divider }, // Adjusted for dark mode
-      },
-      y: {
-        ticks: { color: theme.palette.text.secondary }, // Adjusted for dark mode
-        grid: { color: theme.palette.divider }, // Adjusted for dark mode
-        beginAtZero: true,
-        title: {
-          display: true,
-          text: yLabel,
-          color: theme.palette.text.primary,
-        }, // Adjusted for dark mode
-      },
-    },
-  });
+  };
 
   return (
-    <Box>
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <Alert severity="info">
-            Muscles to Rest: {processedData.fatigueTrend?.rest || "None"}
-          </Alert>
-          <Alert severity="info">
-            Muscles to Workout: {processedData.fatigueTrend?.workout || "None"}
-          </Alert>
-        </Grid>
-      </Grid>
+    <Box className="chart-wrapper">
+ Radar<Bar data={fatigueByMuscleData} options={barChartOptions} />
     </Box>
   );
 };
 
-export default Charts;
+export default FatigueByMuscleChart;

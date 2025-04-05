@@ -8,6 +8,12 @@ import {
 import WorkoutLogModal from "../pages/WorkoutLogModal";
 import SettingsModal from "./SettingsModal";
 import ProgressGoals from "./ProgressGoals";
+import ProgressionFatigueChart from "./charts/ProgressionFatigueChart"; // Updated path
+import ProgressionByMuscleChart from "./charts/ProgressionByMuscleChart";
+import VolumeOverTimeChart from "./charts/VolumeOverTimeChart";
+import MuscleGroupDistributionChart from "./charts/MuscleGroupDistributionChart";
+import FatigueByMuscleChart from "./charts/FatigueByMuscleChart";
+import TodoList from "./TodoList";
 import {
   Button,
   Typography,
@@ -28,6 +34,7 @@ import {
   Alert,
   Grid,
   Avatar,
+  Snackbar,
 } from "@mui/material";
 import {
   Add,
@@ -42,6 +49,7 @@ import {
   DirectionsRun as BodyMeasurementsIcon,
   Message as MessagesIcon,
   Settings as SettingsIcon,
+  Refresh as RefreshIcon,
 } from "@mui/icons-material";
 import WorkoutLogsTable from "./WorkoutLogsTable";
 import WorkoutSummaryTable from "./WorkoutSummaryTable";
@@ -96,11 +104,20 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
   const [exerciseInput, setExerciseInput] = useState({ reps: "", weight: "" });
   const [predictedFatigueForInput, setPredictedFatigueForInput] =
     useState(null);
+  const [toast, setToast] = useState({
+    open: false,
+    message: "",
+    severity: "info",
+  });
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   useOnlineStatus(setIsOffline);
+
+  const showToast = (message, severity = "info") => {
+    setToast({ open: true, message, severity });
+  };
 
   useEffect(() => {
     if (isAuthenticated && accessToken) {
@@ -214,13 +231,64 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
         localStorage.setItem("bodyWeight", bodyWeight);
         localStorage.setItem("lastRecordedDate", today);
         setLastRecordedDate(today);
-        alert("Body weight recorded successfully!");
+        showToast("Body weight recorded successfully!", "success");
       } catch (error) {
         console.error("Error recording body weight:", error);
-        alert("Failed to record body weight. Please try again.");
+        showToast("Failed to record body weight. Please try again.", "error");
       }
     } else {
-      alert("You have already recorded your weight today.");
+      showToast("You have already recorded your weight today.", "info");
+    }
+  };
+
+  const handleReloadData = async () => {
+    setLoading(true);
+    try {
+      await syncData("Workout_Logs!A2:F", "/api/workout", (data) =>
+        dispatch({ type: "SET_LOGS", payload: data })
+      );
+      showToast("Data reloaded successfully!", "success");
+    } catch (error) {
+      console.error("Error reloading data:", error);
+      showToast("Failed to reload data. Please try again.", "error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleReloadLogs = async () => {
+    try {
+      await syncData("Workout_Logs!A2:F", "/api/workout", (data) =>
+        dispatch({ type: "SET_LOGS", payload: data })
+      );
+      showToast("Workout logs reloaded successfully!", "success");
+    } catch (error) {
+      console.error("Error reloading workout logs:", error);
+      showToast("Failed to reload workout logs. Please try again.", "error");
+    }
+  };
+
+  const handleReloadCharts = async () => {
+    try {
+      await syncData("Workout_Logs!A2:F", "/api/workout", (data) =>
+        dispatch({ type: "SET_LOGS", payload: data })
+      );
+      showToast("Charts data reloaded successfully!", "success");
+    } catch (error) {
+      console.error("Error reloading charts data:", error);
+      showToast("Failed to reload charts data. Please try again.", "error");
+    }
+  };
+
+  const handleReloadSummary = async () => {
+    try {
+      await syncData("Workout_Logs!A2:F", "/api/workout", (data) =>
+        dispatch({ type: "SET_LOGS", payload: data })
+      );
+      showToast("Workout summary reloaded successfully!", "success");
+    } catch (error) {
+      console.error("Error reloading workout summary:", error);
+      showToast("Failed to reload workout summary. Please try again.", "error");
     }
   };
 
@@ -289,6 +357,14 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
             variant="outlined"
             size="small"
           />
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleReloadData}
+            sx={{ marginLeft: 2 }}
+          >
+            Reload Data
+          </Button>
           <Box className="header-profile">
             <Avatar alt="User" src="/path-to-profile-pic.jpg" />
             <Typography>User Name</Typography>
@@ -304,12 +380,12 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
         {/* Main Grid */}
         <Grid container spacing={3}>
           {/* Status Card */}
-          <Grid item xs={12} sm={6} md={3}>
-            <Box className="card">
-              <Typography className="card-title">Status</Typography>
+          <Grid item xs={12} sm={6} md={0.7}>
+            <Box className="card" sx={{ height: 100 }}>
               <Typography
                 className="card-subtitle"
                 color={isOffline ? "error" : "success"}
+                sx={{ mb: 1 }}
               >
                 {isOffline ? "Offline" : "Online"}
               </Typography>
@@ -323,7 +399,11 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
           {layout.showLogs && (
             <Grid item xs={12} md={6}>
               <Box className="card">
-                <Typography className="card-title">Workout Logs</Typography>
+                <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                  <IconButton onClick={handleReloadLogs} size="small">
+                    <RefreshIcon />
+                  </IconButton>
+                </Box>
                 <WorkoutLogsTable
                   logs={logs}
                   isOffline={isOffline}
@@ -333,11 +413,51 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
             </Grid>
           )}
 
+          {layout.showCharts && (
+            <Grid item xs={12} md={3}>
+              <Box className="card" sx={{ height: 413 }}>
+                <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                  <IconButton onClick={handleReloadCharts} size="small">
+                    <RefreshIcon />
+                  </IconButton>
+                </Box>
+                <MuscleGroupDistributionChart
+                  logs={logs}
+                  muscleGroups={exercises.map(
+                    (exercise) => exercise.muscleGroup
+                  )}
+                />
+              </Box>
+              <Box className="card hightLightBox" sx={{ marginRight: "6px" }}>
+                <p className="highLightLBL">{logs.length}</p> Workouts logged
+              </Box>
+              <Box className="card hightLightBox">
+                <p className="highLightLBL">
+                  {logs.reduce((p, c) => {
+                    const reps = parseFloat(c[3]) || 0;
+                    const weight = parseFloat(c[4]) || 0;
+                    return p + reps * weight;
+                  }, 0)}
+                </p>{" "}
+                Total Volume logged
+              </Box>
+            </Grid>
+          )}
+          {/* Add TodoList Component */}
+          <Grid item xs={12} md={2}>
+            <Box className="card" sx={{ maxHeight: 524 }}>
+              <TodoList />
+            </Box>
+          </Grid>
           {/* Workout Summary */}
           {layout.showSummary && (
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={12}>
               <Box className="card">
-                <Typography className="card-title">Workout Summary</Typography>
+                <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                  <IconButton onClick={handleReloadSummary} size="small">
+                    <RefreshIcon />
+                  </IconButton>
+                </Box>
                 <WorkoutSummaryTable logs={logs} />
               </Box>
             </Grid>
@@ -345,14 +465,40 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
 
           {/* Charts */}
           {layout.showCharts && (
-            <Grid item xs={12}>
-              <Box className="card">
-                <Typography className="card-title">
-                  Workout Analytics
-                </Typography>
-                <Charts logs={logs} themeMode={themeMode} />
-              </Box>
-            </Grid>
+            <>
+              <Grid item xs={12} md={6}>
+                <Box className="card" sx={{ height: 400 }}>
+                  <Typography className="card-title">
+                    Progression Fatigue Chart
+                  </Typography>
+                  <ProgressionFatigueChart logs={logs} dailyMetrics={logs} />
+                </Box>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Box className="card" sx={{ height: 400 }}>
+                  <ProgressionByMuscleChart logs={logs} dailyMetrics={logs} />
+                </Box>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Box className="card" sx={{ height: 400 }}>
+                  <VolumeOverTimeChart
+                    logs={logs}
+                    dates={logs.map((log) => log.date)}
+                  />
+                </Box>
+              </Grid>
+
+              <Grid item xs={12} md={6}>
+                <Box className="card" sx={{ height: 400 }}>
+                  <FatigueByMuscleChart
+                    logs={logs}
+                    muscleGroups={exercises.map(
+                      (exercise) => exercise.muscleGroup
+                    )}
+                  />
+                </Box>
+              </Grid>
+            </>
           )}
 
           {/* Progress Goals */}
@@ -362,30 +508,30 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
               <ProgressGoals logs={logs} />
             </Box>
           </Grid>
-
-          {/* Record Body Weight */}
-          <Grid item xs={12} md={6}>
-            <Box className="card">
-              <Typography className="card-title">Record Body Weight</Typography>
-              <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-                <TextField
-                  label="Body Weight (kg)"
-                  type="number"
-                  value={bodyWeight}
-                  onChange={(e) => setBodyWeight(e.target.value)}
-                />
-                <Button variant="contained" onClick={handleRecordWeight}>
-                  Record
-                </Button>
-              </Box>
-              <Typography variant="body2" sx={{ mt: 2 }}>
-                Last recorded: {lastRecordedDate || "Not recorded yet"}
-              </Typography>
+        </Grid>
+        {/* Record Body Weight */}
+        <Grid item xs={12} md={6}>
+          <Box className="card">
+            <Typography className="card-title">Record Body Weight</Typography>
+            <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+              <TextField
+                label="Body Weight (kg)"
+                type="number"
+                value={bodyWeight}
+                onChange={(e) => setBodyWeight(e.target.value)}
+              />
+              <Button variant="contained" onClick={handleRecordWeight}>
+                Record
+              </Button>
             </Box>
-          </Grid>
+            <Typography variant="body2" sx={{ mt: 2 }}>
+              Last recorded: {lastRecordedDate || "Not recorded yet"}
+            </Typography>
+          </Box>
+        </Grid>
 
-          {/* AI Insights (Commented Out) */}
-          {/* {insights.length > 0 && (
+        {/* AI Insights (Commented Out) */}
+        {/* {insights.length > 0 && (
             <Grid item xs={12}>
               <Box className="card">
                 <Typography className="card-title">AI Insights</Typography>
@@ -402,23 +548,22 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
             </Grid>
           )} */}
 
-          {/* Predicted Fatigue */}
-          {predictedFatigue.length > 0 && (
-            <Grid item xs={12}>
-              <Box className="card">
-                <Typography className="card-title">
-                  Predicted Fatigue Levels
-                </Typography>
-                {predictedFatigue.map((fatigue, index) => (
-                  <Alert key={index} severity="info" sx={{ mb: 2 }}>
-                    Workout {index + 1}: Predicted Fatigue Level -{" "}
-                    {typeof fatigue === "number" ? fatigue.toFixed(2) : "N/A"}
-                  </Alert>
-                ))}
-              </Box>
-            </Grid>
-          )}
-        </Grid>
+        {/* Predicted Fatigue */}
+        {predictedFatigue.length > 0 && (
+          <Grid item xs={12}>
+            <Box className="card">
+              <Typography className="card-title">
+                Predicted Fatigue Levels
+              </Typography>
+              {predictedFatigue.map((fatigue, index) => (
+                <Alert key={index} severity="info" sx={{ mb: 2 }}>
+                  Workout {index + 1}: Predicted Fatigue Level -{" "}
+                  {typeof fatigue === "number" ? fatigue.toFixed(2) : "N/A"}
+                </Alert>
+              ))}
+            </Box>
+          </Grid>
+        )}
 
         {/* Floating Action Button */}
         <Fab
@@ -481,7 +626,43 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
           onClose={() => setSettingsOpen(false)}
           onUpdateLayout={setLayout}
         />
+
+        {/* Bottom Menu */}
+        <div className="bottom-menu">
+          <div
+            className="bottom-menu-item"
+            onClick={() => onNavigate("dashboard")}
+          >
+            Dashboard
+          </div>
+          <div
+            className="bottom-menu-item"
+            onClick={() => onNavigate("exerciselist")}
+          >
+            Exercises
+          </div>
+          <div
+            className="bottom-menu-item"
+            onClick={() => onNavigate("bodymeasurements")}
+          >
+            Body Measurements
+          </div>
+          <div
+            className="bottom-menu-item"
+            onClick={() => onNavigate("settings")}
+          >
+            Settings
+          </div>
+        </div>
       </Box>
+      <Snackbar
+        open={toast.open}
+        autoHideDuration={3000}
+        onClose={() => setToast({ ...toast, open: false })}
+        message={toast.message}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        severity={toast.severity}
+      />
     </>
   );
 };
