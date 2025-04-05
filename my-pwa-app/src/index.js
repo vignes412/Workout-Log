@@ -19,7 +19,22 @@ import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import config from "./config";
 import "./index.css";
 import BodyMeasurements from "./components/BodyMeasurements";
-
+import {
+  Add,
+  Brightness4,
+  Brightness7,
+  FitnessCenter,
+  Settings,
+  Menu as MenuIcon,
+  Search,
+  Dashboard as DashboardIcon,
+  FitnessCenter as WorkoutsIcon,
+  DirectionsRun as BodyMeasurementsIcon,
+  Message as MessagesIcon,
+  Settings as SettingsIcon,
+  Refresh as RefreshIcon,
+  Work,
+} from "@mui/icons-material";
 const initialState = {
   isAuthenticated: !!localStorage.getItem("authToken"),
   accessToken: localStorage.getItem("authToken"),
@@ -241,14 +256,14 @@ const Main = () => {
         >
           <ErrorBoundary>
             {renderPage()}
-            <div className="bottom-menu">
+            {state.currentPage != "login" ? <div className="bottom-menu">
               <div
                 className="bottom-menu-item"
                 onClick={() =>
                   dispatch({ type: "SET_PAGE", payload: "dashboard" })
                 }
               >
-                Dashboard
+                <DashboardIcon />
               </div>
               <div
                 className="bottom-menu-item"
@@ -256,7 +271,7 @@ const Main = () => {
                   dispatch({ type: "SET_PAGE", payload: "exerciselist" })
                 }
               >
-                Exercises
+                <WorkoutsIcon />
               </div>
               <div
                 className="bottom-menu-item"
@@ -264,7 +279,7 @@ const Main = () => {
                   dispatch({ type: "SET_PAGE", payload: "bodymeasurements" })
                 }
               >
-                Body Measurements
+                <BodyMeasurementsIcon />
               </div>
               <div
                 className="bottom-menu-item"
@@ -272,9 +287,9 @@ const Main = () => {
                   dispatch({ type: "SET_PAGE", payload: "settings" })
                 }
               >
-                Settings
+                <SettingsIcon />
               </div>
-            </div>
+            </div> : <></>}
           </ErrorBoundary>
         </GoogleOAuthProvider>
       </ThemeProvider>

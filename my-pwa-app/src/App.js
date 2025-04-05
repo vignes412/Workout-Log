@@ -244,33 +244,6 @@ const App = ({ onNavigate }) => {
           )}
 
           <TodoList />
-
-          <div className="bottom-menu">
-            <div
-              className="bottom-menu-item"
-              onClick={() => onNavigate("dashboard")}
-            >
-              Dashboard
-            </div>
-            <div
-              className="bottom-menu-item"
-              onClick={() => onNavigate("exerciselist")}
-            >
-              Exercises
-            </div>
-            <div
-              className="bottom-menu-item"
-              onClick={() => onNavigate("bodymeasurements")}
-            >
-              Body Measurements
-            </div>
-            <div
-              className="bottom-menu-item"
-              onClick={() => onNavigate("settings")}
-            >
-              Settings
-            </div>
-          </div>
         </>
       )}
     </div>
