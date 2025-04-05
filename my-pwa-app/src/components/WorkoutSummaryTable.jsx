@@ -6,7 +6,7 @@ import { ArrowUpward, ArrowDownward, CompareArrows } from "@mui/icons-material";
 import { computeDailyMetrics } from "../utils/computeDailyMetrics";
 import { format } from "date-fns"; // Add this import for date formatting
 
-const WorkoutSummaryTable = ({ logs }) => {
+const WorkoutSummaryTable = ({ logs, themeMode }) => {
   const dailyMetrics = useMemo(() => computeDailyMetrics(logs), [logs]);
 
   const sanitizedRows = useMemo(() => {
@@ -120,7 +120,7 @@ const WorkoutSummaryTable = ({ logs }) => {
         const value = params.value;
         if (value === "N/A") {
           return (
-            <span style={{ color: "blue" }}>
+            <span style={{ color: themeMode === "dark" ? "#90caf9" : "blue" }}>
               <CompareArrows /> N/A
             </span>
           );
@@ -128,19 +128,19 @@ const WorkoutSummaryTable = ({ logs }) => {
         const numValue = parseFloat(value);
         if (numValue > 0) {
           return (
-            <span style={{ color: "green" }}>
+            <span style={{ color: themeMode === "dark" ? "#66bb6a" : "green" }}>
               <ArrowUpward /> {value}
             </span>
           );
         } else if (numValue < 0) {
           return (
-            <span style={{ color: "red" }}>
+            <span style={{ color: themeMode === "dark" ? "#ef5350" : "red" }}>
               <ArrowDownward /> {value}
             </span>
           );
         } else {
           return (
-            <span style={{ color: "blue" }}>
+            <span style={{ color: themeMode === "dark" ? "#90caf9" : "blue" }}>
               <CompareArrows /> {value}
             </span>
           );

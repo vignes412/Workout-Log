@@ -4,7 +4,6 @@ import {
   Box,
   TextField,
   Button,
-  Paper,
   Grid,
   Alert,
   Accordion,
@@ -12,14 +11,13 @@ import {
   AccordionDetails,
   FormControlLabel,
   Checkbox,
-  AppBar,
-  Toolbar,
   ToggleButton,
   ToggleButtonGroup,
   MenuItem,
   Select,
   InputLabel,
   FormControl,
+  Avatar,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -271,31 +269,55 @@ const BodyMeasurements = ({ accessToken, onNavigate, themeMode }) => {
   const dynamicChartOptions = {
     responsive: true,
     plugins: {
-      legend: { position: "top" },
-      title: { display: true, text: "Selected Body Measurements Over Time" },
+      legend: {
+        position: "top",
+        labels: {
+          color: themeMode === "dark" ? "#ffffff" : "#000000", // Adjusted for dark mode
+        },
+      },
+      title: {
+        display: true,
+        text: "Selected Body Measurements Over Time",
+        color: themeMode === "dark" ? "#ffffff" : "#000000", // Adjusted for dark mode
+      },
     },
     scales: {
+      x: {
+        ticks: { color: themeMode === "dark" ? "#b0bec5" : "#000000" }, // Adjusted for dark mode
+        grid: { color: themeMode === "dark" ? "#424242" : "#e0e0e0" }, // Adjusted for dark mode
+      },
       y: {
+        ticks: { color: themeMode === "dark" ? "#b0bec5" : "#000000" }, // Adjusted for dark mode
+        grid: { color: themeMode === "dark" ? "#424242" : "#e0e0e0" }, // Adjusted for dark mode
         beginAtZero: true,
-        title: { display: true, text: "Measurement (cm)" },
+        title: {
+          display: true,
+          text: "Measurement (cm)",
+          color: themeMode === "dark" ? "#ffffff" : "#000000", // Adjusted for dark mode
+        },
       },
     },
   };
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <Box sx={{ p: 3 }}>
-        <AppBar position="static" sx={{ mb: 3 }}>
-          <Toolbar>
-            <Button color="inherit" onClick={() => onNavigate("dashboard")}>
-              Back to Dashboard
-            </Button>
-            <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }}>
-              Body Measurements
-            </Typography>
-          </Toolbar>
-        </AppBar>
-        <Paper elevation={3} sx={{ p: 3 }}>
+      <Box className="main-container">
+        <Box className="header">
+          <Typography className="header-greeting">Body Measurements</Typography>
+          <TextField
+            className="header-search"
+            placeholder="Search anything here..."
+            variant="outlined"
+            size="small"
+          />
+          <Box className="header-profile">
+            <Avatar alt="User" src="/path-to-profile-pic.jpg" />
+            <Typography>User Name</Typography>
+          </Box>
+        </Box>
+
+        <Box className="card">
+          <Typography className="card-title">Body Measurements</Typography>
           {loading ? (
             <Typography variant="h6" align="center">
               Loading...
@@ -541,12 +563,38 @@ const BodyMeasurements = ({ accessToken, onNavigate, themeMode }) => {
                 ))}
               </Box>
 
-              <Box sx={{ height: 400 }}>
+              <Box className="chart-wrapper">
                 <Bar data={dynamicChartData} options={dynamicChartOptions} />
               </Box>
+              <div className="bottom-menu">
+                <div
+                  className="bottom-menu-item"
+                  onClick={() => onNavigate("dashboard")}
+                >
+                  Dashboard
+                </div>
+                <div
+                  className="bottom-menu-item"
+                  onClick={() => onNavigate("exerciselist")}
+                >
+                  Exercises
+                </div>
+                <div
+                  className="bottom-menu-item"
+                  onClick={() => onNavigate("bodymeasurements")}
+                >
+                  Body Measurements
+                </div>
+                <div
+                  className="bottom-menu-item"
+                  onClick={() => onNavigate("settings")}
+                >
+                  Settings
+                </div>
+              </div>
             </>
           )}
-        </Paper>
+        </Box>
       </Box>
     </LocalizationProvider>
   );

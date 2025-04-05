@@ -1,7 +1,8 @@
 import React from "react";
 import { useGoogleLogin } from "@react-oauth/google";
-import { Button } from "@mui/material";
+import { Button, Box, Typography } from "@mui/material";
 import { useAppState } from "../index";
+import "../styles.css";
 
 const Login = ({ setIsAuthenticated, onNavigate }) => {
   const { dispatch } = useAppState();
@@ -28,12 +29,24 @@ const Login = ({ setIsAuthenticated, onNavigate }) => {
   });
 
   return (
-    <div className="login-page">
-      <h1>Fitness Tracker</h1>
-      <Button variant="contained" color="primary" onClick={() => login()}>
-        Login with Google
-      </Button>
-    </div>
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+        backgroundColor: "#f5f7fa",
+      }}
+    >
+      <Box className="card" sx={{ textAlign: "center", p: 4 }}>
+        <Typography variant="h4" className="card-title" gutterBottom>
+          Fitness Tracker
+        </Typography>
+        <Button variant="contained" color="primary" onClick={() => login()}>
+          Login with Google
+        </Button>
+      </Box>
+    </Box>
   );
 };
 

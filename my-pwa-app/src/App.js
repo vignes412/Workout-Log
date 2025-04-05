@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useGoogleLogin, googleLogout } from "@react-oauth/google";
 import { gapi } from "gapi-script";
 import config from "./config";
+import TodoList from "./components/TodoList";
 
 const App = ({ onNavigate }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -241,6 +242,35 @@ const App = ({ onNavigate }) => {
               {isOffline ? "Offline - No data cached" : "No data available"}
             </p>
           )}
+
+          <TodoList />
+
+          <div className="bottom-menu">
+            <div
+              className="bottom-menu-item"
+              onClick={() => onNavigate("dashboard")}
+            >
+              Dashboard
+            </div>
+            <div
+              className="bottom-menu-item"
+              onClick={() => onNavigate("exerciselist")}
+            >
+              Exercises
+            </div>
+            <div
+              className="bottom-menu-item"
+              onClick={() => onNavigate("bodymeasurements")}
+            >
+              Body Measurements
+            </div>
+            <div
+              className="bottom-menu-item"
+              onClick={() => onNavigate("settings")}
+            >
+              Settings
+            </div>
+          </div>
         </>
       )}
     </div>
