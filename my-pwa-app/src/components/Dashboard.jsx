@@ -430,7 +430,7 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
                   )}
                 />
               </Box>
-              <Box className="card hightLightBox" sx={{ marginRight: "6px" }}>
+              <Box className="card hightLightBox" sx={{ marginRight: "5px" }}>
                 <p className="highLightLBL">{logs.length}</p> Workouts logged
               </Box>
               <Box className="card hightLightBox">
