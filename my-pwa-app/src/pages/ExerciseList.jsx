@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { initClient, syncData } from "../utils/sheetsApi";
 import {
   Typography,
@@ -14,53 +14,65 @@ import {
   TextField,
   Box,
   IconButton,
+  CircularProgress,
 } from "@mui/material";
 import { Brightness4, Brightness7 } from "@mui/icons-material";
 import "../styles.css";
 
 const ExerciseList = ({ accessToken, onNavigate, toggleTheme, themeMode }) => {
   const [exercises, setExercises] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [muscleGroupFilter, setMuscleGroupFilter] = useState(null);
   const [exerciseFilter, setExerciseFilter] = useState("");
 
-  useEffect(() => {
-    if (accessToken) {
-      const loadExercises = async () => {
-        try {
-          await initClient(accessToken);
-          await syncData(
-            "Exercises!A2:P",
-            "/api/exercises",
-            setExercises,
-            (row) => ({
-              muscleGroup: row[0],
-              exercise: row[1],
-              difficultyLevel: row[3],
-              equipmentRequired: row[4],
-              targetIntensity: row[5],
-              primaryMuscleGroup: row[6],
-              secondaryMuscleGroup: row[7],
-              exerciseDuration: row[8],
-              recoveryTime: row[9],
-              exerciseType: row[10],
-              caloriesBurned: row[11],
-              exerciseProgression: row[12],
-              injuryRiskLevel: row[13],
-              exerciseLink: row[2],
-              imageLink: row[14],
-              relativePath: row[15], // e.g., "Bench_Press_1743909953455.gif"
-            })
-          );
-        } catch (error) {
-          console.error("Error loading exercises:", error);
-        } finally {
-          setLoading(false);
-        }
-      };
-      loadExercises();
+  // Refs to store temporary input values
+  const muscleGroupRef = useRef(null);
+  const exerciseSearchRef = useRef(null);
+
+  // Function to load exercises
+  const loadExercises = async () => {
+    if (!accessToken) return;
+
+    setLoading(true);
+    try {
+      await initClient(accessToken);
+      await syncData(
+        "Exercises!A2:P",
+        "/api/exercises",
+        setExercises,
+        (row) => ({
+          muscleGroup: row[0],
+          exercise: row[1],
+          difficultyLevel: row[3],
+          equipmentRequired: row[4],
+          targetIntensity: row[5],
+          primaryMuscleGroup: row[6],
+          secondaryMuscleGroup: row[7],
+          exerciseDuration: row[8],
+          recoveryTime: row[9],
+          exerciseType: row[10],
+          caloriesBurned: row[11],
+          exerciseProgression: row[12],
+          injuryRiskLevel: row[13],
+          exerciseLink: row[2],
+          imageLink: row[14],
+          relativePath: row[15],
+        })
+      );
+    } catch (error) {
+      console.error("Error loading exercises:", error);
+    } finally {
+      setLoading(false);
     }
-  }, [accessToken]);
+  };
+
+  // Handle search button click
+  const handleSearch = () => {
+    // Update state only when Search is clicked
+    setMuscleGroupFilter(muscleGroupRef.current?.value || null);
+    setExerciseFilter(exerciseSearchRef.current.value || "");
+    loadExercises();
+  };
 
   const groupedExercises = exercises.reduce((acc, exercise) => {
     if (!acc[exercise.muscleGroup]) {
@@ -89,10 +101,6 @@ const ExerciseList = ({ accessToken, onNavigate, toggleTheme, themeMode }) => {
     return acc;
   }, {});
 
-  if (loading) {
-    return <div className="loading">Loading Exercises...</div>;
-  }
-
   return (
     <div className="exercise-list-container">
       <AppBar position="static">
@@ -120,10 +128,11 @@ const ExerciseList = ({ accessToken, onNavigate, toggleTheme, themeMode }) => {
           }}
         >
           <Autocomplete
-            options={muscleGroups}
-            value={muscleGroupFilter}
+            options={muscleGroups} // Empty until data is loaded
+            value={muscleGroupFilter} // Controlled by state, updated only on Search
             onChange={(event, newValue) => {
-              setMuscleGroupFilter(newValue);
+              // Temporarily store in ref, don't update state
+              muscleGroupRef.current = { value: newValue };
             }}
             renderInput={(params) => (
               <TextField
@@ -138,14 +147,34 @@ const ExerciseList = ({ accessToken, onNavigate, toggleTheme, themeMode }) => {
           <TextField
             label="Search Exercise"
             variant="outlined"
-            value={exerciseFilter}
-            onChange={(e) => setExerciseFilter(e.target.value)}
+            defaultValue={exerciseFilter} // Controlled indirectly via ref
+            inputRef={exerciseSearchRef} // Use ref to capture value
+            onChange={() => {}} // Empty handler to prevent state updates
             fullWidth
             sx={{ flex: 1, minWidth: 0 }}
           />
+          <Button
+            variant="contained"
+            onClick={handleSearch}
+            sx={{ minWidth: "100px" }}
+          >
+            Search
+          </Button>
         </Box>
 
-        {Object.keys(filteredGroupedExercises).length > 0 ? (
+        {/* Loader below search boxes */}
+        {loading && (
+          <Box sx={{ display: "flex", justifyContent: "center", mb: 4 }}>
+            <CircularProgress />
+          </Box>
+        )}
+
+        {exercises.length === 0 && !loading ? (
+          <Typography variant="body1">
+            Please use the search filters above and click "Search" to load
+            exercises.
+          </Typography>
+        ) : Object.keys(filteredGroupedExercises).length > 0 ? (
           Object.keys(filteredGroupedExercises).map((muscleGroup) => (
             <div key={muscleGroup} style={{ marginBottom: "30px" }}>
               <Typography variant="h5" gutterBottom>
@@ -164,12 +193,7 @@ const ExerciseList = ({ accessToken, onNavigate, toggleTheme, themeMode }) => {
                           >
                             <CardMedia
                               component="img"
-                              image={
-                                exercise.relativePath
-                                  ? `./assets/${exercise.relativePath}` // Use absolute path from public folder
-                                  : exercise.imageLink ||
-                                    "/assets/default-exercise.gif" // Fallback
-                              }
+                              image={exercise.imageLink}
                               alt={exercise.exercise}
                               style={{
                                 height: "200px",
