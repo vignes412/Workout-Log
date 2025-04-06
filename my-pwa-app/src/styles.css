@@ -513,3 +513,10 @@ body {
     background-color: #6f95fc;
     transform: scale(1.05);
 }
+.exercise-list-container {
+    min-height: 100vh;
+}
+
+.exercise-list-content {
+    transition: background-color 0.3s ease;
+}

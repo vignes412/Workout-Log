@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; connect-src 'self' https://fitnessprogramer.com; img-src 'self' data: https://fitnessprogramer.com; style-src 'self' 'unsafe-inline';">
+    <title>Download and Cache GIF</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+
+        img {
+            max-width: 100%;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Download and Cache GIF</h1>
+    <button onclick="downloadAndCacheFile()">Download GIF</button>
+    <div id="status"></div>
+    <div id="imageContainer"></div>
+
+    <script>
+        async function downloadAndCacheFile() {
+            const url = 'https://fitnessprogramer.com/wp-content/uploads/2022/02/Lying-Weighted-Lateral-Neck-Flexion.gif';
+            const statusDiv = document.getElementById('status');
+            const imageContainer = document.getElementById('imageContainer');
+
+            try {
+                statusDiv.textContent = 'Checking cache...';
+                const cache = await caches.open('gif-cache');
+
+                const cachedResponse = await cache.match(url);
+                if (cachedResponse) {
+                    statusDiv.textContent = 'File found in cache';
+                    displayImage(cachedResponse);
+                    return;
+                }
+
+                statusDiv.textContent = 'Downloading file...';
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'image/gif',
+                        'Referer': 'https://fitnessprogramer.com/exercise/lying-weighted-lateral-neck-flexion/'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                await cache.put(url, response.clone());
+                statusDiv.textContent = 'File downloaded and cached successfully';
+                displayImage(response);
+
+            } catch (error) {
+                statusDiv.textContent = 'Error: ' + error.message;
+                console.error('Error:', error);
+            }
+        }
+
+        async function displayImage(response) {
+            const blob = await response.blob();
+            const imgUrl = URL.createObjectURL(blob);
+            const img = document.createElement('img');
+            img.src = imgUrl;
+            img.alt = 'Lying Weighted Lateral Neck Flexion';
+            document.getElementById('imageContainer').appendChild(img);
+        }
+    </script>
+</body>
+
+</html>

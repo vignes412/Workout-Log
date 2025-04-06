@@ -1,5 +1,5 @@
-// src/index.js
 import React, {
+  useState,
   useEffect,
   createContext,
   useContext,
@@ -21,10 +21,20 @@ import "./styles/global.css";
 import BodyMeasurements from "./components/BodyMeasurements";
 import { lightTheme, darkTheme } from "./themes/theme";
 import {
+  Add,
+  Brightness4,
+  Brightness7,
+  FitnessCenter,
+  Settings,
+  Menu as MenuIcon,
+  Search,
   Dashboard as DashboardIcon,
   FitnessCenter as WorkoutsIcon,
   DirectionsRun as BodyMeasurementsIcon,
+  Message as MessagesIcon,
   Settings as SettingsIcon,
+  Refresh as RefreshIcon,
+  Work,
 } from "@mui/icons-material";
 
 const initialState = {
@@ -91,6 +101,19 @@ const Main = () => {
       loadData();
     }
   }, [state.isAuthenticated, state.accessToken]);
+
+  // Cache images in service worker when exercises are loaded
+  useEffect(() => {
+    if (state.exercises.length > 0 && navigator.serviceWorker.controller) {
+      const imageUrls = state.exercises
+        .map((exercise) => exercise.imageLink)
+        .filter(Boolean);
+      navigator.serviceWorker.controller.postMessage({
+        type: "CACHE_IMAGES",
+        urls: imageUrls,
+      });
+    }
+  }, [state.exercises]);
 
   useEffect(() => {
     if ("Notification" in window && Notification.permission !== "granted") {
@@ -212,7 +235,7 @@ const Main = () => {
         >
           <ErrorBoundary>
             {renderPage()}
-            {state.currentPage != "login" ? (
+            {state.currentPage !== "login" && (
               <div className="bottom-menu">
                 <div
                   className="bottom-menu-item"
@@ -247,8 +270,6 @@ const Main = () => {
                   <SettingsIcon />
                 </div>
               </div>
-            ) : (
-              <></>
             )}
           </ErrorBoundary>
         </GoogleOAuthProvider>

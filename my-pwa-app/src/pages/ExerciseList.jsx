@@ -30,7 +30,7 @@ const ExerciseList = ({ accessToken, onNavigate, toggleTheme, themeMode }) => {
         try {
           await initClient(accessToken);
           await syncData(
-            "Exercises!A2:O",
+            "Exercises!A2:P",
             "/api/exercises",
             setExercises,
             (row) => ({
@@ -49,6 +49,7 @@ const ExerciseList = ({ accessToken, onNavigate, toggleTheme, themeMode }) => {
               injuryRiskLevel: row[13],
               exerciseLink: row[2],
               imageLink: row[14],
+              relativePath: row[15], // e.g., "Bench_Press_1743909953455.gif"
             })
           );
         } catch (error) {
@@ -152,74 +153,81 @@ const ExerciseList = ({ accessToken, onNavigate, toggleTheme, themeMode }) => {
               </Typography>
               <Grid container spacing={2}>
                 {filteredGroupedExercises[muscleGroup].map(
-                  (exercise, index) => (
-                    <Grid item xs={12} sm={6} md={4} key={index}>
-                      <Card>
-                        <CardActionArea
-                          onClick={() =>
-                            window.open(exercise.exerciseLink, "_blank")
-                          }
-                        >
-                          <CardMedia
-                            component="img"
-                            image={exercise.imageLink}
-                            alt={exercise.exercise}
-                            style={{
-                              height: "200px",
-                              width: "200px",
-                              objectFit: "cover",
-                              margin: "0 auto",
-                            }}
-                          />
-                          <CardContent>
-                            <Typography variant="h6" align="center">
-                              {exercise.exercise}
-                            </Typography>
-                            <Typography
-                              variant="body2"
-                              color="textSecondary"
-                              align="center"
-                            >
-                              {exercise.muscleGroup}
-                            </Typography>
-                            <Typography variant="body2" color="textSecondary">
-                              Difficulty: {exercise.difficultyLevel}
-                            </Typography>
-                            <Typography variant="body2" color="textSecondary">
-                              Equipment: {exercise.equipmentRequired}
-                            </Typography>
-                            <Typography variant="body2" color="textSecondary">
-                              Intensity: {exercise.targetIntensity}
-                            </Typography>
-                            <Typography variant="body2" color="textSecondary">
-                              Primary Muscle: {exercise.primaryMuscleGroup}
-                            </Typography>
-                            <Typography variant="body2" color="textSecondary">
-                              Secondary Muscle: {exercise.secondaryMuscleGroup}
-                            </Typography>
-                            <Typography variant="body2" color="textSecondary">
-                              Duration: {exercise.exerciseDuration}
-                            </Typography>
-                            <Typography variant="body2" color="textSecondary">
-                              Recovery: {exercise.recoveryTime}
-                            </Typography>
-                            <Typography variant="body2" color="textSecondary">
-                              Type: {exercise.exerciseType}
-                            </Typography>
-                            <Typography variant="body2" color="textSecondary">
-                              Calories Burned: {exercise.caloriesBurned}
-                            </Typography>
-                            <Typography variant="body2" color="textSecondary">
-                              Progression: {exercise.exerciseProgression}
-                            </Typography>
-                            <Typography variant="body2" color="textSecondary">
-                              Injury Risk: {exercise.injuryRiskLevel}
-                            </Typography>
-                          </CardContent>
-                        </CardActionArea>
-                      </Card>
-                    </Grid>
-                  )
+                  (exercise, index) =>
+                    exercise.relativePath && (
+                      <Grid item xs={12} sm={2} md={2} key={index}>
+                        <Card>
+                          <CardActionArea
+                            onClick={() =>
+                              window.open(exercise.exerciseLink, "_blank")
+                            }
+                          >
+                            <CardMedia
+                              component="img"
+                              image={
+                                exercise.relativePath
+                                  ? `./assets/${exercise.relativePath}` // Use absolute path from public folder
+                                  : exercise.imageLink ||
+                                    "/assets/default-exercise.gif" // Fallback
+                              }
+                              alt={exercise.exercise}
+                              style={{
+                                height: "200px",
+                                width: "200px",
+                                objectFit: "cover",
+                                margin: "0 auto",
+                              }}
+                            />
+                            <CardContent>
+                              <Typography variant="h6" align="center">
+                                {exercise.exercise}
+                              </Typography>
+                              <Typography
+                                variant="body2"
+                                color="textSecondary"
+                                align="center"
+                              >
+                                {exercise.muscleGroup}
+                              </Typography>
+                              <Typography variant="body2" color="textSecondary">
+                                Difficulty: {exercise.difficultyLevel}
+                              </Typography>
+                              <Typography variant="body2" color="textSecondary">
+                                Equipment: {exercise.equipmentRequired}
+                              </Typography>
+                              <Typography variant="body2" color="textSecondary">
+                                Intensity: {exercise.targetIntensity}
+                              </Typography>
+                              <Typography variant="body2" color="textSecondary">
+                                Primary Muscle: {exercise.primaryMuscleGroup}
+                              </Typography>
+                              <Typography variant="body2" color="textSecondary">
+                                Secondary Muscle:{" "}
+                                {exercise.secondaryMuscleGroup}
+                              </Typography>
+                              <Typography variant="body2" color="textSecondary">
+                                Duration: {exercise.exerciseDuration}
+                              </Typography>
+                              <Typography variant="body2" color="textSecondary">
+                                Recovery: {exercise.recoveryTime}
+                              </Typography>
+                              <Typography variant="body2" color="textSecondary">
+                                Type: {exercise.exerciseType}
+                              </Typography>
+                              <Typography variant="body2" color="textSecondary">
+                                Calories Burned: {exercise.caloriesBurned}
+                              </Typography>
+                              <Typography variant="body2" color="textSecondary">
+                                Progression: {exercise.exerciseProgression}
+                              </Typography>
+                              <Typography variant="body2" color="textSecondary">
+                                Injury Risk: {exercise.injuryRiskLevel}
+                              </Typography>
+                            </CardContent>
+                          </CardActionArea>
+                        </Card>
+                      </Grid>
+                    )
                 )}
               </Grid>
             </div>

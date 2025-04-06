@@ -359,7 +359,7 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
             className="header-greeting"
             sx={{ fontSize: "1.5rem", fontWeight: 600, color: "text.primary" }}
           >
-            Hi, User!
+            Hi, RV!
           </Typography>
           <TextField
             className="header-search"
@@ -381,7 +381,7 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
             sx={{ display: "flex", alignItems: "center", gap: 1 }}
           >
             <Avatar alt="User" src="/path-to-profile-pic.jpg" />
-            <Typography sx={{ color: "text.primary" }}>User Name</Typography>
+            <Typography sx={{ color: "text.primary" }}>RV</Typography>
             <IconButton onClick={toggleTheme}>
               {themeMode === "light" ? (
                 <Brightness4 sx={{ color: "text.primary" }} />
