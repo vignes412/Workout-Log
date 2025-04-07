@@ -108,7 +108,6 @@ const ProgressionFatigueChart = ({ logs }) => {
 
   return (
     <div style={{ height: 350 }}>
-      {" "}
       {/* Adjusted height */}
       <Line data={chartData} options={chartOptions} />
     </div>

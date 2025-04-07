@@ -24,6 +24,24 @@ body {
     transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
 }
 
+/* Common Width Classes */
+.width-24 {
+    width: 24px;
+}
+
+.width-100 {
+    width: 100%;
+}
+
+.muscleGroupIcon{
+    width: 50px;
+    float:left;
+    margin-right: 5px;
+}
+.width-auto {
+    width: auto;
+}
+
 .sidebar {
     position: fixed;
     top: 0;

@@ -1,9 +1,9 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useEffect } from "react";
 import { Bar } from "react-chartjs-2";
 import { useTheme, Box } from "@mui/material";
 import { computeDailyMetrics } from "../../utils/computeDailyMetrics";
 
-const FatigueByMuscleChart = ({ logs }) => {
+const FatigueByMuscleChart = ({ logs, onReadyToTrainUpdate }) => {
   const theme = useTheme();
   const dailyMetrics = useMemo(() => computeDailyMetrics(logs), [logs]);
   const processedData = useMemo(() => {
@@ -17,6 +17,7 @@ const FatigueByMuscleChart = ({ logs }) => {
         fatigueTrend: { rest: "None", workout: "None" },
         volumeOverTime: [],
         muscleGroupDistributionPercent: [],
+        musclesToWorkout: [],
       };
     }
 
@@ -149,8 +150,25 @@ const FatigueByMuscleChart = ({ logs }) => {
       progressionByMuscle,
       volumeOverTime,
       muscleGroupDistributionPercent,
+      musclesToWorkout, // Add musclesToWorkout to the returned data
     };
   }, [logs, dailyMetrics]);
+
+  useEffect(() => {
+    if (onReadyToTrainUpdate) {
+      onReadyToTrainUpdate(
+        processedData.musclesToWorkout || [],
+        processedData.fatigueByMuscle
+          ?.filter((m) => m.fatigue > 30)
+          .map((m) => m.muscleGroup) || []
+      );
+    }
+  }, [
+    processedData.musclesToWorkout,
+    processedData.fatigueByMuscle,
+    onReadyToTrainUpdate,
+  ]);
+
   const fatigueByMuscleData = {
     labels: processedData.muscleGroups || [],
     datasets: [

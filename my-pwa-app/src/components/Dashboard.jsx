@@ -47,10 +47,76 @@ import {
   Settings as SettingsIcon,
   Refresh as RefreshIcon,
 } from "@mui/icons-material";
+import shouldeIcon from "../assets/shoulder.png";
+import absIcon from "../assets/Abdominals.png";
+import ChestIcon from "../assets/chest.png";
+import TricepsIcon from "../assets/triceps.png";
+import trapeziusIcon from "../assets/trapezius.png";
+import bicepsIcon from "../assets/biceps.png";
+import forearmIcon from "../assets/forearm.png";
+import calfIcon from "../assets/calf.png";
+import HipIcon from "../assets/Hip.png";
+import backWingsIcon from "../assets/back-wings.png";
+import neckIcon from "../assets/neck.png";
+import LegIcon from "../assets/leg.png";
+import NotListedLocationIcon from "../assets/back (4).png";
 import WorkoutLogsTable from "./WorkoutLogsTable";
 import WorkoutSummaryTable from "./WorkoutSummaryTable";
 import { useAppState } from "../index";
 import { generateInsights } from "../utils/aiInsights";
+import AchievementsCard from "./AchievementsCard";
+
+// Mapping of muscle groups to icons
+const muscleGroupIcons = {
+  Abs: <img src={absIcon} alt="Abs" className="muscleGroupIcon" />,
+  "Full Body": (
+    <img src={ChestIcon} alt="Full Body" className="muscleGroupIcon" />
+  ),
+  Hip: <img src={HipIcon} alt="Hip" className="muscleGroupIcon" />,
+  Triceps: <img src={TricepsIcon} alt="Triceps" className="muscleGroupIcon" />,
+  Chest: <img src={ChestIcon} alt="Chest" className="muscleGroupIcon" />,
+  Leg: <img src={LegIcon} alt="Leg" className="muscleGroupIcon" />,
+  Shoulders: (
+    <img src={shouldeIcon} alt="Shoulders" className="muscleGroupIcon" />
+  ),
+  Cardio: <img src={ChestIcon} alt="Cardio" className="muscleGroupIcon" />,
+  Biceps: <img src={bicepsIcon} alt="Biceps" className="muscleGroupIcon" />,
+  Forearm: <img src={forearmIcon} alt="Forearm" className="muscleGroupIcon" />,
+  "Erector Spinae": (
+    <img src={HipIcon} alt="Erector Spinae" className="muscleGroupIcon" />
+  ),
+  Calisthenic: (
+    <img src={backWingsIcon} alt="Calisthenic" className="muscleGroupIcon" />
+  ),
+  Yoga: <img src={absIcon} alt="Yoga" className="muscleGroupIcon" />,
+  Trapezius: (
+    <img src={trapeziusIcon} alt="Trapezius" className="muscleGroupIcon" />
+  ),
+  Neck: <img src={neckIcon} alt="Neck" className="muscleGroupIcon" />,
+  Calf: <img src={calfIcon} alt="Calf" className="muscleGroupIcon" />,
+  "Back / Wing": (
+    <img src={backWingsIcon} alt="Back / Wing" className="muscleGroupIcon" />
+  ),
+  "Not specified": (
+    <img src={backWingsIcon} alt="Not specified" className="muscleGroupIcon" />
+  ),
+};
+
+// Function to render muscle group with icon
+const renderMuscleGroup = (muscle) => (
+  <Box
+    sx={{
+      display: "inline-block",
+      alignItems: "center",
+      gap: 1,
+      width: "auto",
+    }}
+  >
+    {muscleGroupIcons[muscle] || (
+      <img src={backWingsIcon} alt="Default" className="muscleGroupIcon" />
+    )}
+  </Box>
+);
 
 const getRecentWorkoutLogs = (logs) => {
   if (!logs || logs.length === 0) return [];
@@ -103,6 +169,8 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
     message: "",
     severity: "info",
   });
+  const [readyToTrain, setReadyToTrain] = useState([]);
+  const [restMuscles, setRestMuscles] = useState([]);
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -286,6 +354,11 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
     }
   };
 
+  const handleReadyToTrainUpdate = (musclesToWorkout, musclesToRest) => {
+    setReadyToTrain(musclesToWorkout);
+    setRestMuscles(musclesToRest);
+  };
+
   const recentLogs = getRecentWorkoutLogs(logs);
 
   if (!isAuthenticated) {
@@ -416,6 +489,26 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
                 <FitnessCenter sx={{ color: "text.primary" }} />
               </Badge>
             </Box>
+            <Box className="card" sx={{ bgcolor: "background.paper" }}>
+              
+              {readyToTrain.length > 0 ? (
+                readyToTrain.map((muscle, index) => renderMuscleGroup(muscle))
+              ) : (
+                <Typography sx={{ color: "text.secondary" }}>
+                  No muscle groups are ready to train.
+                </Typography>
+              )}
+            </Box>
+            <Box className="card" sx={{ bgcolor: "background.paper" }}>
+            
+              {restMuscles.length > 0 ? (
+                restMuscles.map((muscle, index) => renderMuscleGroup(muscle))
+              ) : (
+                <Typography sx={{ color: "text.secondary" }}>
+                  No muscle groups need rest.
+                </Typography>
+              )}
+            </Box>
           </Grid>
 
           {layout.showLogs && (
@@ -516,7 +609,7 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
 
           {layout.showCharts && (
             <>
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12} md={3}>
                 <Box
                   className="card"
                   sx={{ height: 400, bgcolor: "background.paper" }}
@@ -524,7 +617,7 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
                   <ProgressionFatigueChart logs={logs} dailyMetrics={logs} />
                 </Box>
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12} md={3}>
                 <Box
                   className="card"
                   sx={{ height: 400, bgcolor: "background.paper" }}
@@ -532,7 +625,7 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
                   <ProgressionByMuscleChart logs={logs} dailyMetrics={logs} />
                 </Box>
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12} md={3}>
                 <Box
                   className="card"
                   sx={{ height: 400, bgcolor: "background.paper" }}
@@ -543,7 +636,7 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
                   />
                 </Box>
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12} md={3}>
                 <Box
                   className="card"
                   sx={{ height: 400, bgcolor: "background.paper" }}
@@ -553,6 +646,9 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
                     muscleGroups={exercises.map(
                       (exercise) => exercise.muscleGroup
                     )}
+                    onReadyToTrainUpdate={(musclesToWorkout, musclesToRest) =>
+                      handleReadyToTrainUpdate(musclesToWorkout, musclesToRest)
+                    }
                   />
                 </Box>
               </Grid>
@@ -566,13 +662,7 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
               </Typography>
               <ProgressGoals logs={logs} />
             </Box>
-          </Grid>
-
-          <Grid item xs={12} md={6}>
             <Box className="card" sx={{ bgcolor: "background.paper" }}>
-              <Typography className="card-title" sx={{ color: "text.primary" }}>
-                Record Body Weight
-              </Typography>
               <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
                 <TextField
                   label="Body Weight (kg)"
@@ -591,6 +681,14 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
                 Last recorded: {lastRecordedDate || "Not recorded yet"}
               </Typography>
             </Box>
+          </Grid>
+
+          <Grid item xs={12} md={6}></Grid>
+
+          <Grid item xs={12} md={6}></Grid>
+
+          <Grid item xs={12} md={6}>
+            <AchievementsCard logs={logs} />
           </Grid>
         </Grid>
 
