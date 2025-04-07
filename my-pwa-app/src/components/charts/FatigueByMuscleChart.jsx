@@ -60,11 +60,11 @@ const FatigueByMuscleChart = ({ logs, onReadyToTrainUpdate }) => {
     console.log("Fatigue by Muscle Group (Volume-Based):", fatigueByMuscle);
 
     const musclesToRest = fatigueByMuscle
-      .filter((m) => m.fatigue > 30)
+      .filter((m) => m.fatigue > 8)
       .map((m) => m.muscleGroup);
 
     const musclesToWorkout = fatigueByMuscle
-      .filter((m) => m.fatigue < 10)
+      .filter((m) => m.fatigue < 8)
       .map((m) => m.muscleGroup);
 
     const overallFatigueTrend = {
@@ -159,7 +159,7 @@ const FatigueByMuscleChart = ({ logs, onReadyToTrainUpdate }) => {
       onReadyToTrainUpdate(
         processedData.musclesToWorkout || [],
         processedData.fatigueByMuscle
-          ?.filter((m) => m.fatigue > 30)
+          ?.filter((m) => m.fatigue > 20)
           .map((m) => m.muscleGroup) || []
       );
     }

@@ -34,9 +34,8 @@ body {
 }
 
 .muscleGroupIcon{
-    width: 50px;
-    float:left;
-    margin-right: 5px;
+    width: 32px;
+    margin-right: 20px;
 }
 .width-auto {
     width: auto;

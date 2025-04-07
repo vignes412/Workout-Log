@@ -82,9 +82,7 @@ const muscleGroupIcons = {
   Cardio: <img src={ChestIcon} alt="Cardio" className="muscleGroupIcon" />,
   Biceps: <img src={bicepsIcon} alt="Biceps" className="muscleGroupIcon" />,
   Forearm: <img src={forearmIcon} alt="Forearm" className="muscleGroupIcon" />,
-  "Erector Spinae": (
-    <img src={HipIcon} alt="Erector Spinae" className="muscleGroupIcon" />
-  ),
+
   Calisthenic: (
     <img src={backWingsIcon} alt="Calisthenic" className="muscleGroupIcon" />
   ),
@@ -106,15 +104,12 @@ const muscleGroupIcons = {
 const renderMuscleGroup = (muscle) => (
   <Box
     sx={{
-      display: "inline-block",
+      display: "inline",
       alignItems: "center",
       gap: 1,
-      width: "auto",
     }}
   >
-    {muscleGroupIcons[muscle] || (
-      <img src={backWingsIcon} alt="Default" className="muscleGroupIcon" />
-    )}
+    {muscleGroupIcons[muscle] || <></>}
   </Box>
 );
 
@@ -490,7 +485,7 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
               </Badge>
             </Box>
             <Box className="card" sx={{ bgcolor: "background.paper" }}>
-              
+              <div style={{ marginBottom: "10px" }}>Train</div>
               {readyToTrain.length > 0 ? (
                 readyToTrain.map((muscle, index) => renderMuscleGroup(muscle))
               ) : (
@@ -500,7 +495,7 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
               )}
             </Box>
             <Box className="card" sx={{ bgcolor: "background.paper" }}>
-            
+              <div style={{ marginBottom: "10px" }}>Rest</div>
               {restMuscles.length > 0 ? (
                 restMuscles.map((muscle, index) => renderMuscleGroup(muscle))
               ) : (
