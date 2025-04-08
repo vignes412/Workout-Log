@@ -166,6 +166,7 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
   });
   const [readyToTrain, setReadyToTrain] = useState([]);
   const [restMuscles, setRestMuscles] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -434,6 +435,8 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
             placeholder="Search anything here..."
             variant="outlined"
             size="small"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
             sx={{ flexGrow: 1, mx: 2 }}
           />
           <Button

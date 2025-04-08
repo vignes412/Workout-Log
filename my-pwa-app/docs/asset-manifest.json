@@ -1,11 +1,11 @@
 {
   "files": {
-    "main.css": "/Workout-Log/static/css/main.css",
-    "main.js": "/Workout-Log/static/js/main.js",
-    "service-worker.js": "/Workout-Log/service-worker.js",
-    "index.html": "/Workout-Log/index.html",
-    "main.css.map": "/Workout-Log/static/css/main.css.map",
-    "main.js.map": "/Workout-Log/static/js/main.js.map"
+    "main.css": "/w0rk0ut-l0g/static/css/main.css",
+    "main.js": "/w0rk0ut-l0g/static/js/main.js",
+    "service-worker.js": "/w0rk0ut-l0g/service-worker.js",
+    "index.html": "/w0rk0ut-l0g/index.html",
+    "main.css.map": "/w0rk0ut-l0g/static/css/main.css.map",
+    "main.js.map": "/w0rk0ut-l0g/static/js/main.js.map"
   },
   "entrypoints": [
     "static/css/main.css",
