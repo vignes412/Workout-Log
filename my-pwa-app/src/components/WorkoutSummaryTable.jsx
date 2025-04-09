@@ -162,7 +162,7 @@ const WorkoutSummaryTable = ({ logs, themeMode }) => {
             sorting: { sortModel: [{ field: "date", sort: "desc" }] },
             density: "compact",
           }}
-          pageSizeOptions={[5, 10, 20]}
+          pageSizeOptions={[-1, 5, 10, 20, 50, 100]} // Ensure `pageSize` is one of these values
           slots={{ toolbar: GridToolbar }}
           sortingOrder={["asc", "desc"]}
           filterMode="client"

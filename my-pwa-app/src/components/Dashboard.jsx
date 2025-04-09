@@ -65,6 +65,7 @@ import WorkoutSummaryTable from "./WorkoutSummaryTable";
 import { useAppState } from "../index";
 import { generateInsights } from "../utils/aiInsights";
 import AchievementsCard from "./AchievementsCard";
+import { refreshTokenPeriodically } from "../serviceWorkerRegistration";
 
 // Mapping of muscle groups to icons
 const muscleGroupIcons = {
@@ -214,6 +215,30 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
           setLoading(false);
         }
       };
+
+      const refreshAuthToken = async () => {
+        try {
+          const response = await fetch("/api/refresh-token", {
+            method: "POST",
+            headers: { Authorization: `Bearer ${accessToken}` },
+          });
+          if (response.ok) {
+            const { newAccessToken } = await response.json();
+            localStorage.setItem("authToken", newAccessToken);
+            dispatch({
+              type: "SET_AUTHENTICATION",
+              payload: { isAuthenticated: true, accessToken: newAccessToken },
+            });
+          } else {
+            console.error("Failed to refresh token");
+          }
+        } catch (error) {
+          console.error("Error refreshing token:", error);
+        }
+      };
+
+      refreshTokenPeriodically(refreshAuthToken);
+
       loadData();
       const interval = setInterval(loadData, 300000);
       return () => clearInterval(interval);
@@ -490,7 +515,14 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
             <Box className="card" sx={{ bgcolor: "background.paper" }}>
               <div style={{ marginBottom: "10px" }}>Train</div>
               {readyToTrain.length > 0 ? (
-                readyToTrain.map((muscle, index) => renderMuscleGroup(muscle))
+                readyToTrain.map((muscle, index) => (
+                  <Box
+                    key={`ready-${index}`}
+                    sx={{ display: "inline", alignItems: "center", gap: 1 }}
+                  >
+                    {renderMuscleGroup(muscle)}
+                  </Box>
+                ))
               ) : (
                 <Typography sx={{ color: "text.secondary" }}>
                   No muscle groups are ready to train.
@@ -500,7 +532,14 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
             <Box className="card" sx={{ bgcolor: "background.paper" }}>
               <div style={{ marginBottom: "10px" }}>Rest</div>
               {restMuscles.length > 0 ? (
-                restMuscles.map((muscle, index) => renderMuscleGroup(muscle))
+                restMuscles.map((muscle, index) => (
+                  <Box
+                    key={`rest-${index}`}
+                    sx={{ display: "inline", alignItems: "center", gap: 1 }}
+                  >
+                    {renderMuscleGroup(muscle)}
+                  </Box>
+                ))
               ) : (
                 <Typography sx={{ color: "text.secondary" }}>
                   No muscle groups need rest.
@@ -556,7 +595,7 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
                     color: "text.primary",
                   }}
                 >
-                  {logs.length}
+                  {logs?.length || 0}
                 </p>{" "}
                 Workouts logged
               </Box>
@@ -572,11 +611,11 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
                     color: "text.primary",
                   }}
                 >
-                  {logs.reduce((p, c) => {
+                  {logs?.reduce((p, c) => {
                     const reps = parseFloat(c[3]) || 0;
                     const weight = parseFloat(c[4]) || 0;
                     return p + reps * weight;
-                  }, 0)}
+                  }, 0) || 0}
                 </p>{" "}
                 Total Volume logged
               </Box>
@@ -680,10 +719,6 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
               </Typography>
             </Box>
           </Grid>
-
-          <Grid item xs={12} md={6}></Grid>
-
-          <Grid item xs={12} md={6}></Grid>
 
           <Grid item xs={12} md={6}>
             <AchievementsCard logs={logs} />

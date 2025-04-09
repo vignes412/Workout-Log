@@ -12,6 +12,7 @@ const WorkoutLogsTable = ({ logs, setLogs, isOffline, exercises }) => {
   const [editOpen, setEditOpen] = useState(false);
   const [editLog, setEditLog] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [pageSize, setPageSize] = useState(-1); // Default page size
 
   // Request notification permission when the component mounts
   React.useEffect(() => {
@@ -184,11 +185,13 @@ const WorkoutLogsTable = ({ logs, setLogs, isOffline, exercises }) => {
           columns={workoutLogColumns}
           getRowId={(row) => row.id} // Specify custom id for each row
           initialState={{
-            pagination: { paginationModel: { pageSize: -1, page: 0 } },
+            pagination: { paginationModel: { pageSize: pageSize, page: 0 } },
             sorting: { sortModel: [{ field: "date", sort: "desc" }] },
             density: "compact",
           }}
-          pageSizeOptions={[5, 10, 20]}
+          pageSize={pageSize}
+          pageSizeOptions={[-1, 5, 10, 20, 50, 100]} // Ensure `100` is included here
+          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
           pagination
           slots={{ toolbar: GridToolbar }}
           sortingOrder={["asc", "desc"]}

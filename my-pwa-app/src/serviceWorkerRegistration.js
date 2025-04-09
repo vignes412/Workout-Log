@@ -87,3 +87,18 @@ export function unregister() {
       });
   }
 }
+
+export function refreshTokenPeriodically(
+  refreshTokenFunction,
+  interval = 15 * 60 * 1000
+) {
+  if (typeof refreshTokenFunction === "function") {
+    setInterval(async () => {
+      try {
+        await refreshTokenFunction();
+      } catch (error) {
+        console.error("Error refreshing token:", error);
+      }
+    }, interval);
+  }
+}
