@@ -102,7 +102,6 @@ const Main = () => {
     }
   }, [state.isAuthenticated, state.accessToken]);
 
-  // Cache images in service worker when exercises are loaded
   useEffect(() => {
     if (state.exercises.length > 0 && navigator.serviceWorker.controller) {
       const imageUrls = state.exercises

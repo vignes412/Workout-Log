@@ -254,13 +254,6 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
     }
   }, [lastRecordedDate]);
 
-  useEffect(() => {
-    if (logs) {
-      const generatedInsights = generateInsights(logs);
-      setInsights(generatedInsights);
-    }
-  }, [logs]);
-
   const handleLogout = () => {
     localStorage.removeItem("authToken");
     dispatch({
@@ -380,7 +373,7 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
     setRestMuscles(musclesToRest);
   };
 
-  const recentLogs = getRecentWorkoutLogs(logs);
+  const recentLogs = getRecentWorkoutLogs(logs || []);
 
   if (!isAuthenticated) {
     onNavigate("login");
@@ -578,7 +571,7 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
                 </Box>
                 <MuscleGroupDistributionChart
                   logs={logs}
-                  muscleGroups={exercises.map(
+                  muscleGroups={(exercises || []).map(
                     (exercise) => exercise.muscleGroup
                   )}
                 />
@@ -651,7 +644,10 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
                   className="card"
                   sx={{ height: 400, bgcolor: "background.paper" }}
                 >
-                  <ProgressionFatigueChart logs={logs} dailyMetrics={logs} />
+                  <ProgressionFatigueChart
+                    logs={logs || []}
+                    dailyMetrics={logs || []}
+                  />
                 </Box>
               </Grid>
               <Grid item xs={12} md={3}>
@@ -659,7 +655,10 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
                   className="card"
                   sx={{ height: 400, bgcolor: "background.paper" }}
                 >
-                  <ProgressionByMuscleChart logs={logs} dailyMetrics={logs} />
+                  <ProgressionByMuscleChart
+                    logs={logs || []}
+                    dailyMetrics={logs || []}
+                  />
                 </Box>
               </Grid>
               <Grid item xs={12} md={3}>
@@ -668,8 +667,8 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
                   sx={{ height: 400, bgcolor: "background.paper" }}
                 >
                   <VolumeOverTimeChart
-                    logs={logs}
-                    dates={logs.map((log) => log.date)}
+                    logs={logs || []}
+                    dates={(logs || []).map((log) => log.date)}
                   />
                 </Box>
               </Grid>
@@ -679,8 +678,8 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
                   sx={{ height: 400, bgcolor: "background.paper" }}
                 >
                   <FatigueByMuscleChart
-                    logs={logs}
-                    muscleGroups={exercises.map(
+                    logs={logs || []}
+                    muscleGroups={(exercises || []).map(
                       (exercise) => exercise.muscleGroup
                     )}
                     onReadyToTrainUpdate={(musclesToWorkout, musclesToRest) =>
