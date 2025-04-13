@@ -1,38 +1,44 @@
 import React from "react";
-import { Typography, Button } from "@mui/material";
+import { Snackbar, Alert } from "@mui/material";
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { hasError: false, errorMessage: "" };
+    this.state = { hasError: false, errorMessage: "", open: false };
   }
 
   static getDerivedStateFromError(error) {
-    return { hasError: true, errorMessage: error.message };
+    return { hasError: true, errorMessage: error.message, open: true };
   }
 
   componentDidCatch(error, errorInfo) {
     console.error("Caught error:", error, errorInfo);
   }
 
+  handleClose = () => {
+    this.setState({ open: false });
+  };
+
   render() {
-    if (this.state.hasError) {
-      return (
-        <div style={{ padding: "20px", textAlign: "center" }}>
-          <Typography variant="h6" color="error">
-            Something went wrong: {this.state.errorMessage}
-          </Typography>
-          <Button
-            variant="contained"
-            onClick={() => this.setState({ hasError: false })}
-            sx={{ mt: 2 }}
+    return (
+      <>
+        <Snackbar
+          open={this.state.open}
+          autoHideDuration={6000}
+          onClose={this.handleClose}
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        >
+          <Alert
+            onClose={this.handleClose}
+            severity="error"
+            sx={{ width: "100%" }}
           >
-            Retry
-          </Button>
-        </div>
-      );
-    }
-    return this.props.children;
+            Something went wrong: {this.state.errorMessage}
+          </Alert>
+        </Snackbar>
+        {this.props.children}
+      </>
+    );
   }
 }
 
