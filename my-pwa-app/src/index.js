@@ -234,6 +234,7 @@ const Main = () => {
   };
 
   const onNavigate = (path) => {
+    localStorage.removeItem("authToken");
     dispatch({ type: "SET_PAGE", payload: path });
   };
 
