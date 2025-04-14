@@ -234,7 +234,6 @@ const Main = () => {
   };
 
   const onNavigate = (path) => {
-    window.history.pushState({}, "", `/${path}`);
     dispatch({ type: "SET_PAGE", payload: path });
   };
 
