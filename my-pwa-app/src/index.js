@@ -143,6 +143,16 @@ const Main = () => {
     scheduleNotification();
   }, []);
 
+  useEffect(() => {
+    const handlePopState = () => {
+      const path = window.location.pathname.slice(1) || "login";
+      dispatch({ type: "SET_PAGE", payload: path });
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
   const theme = state.themeMode === "light" ? lightTheme : darkTheme;
 
   const renderPage = () => {
@@ -223,6 +233,11 @@ const Main = () => {
     }
   };
 
+  const onNavigate = (path) => {
+    window.history.pushState({}, "", `/${path}`);
+    dispatch({ type: "SET_PAGE", payload: path });
+  };
+
   return (
     <AppContext.Provider value={{ state, dispatch }}>
       <ThemeProvider theme={theme}>
@@ -232,7 +247,7 @@ const Main = () => {
             process.env.REACT_APP_GOOGLE_CLIENT_ID || config.google.CLIENT_ID
           }
         >
-          <ErrorBoundary>
+          <ErrorBoundary onNavigate={onNavigate}>
             {renderPage()}
             {state.currentPage !== "login" && (
               <div className="bottom-menu">

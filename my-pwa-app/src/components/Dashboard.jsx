@@ -179,6 +179,12 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
   };
 
   useEffect(() => {
+    if (!isAuthenticated) {
+      onNavigate("login"); // Navigate to login if not authenticated
+    }
+  }, [isAuthenticated, onNavigate]);
+
+  useEffect(() => {
     if (isAuthenticated && accessToken) {
       const loadData = async () => {
         try {

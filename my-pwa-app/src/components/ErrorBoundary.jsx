@@ -13,7 +13,9 @@ class ErrorBoundary extends React.Component {
 
   componentDidCatch(error, errorInfo) {
     console.error("Caught error:", error, errorInfo);
-    window.location.href = "/login"; // Redirect to login page
+    if (this.props.onNavigate) {
+      this.props.onNavigate("login"); // Redirect to login using onNavigate
+    }
   }
 
   handleClose = () => {
