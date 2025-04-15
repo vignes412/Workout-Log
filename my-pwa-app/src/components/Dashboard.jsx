@@ -66,6 +66,9 @@ import { useAppState } from "../index";
 import { generateInsights } from "../utils/aiInsights";
 import AchievementsCard from "./AchievementsCard";
 import { refreshTokenPeriodically } from "../serviceWorkerRegistration";
+import WeeklySummaryCard from "./WeeklySummaryCard";
+import MonthlySummaryCard from "./MonthlySummaryCard";
+import StreakTracker from "./StreakTracker";
 
 // Mapping of muscle groups to icons
 const muscleGroupIcons = {
@@ -221,29 +224,6 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
           setLoading(false);
         }
       };
-
-      const refreshAuthToken = async () => {
-        try {
-          const response = await fetch("/api/refresh-token", {
-            method: "POST",
-            headers: { Authorization: `Bearer ${accessToken}` },
-          });
-          if (response.ok) {
-            const { newAccessToken } = await response.json();
-            localStorage.setItem("authToken", newAccessToken);
-            dispatch({
-              type: "SET_AUTHENTICATION",
-              payload: { isAuthenticated: true, accessToken: newAccessToken },
-            });
-          } else {
-            console.error("Failed to refresh token");
-          }
-        } catch (error) {
-          console.error("Error refreshing token:", error);
-        }
-      };
-
-      refreshTokenPeriodically(refreshAuthToken);
 
       loadData();
       const interval = setInterval(loadData, 300000);
@@ -454,7 +434,7 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
           >
             Hi, RV!
           </Typography>
-          <TextField
+          {/* <TextField
             className="header-search"
             placeholder="Search anything here..."
             variant="outlined"
@@ -462,7 +442,7 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             sx={{ flexGrow: 1, mx: 2 }}
-          />
+          /> */}
           <Button
             variant="contained"
             color="primary"
@@ -727,6 +707,17 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
 
           <Grid item xs={12} md={6}>
             <AchievementsCard logs={logs} />
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <WeeklySummaryCard logs={logs} />
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <MonthlySummaryCard logs={logs} />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <StreakTracker logs={logs} />
           </Grid>
         </Grid>
 

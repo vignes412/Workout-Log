@@ -24,6 +24,7 @@ const ExerciseList = ({ accessToken, onNavigate, toggleTheme, themeMode }) => {
   const [loading, setLoading] = useState(false);
   const [muscleGroupFilter, setMuscleGroupFilter] = useState(null);
   const [exerciseFilter, setExerciseFilter] = useState("");
+  const [muscleGroups, setMuscleGroups] = useState([]); // State for muscle groups
 
   // Refs to store temporary input values
   const muscleGroupRef = useRef(null);
@@ -66,6 +67,35 @@ const ExerciseList = ({ accessToken, onNavigate, toggleTheme, themeMode }) => {
     }
   };
 
+  // Function to load muscle groups
+  const loadMuscleGroups = async () => {
+    if (!accessToken) return;
+
+    setLoading(true);
+    try {
+      await initClient(accessToken);
+      await syncData(
+        "Exercises!A2:A", // Only load the muscle group column
+        "/api/muscleGroups",
+        (data) => {
+          const uniqueMuscleGroups = [
+            ...new Set(data.map((row) => row[0])),
+          ].sort();
+          setMuscleGroups(uniqueMuscleGroups);
+        }
+      );
+    } catch (error) {
+      console.error("Error loading muscle groups:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Load muscle groups on component mount
+  React.useEffect(() => {
+    loadMuscleGroups();
+  }, []);
+
   // Handle search button click
   const handleSearch = () => {
     // Update state only when Search is clicked
@@ -82,15 +112,14 @@ const ExerciseList = ({ accessToken, onNavigate, toggleTheme, themeMode }) => {
     return acc;
   }, {});
 
-  const muscleGroups = Object.keys(groupedExercises).sort();
-
   const filteredExercises = exercises.filter((exercise) => {
     const matchesMuscleGroup =
-      !muscleGroupFilter || exercise.muscleGroup === muscleGroupFilter;
+      !muscleGroupFilter ||
+      exercise.muscleGroup?.toLowerCase() === muscleGroupFilter.toLowerCase();
     const matchesExercise =
       !exerciseFilter ||
-      exercise.exercise.toLowerCase().includes(exerciseFilter.toLowerCase());
-    return matchesMuscleGroup && matchesExercise;
+      exercise.exercise?.toLowerCase().includes(exerciseFilter.toLowerCase());
+    return matchesMuscleGroup && matchesExercise; // Ensure both filters are applied
   });
 
   const filteredGroupedExercises = filteredExercises.reduce((acc, exercise) => {
@@ -128,7 +157,7 @@ const ExerciseList = ({ accessToken, onNavigate, toggleTheme, themeMode }) => {
           }}
         >
           <Autocomplete
-            options={muscleGroups} // Empty until data is loaded
+            options={muscleGroups} // Use loaded muscle groups
             value={muscleGroupFilter} // Controlled by state, updated only on Search
             onChange={(event, newValue) => {
               // Temporarily store in ref, don't update state

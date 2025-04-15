@@ -6,6 +6,8 @@ import { computeDailyMetrics } from "../../utils/computeDailyMetrics";
 const FatigueByMuscleChart = ({ logs, onReadyToTrainUpdate }) => {
   const theme = useTheme();
   const dailyMetrics = useMemo(() => computeDailyMetrics(logs), [logs]);
+  const daysAgo = 3;
+  const trainMuscle = 8;
   const processedData = useMemo(() => {
     if (!logs || logs.length === 0) {
       return {
@@ -37,7 +39,7 @@ const FatigueByMuscleChart = ({ logs, onReadyToTrainUpdate }) => {
 
     const currentDate = new Date();
     const threeDaysAgo = new Date(currentDate);
-    threeDaysAgo.setDate(currentDate.getDate() - 3);
+    threeDaysAgo.setDate(currentDate.getDate() - daysAgo);
 
     const last10DaysLogs = logs.filter((log) => {
       const [day, month, year] = log[0].split("/");
@@ -60,11 +62,11 @@ const FatigueByMuscleChart = ({ logs, onReadyToTrainUpdate }) => {
     console.log("Fatigue by Muscle Group (Volume-Based):", fatigueByMuscle);
 
     const musclesToRest = fatigueByMuscle
-      .filter((m) => m.fatigue > 8)
+      .filter((m) => m.fatigue > trainMuscle)
       .map((m) => m.muscleGroup);
 
     const musclesToWorkout = fatigueByMuscle
-      .filter((m) => m.fatigue < 8)
+      .filter((m) => m.fatigue < trainMuscle)
       .map((m) => m.muscleGroup);
 
     const overallFatigueTrend = {
@@ -159,7 +161,7 @@ const FatigueByMuscleChart = ({ logs, onReadyToTrainUpdate }) => {
       onReadyToTrainUpdate(
         processedData.musclesToWorkout || [],
         processedData.fatigueByMuscle
-          ?.filter((m) => m.fatigue > 20)
+          ?.filter((m) => m.fatigue > trainMuscle)
           .map((m) => m.muscleGroup) || []
       );
     }
