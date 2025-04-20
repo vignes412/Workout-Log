@@ -303,13 +303,14 @@ const BodyMeasurements = ({ accessToken, onNavigate, themeMode }) => {
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Box className="main-container">
         <Box className="header">
-          <Typography className="header-greeting">Body Measurements</Typography>
-          <TextField
-            className="header-search"
-            placeholder="Search anything here..."
+          <Button
             variant="outlined"
-            size="small"
-          />
+            color="primary"
+            onClick={() => onNavigate("dashboard")}
+            sx={{ mb: 2 }}
+          >
+            Back to Dashboard
+          </Button>
           <Box className="header-profile">
             <Avatar alt="User" src="/path-to-profile-pic.jpg" />
             <Typography>User Name</Typography>
@@ -563,9 +564,7 @@ const BodyMeasurements = ({ accessToken, onNavigate, themeMode }) => {
                 ))}
               </Box>
 
-              <Box className="chart-wrapper" style={{ height: 350 }}>
-                {" "}
-                {/* Adjusted height */}
+              <Box className="chart-wrapper" sx={{ height: 350 }}>
                 <Bar data={dynamicChartData} options={dynamicChartOptions} />
               </Box>
             </>

@@ -101,20 +101,36 @@ export const computeDailyMetrics = (logs) => {
     entry.fatigue = dailyFatigueMap[date]; // Cumulative fatigue up to this exercise
   });
 
-  // Add progression rate (unchanged)
+  // Update the progression rate calculation logic to group by muscle group and exercise
   const muscleExerciseMap = {};
   sortedGroups.forEach((current, index) => {
     const key = `${current.muscleGroup}_${current.exercise}`;
     let progressionRate = "N/A";
+
     if (muscleExerciseMap[key]) {
-      const prevVolume = parseFloat(muscleExerciseMap[key].totalVolume);
+      const lastHighestVolume = parseFloat(
+        muscleExerciseMap[key].highestVolume
+      );
       const currentVolume = parseFloat(current.totalVolume);
-      progressionRate = prevVolume
-        ? (((currentVolume - prevVolume) / prevVolume) * 100).toFixed(2)
+      progressionRate = lastHighestVolume
+        ? (
+            ((currentVolume - lastHighestVolume) / lastHighestVolume) *
+            100
+          ).toFixed(2)
         : "0.00";
+
+      // Update the highest volume if the current volume is greater
+      if (currentVolume > lastHighestVolume) {
+        muscleExerciseMap[key].highestVolume = currentVolume;
+      }
+    } else {
+      // Initialize the highest volume for this muscle group and exercise
+      muscleExerciseMap[key] = {
+        highestVolume: parseFloat(current.totalVolume),
+      };
     }
+
     sortedGroups[index].progressionRate = progressionRate;
-    muscleExerciseMap[key] = current;
   });
 
   return sortedGroups;
