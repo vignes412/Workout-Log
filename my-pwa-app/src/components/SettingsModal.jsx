@@ -1,46 +1,57 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
+  Modal,
+  Box,
   Typography,
   FormControlLabel,
   Checkbox,
+  Button,
 } from "@mui/material";
 
-const SettingsModal = ({ open, onClose, onUpdateLayout, onNavigate }) => {
-  const [layout, setLayout] = useState(() => {
-    return (
-      JSON.parse(localStorage.getItem("dashboardLayout")) || {
-        showLogs: true,
-        showSummary: true,
-        showCharts: true,
-      }
-    );
+const SettingsModal = ({ open, onClose, onUpdateLayout, onResetLayout }) => {
+  const [visibility, setVisibility] = useState({
+    showLogs: true,
+    showSummary: true,
+    showCharts: true,
   });
 
-  useEffect(() => {
-    localStorage.setItem("dashboardLayout", JSON.stringify(layout));
-    onUpdateLayout(layout);
-  }, [layout, onUpdateLayout]);
+  const handleVisibilityChange = (event) => {
+    const { name, checked } = event.target;
+    setVisibility((prev) => ({ ...prev, [name]: checked }));
+  };
+
+  const handleSave = () => {
+    onUpdateLayout((prev) => ({
+      ...prev,
+      visibility,
+    }));
+    onClose();
+  };
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>
-        <Typography variant="h6" color="primary">
+    <Modal open={open} onClose={onClose}>
+      <Box
+        sx={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: 400,
+          bgcolor: "background.paper",
+          boxShadow: 24,
+          p: 4,
+          borderRadius: 2,
+        }}
+      >
+        <Typography variant="h6" sx={{ mb: 2 }}>
           Dashboard Settings
         </Typography>
-      </DialogTitle>
-      <DialogContent>
         <FormControlLabel
           control={
             <Checkbox
-              checked={layout.showLogs}
-              onChange={(e) =>
-                setLayout({ ...layout, showLogs: e.target.checked })
-              }
+              checked={visibility.showLogs}
+              onChange={handleVisibilityChange}
+              name="showLogs"
             />
           }
           label="Show Workout Logs"
@@ -48,10 +59,9 @@ const SettingsModal = ({ open, onClose, onUpdateLayout, onNavigate }) => {
         <FormControlLabel
           control={
             <Checkbox
-              checked={layout.showSummary}
-              onChange={(e) =>
-                setLayout({ ...layout, showSummary: e.target.checked })
-              }
+              checked={visibility.showSummary}
+              onChange={handleVisibilityChange}
+              name="showSummary"
             />
           }
           label="Show Workout Summary"
@@ -59,47 +69,26 @@ const SettingsModal = ({ open, onClose, onUpdateLayout, onNavigate }) => {
         <FormControlLabel
           control={
             <Checkbox
-              checked={layout.showCharts}
-              onChange={(e) =>
-                setLayout({ ...layout, showCharts: e.target.checked })
-              }
+              checked={visibility.showCharts}
+              onChange={handleVisibilityChange}
+              name="showCharts"
             />
           }
           label="Show Charts"
         />
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose} color="secondary">
-          Close
-        </Button>
-      </DialogActions>
-      <div className="bottom-menu">
-        <div
-          className="bottom-menu-item"
-          onClick={() => onNavigate("dashboard")}
-        >
-          Dashboard
-        </div>
-        <div
-          className="bottom-menu-item"
-          onClick={() => onNavigate("exerciselist")}
-        >
-          Exercises
-        </div>
-        <div
-          className="bottom-menu-item"
-          onClick={() => onNavigate("bodymeasurements")}
-        >
-          Body Measurements
-        </div>
-        <div
-          className="bottom-menu-item"
-          onClick={() => onNavigate("settings")}
-        >
-          Settings
-        </div>
-      </div>
-    </Dialog>
+        <Box sx={{ mt: 2, display: "flex", gap: 2 }}>
+          <Button variant="contained" onClick={handleSave}>
+            Save
+          </Button>
+          <Button variant="outlined" onClick={onResetLayout}>
+            Reset Layout
+          </Button>
+          <Button variant="outlined" onClick={onClose}>
+            Cancel
+          </Button>
+        </Box>
+      </Box>
+    </Modal>
   );
 };
 
