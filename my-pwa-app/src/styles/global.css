@@ -109,11 +109,12 @@ body {
     display: none;
 }
 
+/* FAB Add Button */
 .fab-add {
-    position: fixed;
-    bottom: 80px;
+    position: fixed !important;
+    bottom: 20px;
     right: 20px;
-    z-index: 1000;
+    z-index: 1100;
     transition: transform var(--transition-speed) ease;
 }
 
@@ -239,12 +240,13 @@ body {
     }
 
     .fab-add {
-        bottom: 70px;
+        bottom: 80px;
+        right: 20px;
     }
 
     .muscleGroupIcon {
-        width: 40px;
-        height: 40px;
+        width: 16px;
+        height: 16px;
         margin-right: 4px;
     }
 }

@@ -42,7 +42,6 @@ import {
   FitnessCenter as WorkoutsIcon,
   DirectionsRun as BodyMeasurementsIcon,
   Message as MessagesIcon,
-  Settings as SettingsIcon,
   Refresh as RefreshIcon,
   Edit as EditIcon,
   Save as SaveIcon,
@@ -729,9 +728,25 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
     const saved = JSON.parse(localStorage.getItem("dashboardLayout")) || {};
     return {
       visibility: {
-        showLogs: true,
-        showSummary: true,
-        showCharts: true,
+        status: true,
+        train: true,
+        rest: true,
+        "workout-logs": true,
+        "muscle-distribution": true,
+        "workout-count": true,
+        "total-volume": true,
+        "todo-list": true,
+        "workout-summary": true,
+        "progression-fatigue": true,
+        "progression-muscle": true,
+        "volume-over-time": true,
+        "fatigue-by-muscle": true,
+        "progress-goals": true,
+        "body-weight": true,
+        achievements: true,
+        "weekly-summary": true,
+        "monthly-summary": true,
+        "streak-tracker": true,
         ...saved.visibility,
       },
       layouts: saved.layouts || defaultLayouts,
@@ -970,9 +985,12 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
     setIsCustomizing((prev) => {
       if (prev) {
         localStorage.setItem("dashboardLayout", JSON.stringify(layout));
-        showToast("Dashboard layout saved!", "success");
+        showToast("Dashboard layout and visibility saved!", "success");
       } else {
-        showToast("Customize mode enabled. Drag and resize cards.", "info");
+        showToast(
+          "Customize mode enabled. Drag, resize, or edit visibility in Settings.",
+          "info"
+        );
       }
       return !prev;
     });
@@ -1035,14 +1053,6 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
           <MessagesIcon sx={{ color: "text.primary" }} />
           <span>Messages</span>
         </Box>
-        <Box
-          className="sidebar-item"
-          onClick={() => setSettingsOpen(true)}
-          sx={{ "&:hover": { bgcolor: "action.hover" } }}
-        >
-          <SettingsIcon sx={{ color: "text.primary" }} />
-          <span>Settings</span>
-        </Box>
       </Box>
 
       <Box className="main-container" sx={{ bgcolor: "background.default" }}>
@@ -1085,6 +1095,12 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
                 <Brightness7 sx={{ color: "text.primary" }} />
               )}
             </IconButton>
+            <IconButton
+              onClick={() => setSettingsOpen(true)}
+              sx={{ color: "text.primary" }}
+            >
+              <Settings sx={{ color: "text.primary" }} />
+            </IconButton>
             <Button
               color="inherit"
               onClick={handleLogout}
@@ -1110,7 +1126,7 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
           margin={[16, 16]}
           containerPadding={[16, 16]}
         >
-          {layout.visibility.showLogs && (
+          {layout.visibility.status && (
             <div
               key="status"
               className="card"
@@ -1128,7 +1144,7 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
               </Badge>
             </div>
           )}
-          {layout.visibility.showLogs && (
+          {layout.visibility.train && (
             <div
               key="train"
               className="card"
@@ -1152,7 +1168,7 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
               </Box>
             </div>
           )}
-          {layout.visibility.showLogs && (
+          {layout.visibility.rest && (
             <div
               key="rest"
               className="card"
@@ -1174,7 +1190,7 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
               </Box>
             </div>
           )}
-          {layout.visibility.showLogs && (
+          {layout.visibility["workout-logs"] && (
             <div
               key="workout-logs"
               className="card"
@@ -1192,7 +1208,7 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
               />
             </div>
           )}
-          {layout.visibility.showCharts && (
+          {layout.visibility["muscle-distribution"] && (
             <div
               key="muscle-distribution"
               className="card"
@@ -1211,7 +1227,7 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
               />
             </div>
           )}
-          {layout.visibility.showCharts && (
+          {layout.visibility["workout-count"] && (
             <div
               key="workout-count"
               className="card hightLightBox"
@@ -1230,7 +1246,7 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
               Workouts logged
             </div>
           )}
-          {layout.visibility.showCharts && (
+          {layout.visibility["total-volume"] && (
             <div
               key="total-volume"
               className="card hightLightBox"
@@ -1253,14 +1269,16 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
               Total Volume logged
             </div>
           )}
-          <div
-            key="todo-list"
-            className="card"
-            style={{ backgroundColor: theme.palette.background.paper }}
-          >
-            <TodoList />
-          </div>
-          {layout.visibility.showSummary && (
+          {layout.visibility["todo-list"] && (
+            <div
+              key="todo-list"
+              className="card"
+              style={{ backgroundColor: theme.palette.background.paper }}
+            >
+              <TodoList />
+            </div>
+          )}
+          {layout.visibility["workout-summary"] && (
             <div
               key="workout-summary"
               className="card"
@@ -1274,7 +1292,7 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
               <WorkoutSummaryTable logs={logs} />
             </div>
           )}
-          {layout.visibility.showCharts && (
+          {layout.visibility["progression-fatigue"] && (
             <div
               key="progression-fatigue"
               className="card"
@@ -1286,7 +1304,7 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
               />
             </div>
           )}
-          {layout.visibility.showCharts && (
+          {layout.visibility["progression-muscle"] && (
             <div
               key="progression-muscle"
               className="card"
@@ -1298,7 +1316,7 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
               />
             </div>
           )}
-          {layout.visibility.showCharts && (
+          {layout.visibility["volume-over-time"] && (
             <div
               key="volume-over-time"
               className="card"
@@ -1310,7 +1328,7 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
               />
             </div>
           )}
-          {layout.visibility.showCharts && (
+          {layout.visibility["fatigue-by-muscle"] && (
             <div
               key="fatigue-by-muscle"
               className="card"
@@ -1327,64 +1345,79 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
               />
             </div>
           )}
-          <div
-            key="progress-goals"
-            className="card"
-            style={{ backgroundColor: theme.palette.background.paper }}
-          >
-            <Typography className="card-title" sx={{ color: "text.primary" }}>
-              Progress Goals
-            </Typography>
-            <ProgressGoals logs={logs} />
-          </div>
-          <div
-            key="body-weight"
-            className="card"
-            style={{ backgroundColor: theme.palette.background.paper }}
-          >
-            <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-              <TextField
-                label="Body Weight (kg)"
-                type="number"
-                value={bodyWeight}
-                onChange={(e) => setBodyWeight(e.target.value)}
-              />
-              <Button variant="contained" onClick={handleRecordWeight}>
-                Record
-              </Button>
-            </Box>
-            <Typography variant="body2" sx={{ mt: 2, color: "text.secondary" }}>
-              Last recorded: {lastRecordedDate || "Not recorded yet"}
-            </Typography>
-          </div>
-          <div
-            key="achievements"
-            className="card"
-            style={{ backgroundColor: theme.palette.background.paper }}
-          >
-            <AchievementsCard logs={logs} />
-          </div>
-          <div
-            key="weekly-summary"
-            className="card"
-            style={{ backgroundColor: theme.palette.background.paper }}
-          >
-            <WeeklySummaryCard logs={logs} />
-          </div>
-          <div
-            key="monthly-summary"
-            className="card"
-            style={{ backgroundColor: theme.palette.background.paper }}
-          >
-            <MonthlySummaryCard logs={logs} />
-          </div>
-          <div
-            key="streak-tracker"
-            className="card"
-            style={{ backgroundColor: theme.palette.background.paper }}
-          >
-            <StreakTracker logs={logs} />
-          </div>
+          {layout.visibility["progress-goals"] && (
+            <div
+              key="progress-goals"
+              className="card"
+              style={{ backgroundColor: theme.palette.background.paper }}
+            >
+              <Typography className="card-title" sx={{ color: "text.primary" }}>
+                Progress Goals
+              </Typography>
+              <ProgressGoals logs={logs} />
+            </div>
+          )}
+          {layout.visibility["body-weight"] && (
+            <div
+              key="body-weight"
+              className="card"
+              style={{ backgroundColor: theme.palette.background.paper }}
+            >
+              <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+                <TextField
+                  label="Body Weight (kg)"
+                  type="number"
+                  value={bodyWeight}
+                  onChange={(e) => setBodyWeight(e.target.value)}
+                />
+                <Button variant="contained" onClick={handleRecordWeight}>
+                  Record
+                </Button>
+              </Box>
+              <Typography
+                variant="body2"
+                sx={{ mt: 2, color: "text.secondary" }}
+              >
+                Last recorded: {lastRecordedDate || "Not recorded yet"}
+              </Typography>
+            </div>
+          )}
+          {layout.visibility.achievements && (
+            <div
+              key="achievements"
+              className="card"
+              style={{ backgroundColor: theme.palette.background.paper }}
+            >
+              <AchievementsCard logs={logs} />
+            </div>
+          )}
+          {layout.visibility["weekly-summary"] && (
+            <div
+              key="weekly-summary"
+              className="card"
+              style={{ backgroundColor: theme.palette.background.paper }}
+            >
+              <WeeklySummaryCard logs={logs} />
+            </div>
+          )}
+          {layout.visibility["monthly-summary"] && (
+            <div
+              key="monthly-summary"
+              className="card"
+              style={{ backgroundColor: theme.palette.background.paper }}
+            >
+              <MonthlySummaryCard logs={logs} />
+            </div>
+          )}
+          {layout.visibility["streak-tracker"] && (
+            <div
+              key="streak-tracker"
+              className="card"
+              style={{ backgroundColor: theme.palette.background.paper }}
+            >
+              <StreakTracker logs={logs} />
+            </div>
+          )}
         </ResponsiveGridLayout>
 
         <Fab
@@ -1459,6 +1492,7 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
           onClose={() => setSettingsOpen(false)}
           onUpdateLayout={setLayout}
           onResetLayout={handleResetLayout}
+          layout={layout}
         />
       </Box>
       <Snackbar

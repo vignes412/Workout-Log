@@ -28,9 +28,9 @@ body {
     transition: width 0.3s ease;
 }
 
-    .sidebar:hover {
-        width: 200px;
-    }
+.sidebar:hover {
+    width: 200px;
+}
 
 .sidebar-item {
     width: 100%;
@@ -43,13 +43,13 @@ body {
     transition: background-color 0.3s ease;
 }
 
-    .sidebar-item:hover {
-        background-color: #34495e;
-    }
+.sidebar-item:hover {
+    background-color: #34495e;
+}
 
-    .sidebar-item span {
-        display: none;
-    }
+.sidebar-item span {
+    display: none;
+}
 
 .sidebar:hover .sidebar-item span {
     display: inline;
@@ -100,6 +100,15 @@ body {
     display: flex;
     align-items: center;
     gap: 10px;
+}
+
+/* Settings Button in Header */
+.settings-button {
+    transition: transform 0.3s ease;
+}
+
+.settings-button:hover {
+    transform: scale(1.1);
 }
 
 .highLightLBL {
@@ -226,7 +235,8 @@ body {
     }
 
     .react-grid-item {
-        touch-action: none; /* Prevent default touch scrolling during drag */
+        touch-action: none;
+        /* Prevent default touch scrolling during drag */
     }
 
     .muscle-icon-container {
@@ -235,6 +245,17 @@ body {
 
     .muscle-icon {
         min-width: 24px;
+    }
+
+    .header {
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .header-profile {
+        flex-wrap: wrap;
+        justify-content: center;
     }
 }
 
@@ -253,9 +274,9 @@ body {
         color: #e2e8f0;
     }
 
-        .sidebar-item:hover {
-            background-color: #4a5568;
-        }
+    .sidebar-item:hover {
+        background-color: #4a5568;
+    }
 
     .header {
         background-color: #2d3748;
@@ -291,9 +312,9 @@ body {
         color: #e2e8f0;
     }
 
-        .bottom-menu-item:hover {
-            color: #f1c40f;
-        }
+    .bottom-menu-item:hover {
+        color: #f1c40f;
+    }
 
     /* Dark Mode for TodoList */
     .todo-container {
@@ -386,9 +407,9 @@ body {
         width: 60px;
     }
 
-        .sidebar:hover {
-            width: 150px;
-        }
+    .sidebar:hover {
+        width: 150px;
+    }
 
     .main-container {
         margin-left: 60px;
@@ -428,9 +449,9 @@ body {
         top: auto;
     }
 
-        .sidebar:hover {
-            width: 100%;
-        }
+    .sidebar:hover {
+        width: 100%;
+    }
 
     .sidebar-item span {
         display: none;
@@ -456,10 +477,6 @@ body {
 
     .bottom-menu {
         height: 50px;
-    }
-
-    .fab-add {
-        bottom: 70px;
     }
 
     .highLightLBL {

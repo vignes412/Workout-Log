@@ -6,7 +6,7 @@ import { computeDailyMetrics } from "../../utils/computeDailyMetrics";
 const FatigueByMuscleChart = ({ logs, onReadyToTrainUpdate }) => {
   const theme = useTheme();
   const dailyMetrics = useMemo(() => computeDailyMetrics(logs), [logs]);
-  const daysAgo = 1;
+  const daysAgo = 3;
   const trainMuscle = 8;
   const processedData = useMemo(() => {
     if (!logs || logs.length === 0) {
