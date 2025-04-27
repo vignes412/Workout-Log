@@ -15,11 +15,11 @@ const WorkoutLogsTable = ({ logs, setLogs, isOffline, exercises }) => {
   const [pageSize, setPageSize] = useState(-1); // Default page size
 
   // Request notification permission when the component mounts
-  React.useEffect(() => {
-    if ("Notification" in window && Notification.permission !== "granted") {
-      Notification.requestPermission();
-    }
-  }, []);
+  // React.useEffect(() => {
+  //   if ("Notification" in window && Notification.permission !== "granted") {
+  //     Notification.requestPermission();
+  //   }
+  // }, []);
 
   const showNotification = (title, body) => {
     if ("Notification" in window && Notification.permission === "granted") {
