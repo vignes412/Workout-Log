@@ -35,8 +35,8 @@ body {
 }
 
 .muscleGroupIcon {
-    width: 24px;
-    height: 24px;
+    width: 40px;
+    height: 40px;
     margin-right: 8px;
 }
 
@@ -187,8 +187,8 @@ body {
     }
 
     .muscleGroupIcon {
-        width: 20px;
-        height: 20px;
+        width: 40px;
+        height: 40px;
         margin-right: 6px;
     }
 }
@@ -245,8 +245,8 @@ body {
     }
 
     .muscleGroupIcon {
-        width: 16px;
-        height: 16px;
+        width: 40px;
+        height: 40px;
         margin-right: 4px;
     }
 }
