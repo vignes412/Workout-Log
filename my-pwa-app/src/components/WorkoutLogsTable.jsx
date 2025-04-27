@@ -80,7 +80,7 @@ const WorkoutLogsTable = ({ logs, setLogs, isOffline, exercises }) => {
       headerName: "Actions",
       width: 150,
       renderCell: (params) => (
-        <Box sx={{ display: { xs: "none", sm: "block" } }}>
+        <Box sx={{ display: {  sm: "block" } }}>
           {" "}
           {/* Hide on mobile */}
           <Button
