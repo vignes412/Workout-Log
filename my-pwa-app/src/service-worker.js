@@ -26,3 +26,29 @@ self.addEventListener("install", (event) => {
 self.addEventListener("activate", (event) => {
   event.waitUntil(self.clients.claim());
 });
+
+// Add handler for CACHE_IMAGES messages
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "CACHE_IMAGES") {
+    const urls = event.data.urls || [];
+    if (urls.length > 0) {
+      event.waitUntil(
+        caches.open("image-cache").then((cache) => {
+          return Promise.all(
+            urls.map((url) => {
+              if (url) {
+                return fetch(url)
+                  .then((response) => {
+                    if (response.ok) return cache.put(url, response);
+                    return Promise.resolve();
+                  })
+                  .catch(() => Promise.resolve()); // Ignore errors
+              }
+              return Promise.resolve();
+            })
+          );
+        })
+      );
+    }
+  }
+});

@@ -170,35 +170,6 @@ const Main = () => {
   }, [state.exercises]);
 
   useEffect(() => {
-    if ("Notification" in window && Notification.permission !== "granted") {
-      Notification.requestPermission();
-    }
-
-    const scheduleNotification = () => {
-      const now = new Date();
-      const targetTime = new Date();
-      targetTime.setHours(8, 20, 0, 0);
-
-      if (now > targetTime) {
-        targetTime.setDate(targetTime.getDate() + 1);
-      }
-
-      const timeUntilNotification = targetTime - now;
-
-      setTimeout(() => {
-        if (Notification.permission === "granted") {
-          new Notification(
-            "Good Morning! Don't forget to log your workout today!"
-          );
-        }
-        scheduleNotification();
-      }, timeUntilNotification);
-    };
-
-    scheduleNotification();
-  }, []);
-
-  useEffect(() => {
     const handlePopState = () => {
       const path = window.location.pathname.slice(1) || "login";
       dispatch({ type: "SET_PAGE", payload: path });
@@ -286,6 +257,29 @@ const Main = () => {
             onNavigate={(page) => dispatch({ type: "SET_PAGE", payload: page })}
             themeMode={state.themeMode}
             onLogout={handleLogout}
+          />
+        );
+      case "settings":
+        return (
+          <Dashboard
+            isAuthenticated={state.isAuthenticated}
+            setIsAuthenticated={(isAuthenticated) =>
+              dispatch({
+                type: "SET_AUTHENTICATION",
+                payload: { isAuthenticated, accessToken: null },
+              })
+            }
+            accessToken={state.accessToken}
+            onNavigate={(page) => dispatch({ type: "SET_PAGE", payload: page })}
+            toggleTheme={() =>
+              dispatch({
+                type: "SET_THEME",
+                payload: state.themeMode === "light" ? "dark" : "light",
+              })
+            }
+            themeMode={state.themeMode}
+            onLogout={handleLogout}
+            settingsOpen={true}
           />
         );
       default:

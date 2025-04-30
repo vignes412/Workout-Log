@@ -36,16 +36,6 @@ function registerValidSW(swUrl, config) {
           }
         };
       };
-      // Request notification permission
-      Notification.requestPermission().then((permission) => {
-        if (permission === "granted") {
-          registration.pushManager
-            .subscribe({ userVisibleOnly: true })
-            .then(() => {
-              console.log("Push subscription successful");
-            });
-        }
-      });
     })
     .catch((error) => {
       console.error("Error during service worker registration:", error);
