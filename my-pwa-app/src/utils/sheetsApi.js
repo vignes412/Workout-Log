@@ -9,13 +9,23 @@ const { DATA_CACHE_NAME } = config.cache;
 
 let isInitialized = false;
 
-const retryOperation = async (operation, maxRetries = 3, delay = 1000) => {
+/**
+ * Retry an operation with exponential backoff
+ * @param {Function} operation - The operation to retry
+ * @param {number} maxRetries - Maximum number of retries
+ * @param {number} initialDelay - Initial delay in ms
+ * @returns {Promise<any>} - Result of the operation
+ */
+const retryOperation = async (operation, maxRetries = 3, initialDelay = 1000) => {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       return await operation();
     } catch (error) {
       // Check if error is due to token expiration
-      if (error.status === 401 || error.message?.includes("auth")) {
+      if (error.status === 401 || 
+          error.result?.error?.status === 401 ||
+          error.message?.includes("auth") || 
+          error.message?.includes("Authentication")) {
         try {
           // Try to refresh the token
           await refreshAccessToken();
@@ -32,8 +42,13 @@ const retryOperation = async (operation, maxRetries = 3, delay = 1000) => {
       }
       
       if (attempt === maxRetries) throw error;
-      console.warn(`Retry ${attempt}/${maxRetries} failed: ${error.message}`);
-      await new Promise((resolve) => setTimeout(resolve, delay * attempt));
+      
+      // Calculate delay with exponential backoff (delay * 2^attempt) with some randomness
+      const exponentialDelay = initialDelay * Math.pow(2, attempt - 1) * (0.5 + Math.random());
+      console.warn(`Retry ${attempt}/${maxRetries} failed: ${error.message || 'Unknown error'}`);
+      console.log(`Retrying in ${Math.round(exponentialDelay / 1000)} seconds...`);
+      
+      await new Promise((resolve) => setTimeout(resolve, exponentialDelay));
     }
   }
 };
@@ -95,11 +110,11 @@ export const fetchData = async (range, mapFn = (row) => row) => {
   });
 };
 
-export const appendData = async (range, values) => {
+export const appendData = async (range, values, accessToken = null) => {
   return retryOperation(async () => {
-    // Get a fresh token before making the request
+    // Get a fresh token if none provided
     try {
-      const token = await getAccessToken();
+      const token = accessToken || await getAccessToken();
       gapi.client.setToken({ access_token: token });
     } catch (error) {
       console.error("Failed to refresh token before appending data:", error);
@@ -108,12 +123,16 @@ export const appendData = async (range, values) => {
     
     // Ensure values is a two-dimensional array
     const formattedValues = Array.isArray(values[0]) ? values : [values];
-    await gapi.client.sheets.spreadsheets.values.append({
+    
+    const response = await gapi.client.sheets.spreadsheets.values.append({
       spreadsheetId: SPREADSHEET_ID,
       range,
       valueInputOption: "RAW",
       resource: { values: formattedValues },
     });
+    
+    console.log(`Appended data to ${range} successfully`);
+    return response.result;
   });
 };
 
@@ -136,24 +155,26 @@ export const clearSheet = async (range) => {
   });
 };
 
-export const updateData = async (range, values) => {
+export const updateData = async (range, values, accessToken = null) => {
   return retryOperation(async () => {
-    // Get a fresh token before making the request
+    // Get a fresh token if none provided
     try {
-      const token = await getAccessToken();
+      const token = accessToken || await getAccessToken();
       gapi.client.setToken({ access_token: token });
     } catch (error) {
       console.error("Failed to refresh token before updating data:", error);
       throw new Error("Authentication required");
     }
     
-    await gapi.client.sheets.spreadsheets.values.update({
+    const response = await gapi.client.sheets.spreadsheets.values.update({
       spreadsheetId: SPREADSHEET_ID,
       range,
       valueInputOption: "RAW",
       resource: { values },
     });
+    
     console.log(`Updated range ${range} successfully`);
+    return response.result;
   });
 };
 
@@ -211,67 +232,9 @@ export const syncData = async (
   }
 };
 
-export const appendData2 = async (range, values, accessToken) => {
-  try {
-    // Get a fresh token if none provided
-    const token = accessToken || await getAccessToken();
-    
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${
-      process.env.REACT_APP_SPREADSHEET_ID || config.google.SPREADSHEET_ID
-    }/values/${range}:append?valueInputOption=RAW`;
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        values: values,
-      }),
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      // Check if token has expired
-      if (response.status === 401) {
-        // Try to refresh the token and retry once
-        try {
-          const newToken = await refreshAccessToken();
-          return appendData2(range, values, newToken.access_token);
-        } catch (refreshError) {
-          console.error("Token refresh failed:", refreshError);
-          throw new Error("Authentication required");
-        }
-      }
-      throw new Error(`Failed to append data: ${error.error.message}`);
-    }
-    return response.json();
-  } catch (error) {
-    console.error("Error in appendData2:", error);
-    throw error;
-  }
-};
-
-export const saveBodyMeasurementToSheet = async (range, row, accessToken) => {
-  return retryOperation(async () => {
-    // Get a fresh token if none provided
-    try {
-      const token = accessToken || await getAccessToken();
-      gapi.client.setToken({ access_token: token });
-    } catch (error) {
-      console.error("Failed to refresh token before saving body measurement:", error);
-      throw new Error("Authentication required");
-    }
-    
-    const formattedValues = Array.isArray(row[0]) ? row : [row];
-    await gapi.client.sheets.spreadsheets.values.append({
-      spreadsheetId: SPREADSHEET_ID,
-      range,
-      valueInputOption: "RAW",
-      resource: { values: formattedValues },
-    });
-    console.log(`Saved body measurement to ${range} successfully`);
-  });
+export const saveBodyMeasurementToSheet = async (range, row, accessToken = null) => {
+  // Simply use our improved appendData function
+  return appendData(range, row, accessToken);
 };
 
 export const fetchTodos = async () => {
