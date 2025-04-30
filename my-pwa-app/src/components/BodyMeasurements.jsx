@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import {
   Typography,
   Box,
@@ -18,11 +18,12 @@ import {
   InputLabel,
   FormControl,
   Avatar,
+  CircularProgress,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { Bar, Line } from "react-chartjs-2";
+import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -49,39 +50,109 @@ ChartJS.register(
   Legend
 );
 
-const BodyMeasurements = ({ accessToken, onNavigate, themeMode }) => {
-  const [measurements, setMeasurements] = useState({
-    date: null,
-    weight: "",
-    neckRelaxed: "",
-    shouldersRelaxed: "",
-    chestRelaxed: "",
-    chestFlexed: "",
-    upperChestRelaxed: "",
-    lowerChestRelaxed: "",
-    leftUpperArmRelaxed: "",
-    leftUpperArmFlexed: "",
-    rightUpperArmRelaxed: "",
-    rightUpperArmFlexed: "",
-    leftForearmRelaxed: "",
-    rightForearmRelaxed: "",
-    leftWristRelaxed: "",
-    rightWristRelaxed: "",
-    waistRelaxed: "",
-    abdomenRelaxed: "",
-    hipsRelaxed: "",
-    leftUpperThighRelaxed: "",
-    rightUpperThighRelaxed: "",
-    leftMidThighRelaxed: "",
-    rightMidThighRelaxed: "",
-    leftLowerThighRelaxed: "",
-    rightLowerThighRelaxed: "",
-    leftCalvesRelaxed: "",
-    rightCalvesRelaxed: "",
-    leftAnkleRelaxed: "",
-    rightAnkleRelaxed: "",
-  });
+// Defined outside the component to avoid recreation on each render
+const initialMeasurements = {
+  date: null,
+  weight: "",
+  neckRelaxed: "",
+  shouldersRelaxed: "",
+  chestRelaxed: "",
+  chestFlexed: "",
+  upperChestRelaxed: "",
+  lowerChestRelaxed: "",
+  leftUpperArmRelaxed: "",
+  leftUpperArmFlexed: "",
+  rightUpperArmRelaxed: "",
+  rightUpperArmFlexed: "",
+  leftForearmRelaxed: "",
+  rightForearmRelaxed: "",
+  leftWristRelaxed: "",
+  rightWristRelaxed: "",
+  waistRelaxed: "",
+  abdomenRelaxed: "",
+  hipsRelaxed: "",
+  leftUpperThighRelaxed: "",
+  rightUpperThighRelaxed: "",
+  leftMidThighRelaxed: "",
+  rightMidThighRelaxed: "",
+  leftLowerThighRelaxed: "",
+  rightLowerThighRelaxed: "",
+  leftCalvesRelaxed: "",
+  rightCalvesRelaxed: "",
+  leftAnkleRelaxed: "",
+  rightAnkleRelaxed: "",
+};
 
+// Predefined chart colors to maintain consistency
+const chartColors = [
+  'rgba(54, 162, 235, 0.8)',
+  'rgba(255, 99, 132, 0.8)',
+  'rgba(75, 192, 192, 0.8)',
+  'rgba(255, 159, 64, 0.8)',
+  'rgba(153, 102, 255, 0.8)',
+  'rgba(255, 206, 86, 0.8)',
+  'rgba(199, 199, 199, 0.8)',
+  'rgba(83, 102, 255, 0.8)',
+];
+
+// Field groups for better organization
+const fieldGroups = {
+  upperBody: ["neckRelaxed", "shouldersRelaxed", "chestRelaxed", "chestFlexed", "upperChestRelaxed", "lowerChestRelaxed"],
+  arms: ["leftUpperArmRelaxed", "leftUpperArmFlexed", "rightUpperArmRelaxed", "rightUpperArmFlexed", 
+         "leftForearmRelaxed", "rightForearmRelaxed", "leftWristRelaxed", "rightWristRelaxed"],
+  torso: ["waistRelaxed", "abdomenRelaxed", "hipsRelaxed"],
+  legs: ["leftUpperThighRelaxed", "rightUpperThighRelaxed", "leftMidThighRelaxed", "rightMidThighRelaxed",
+         "leftLowerThighRelaxed", "rightLowerThighRelaxed", "leftCalvesRelaxed", "rightCalvesRelaxed", 
+         "leftAnkleRelaxed", "rightAnkleRelaxed"]
+};
+
+// Memoize measurement labels to prevent recreation on each render
+const measurementLabels = {
+  chestRelaxed: "Chest Relaxed",
+  chestFlexed: "Chest Flexed",
+  leftUpperArmRelaxed: "Left Upper Arm Relaxed",
+  rightUpperArmRelaxed: "Right Upper Arm Relaxed",
+  waistRelaxed: "Waist Relaxed",
+  abdomenRelaxed: "Abdomen Relaxed",
+  leftUpperThighRelaxed: "Left Upper Thigh Relaxed",
+  rightUpperThighRelaxed: "Right Upper Thigh Relaxed",
+  weight: "Weight",
+  neckRelaxed: "Neck Relaxed",
+  shouldersRelaxed: "Shoulders Relaxed",
+  upperChestRelaxed: "Upper Chest Relaxed",
+  lowerChestRelaxed: "Lower Chest Relaxed",
+  leftUpperArmFlexed: "Left Upper Arm Flexed",
+  rightUpperArmFlexed: "Right Upper Arm Flexed",
+  leftForearmRelaxed: "Left Forearm Relaxed",
+  rightForearmRelaxed: "Right Forearm Relaxed",
+  leftWristRelaxed: "Left Wrist Relaxed",
+  rightWristRelaxed: "Right Wrist Relaxed",
+  hipsRelaxed: "Hips Relaxed",
+  leftMidThighRelaxed: "Left Mid Thigh Relaxed",
+  rightMidThighRelaxed: "Right Mid Thigh Relaxed",
+  leftLowerThighRelaxed: "Left Lower Thigh Relaxed",
+  rightLowerThighRelaxed: "Right Lower Thigh Relaxed",
+  leftCalvesRelaxed: "Left Calves Relaxed",
+  rightCalvesRelaxed: "Right Calves Relaxed",
+  leftAnkleRelaxed: "Left Ankle Relaxed",
+  rightAnkleRelaxed: "Right Ankle Relaxed",
+};
+
+// Create reusable TextField component with memoization
+const MeasurementField = React.memo(({ field, value, onChange, unit }) => (
+  <TextField
+    fullWidth
+    label={`${measurementLabels[field] || field.replace(/([A-Z])/g, " $1")} (${unit === "metric" ? "cm" : "in"})`}
+    name={field}
+    type="number"
+    value={value}
+    onChange={onChange}
+    inputProps={{ step: "0.1" }}
+  />
+));
+
+const BodyMeasurements = ({ accessToken, onNavigate, themeMode }) => {
+  const [measurements, setMeasurements] = useState({...initialMeasurements});
   const [logs, setLocalLogs] = useState([]);
   const [saveStatus, setSaveStatus] = useState("");
   const [error, setError] = useState("");
@@ -96,48 +167,8 @@ const BodyMeasurements = ({ accessToken, onNavigate, themeMode }) => {
     legs: ["leftUpperThighRelaxed", "rightUpperThighRelaxed"],
   });
 
-  const measurementLabels = {
-    chestRelaxed: "Chest Relaxed",
-    chestFlexed: "Chest Flexed",
-    leftUpperArmRelaxed: "Left Upper Arm Relaxed",
-    rightUpperArmRelaxed: "Right Upper Arm Relaxed",
-    waistRelaxed: "Waist Relaxed",
-    abdomenRelaxed: "Abdomen Relaxed",
-    leftUpperThighRelaxed: "Left Upper Thigh Relaxed",
-    rightUpperThighRelaxed: "Right Upper Thigh Relaxed",
-  };
-
-  const resetMeasurements = () => ({
-    date: null,
-    weight: "",
-    neckRelaxed: "",
-    shouldersRelaxed: "",
-    chestRelaxed: "",
-    chestFlexed: "",
-    upperChestRelaxed: "",
-    lowerChestRelaxed: "",
-    leftUpperArmRelaxed: "",
-    leftUpperArmFlexed: "",
-    rightUpperArmRelaxed: "",
-    rightUpperArmFlexed: "",
-    leftForearmRelaxed: "",
-    rightForearmRelaxed: "",
-    leftWristRelaxed: "",
-    rightWristRelaxed: "",
-    waistRelaxed: "",
-    abdomenRelaxed: "",
-    hipsRelaxed: "",
-    leftUpperThighRelaxed: "",
-    rightUpperThighRelaxed: "",
-    leftMidThighRelaxed: "",
-    rightMidThighRelaxed: "",
-    leftLowerThighRelaxed: "",
-    rightLowerThighRelaxed: "",
-    leftCalvesRelaxed: "",
-    rightCalvesRelaxed: "",
-    leftAnkleRelaxed: "",
-    rightAnkleRelaxed: "",
-  });
+  // Memoized resetMeasurements function
+  const resetMeasurements = useCallback(() => ({...initialMeasurements}), []);
 
   useEffect(() => {
     const loadData = async () => {
@@ -145,7 +176,7 @@ const BodyMeasurements = ({ accessToken, onNavigate, themeMode }) => {
       setLoading(true);
       try {
         const data = await fetchData("Body_Measurements!A2:AC");
-        setLocalLogs(data);
+        setLocalLogs(data || []);
       } catch (err) {
         console.error("Fetch error:", err);
         setError("Failed to load measurements from spreadsheet.");
@@ -156,7 +187,7 @@ const BodyMeasurements = ({ accessToken, onNavigate, themeMode }) => {
     loadData();
   }, [accessToken]);
 
-  const handleInputChange = (e) => {
+  const handleInputChange = useCallback((e) => {
     const { name, value } = e.target;
     if (name !== "date" && value && isNaN(value)) {
       setError(`${name} must be a valid number.`);
@@ -164,13 +195,13 @@ const BodyMeasurements = ({ accessToken, onNavigate, themeMode }) => {
     }
     setMeasurements((prev) => ({ ...prev, [name]: value }));
     setError("");
-  };
+  }, []);
 
-  const handleUnitChange = (event, newUnit) => {
+  const handleUnitChange = useCallback((event, newUnit) => {
     if (newUnit) setUnit(newUnit);
-  };
+  }, []);
 
-  const convertValue = (value, fromUnit, toUnit) => {
+  const convertValue = useCallback((value, fromUnit, toUnit) => {
     if (!value) return 0;
     if (fromUnit === toUnit) return parseFloat(value);
     if (fromUnit === "metric" && toUnit === "imperial") {
@@ -179,47 +210,25 @@ const BodyMeasurements = ({ accessToken, onNavigate, themeMode }) => {
       return parseFloat(value) / 2.20462;
     }
     return parseFloat(value);
-  };
+  }, []);
 
-  const prepareData = (measurements) => {
+  const prepareData = useCallback((measurements) => {
     const formattedDate = measurements.date
       ? dayjs(measurements.date).format("YYYY-MM-DD")
       : "";
     const weightValue = convertValue(measurements.weight, unit, "metric");
+    
+    // Use a more efficient approach to build the array
     return [
       formattedDate,
       weightValue || 0,
-      parseFloat(measurements.neckRelaxed) || 0,
-      parseFloat(measurements.shouldersRelaxed) || 0,
-      parseFloat(measurements.chestRelaxed) || 0,
-      parseFloat(measurements.chestFlexed) || 0,
-      parseFloat(measurements.upperChestRelaxed) || 0,
-      parseFloat(measurements.lowerChestRelaxed) || 0,
-      parseFloat(measurements.leftUpperArmRelaxed) || 0,
-      parseFloat(measurements.leftUpperArmFlexed) || 0,
-      parseFloat(measurements.rightUpperArmRelaxed) || 0,
-      parseFloat(measurements.rightUpperArmFlexed) || 0,
-      parseFloat(measurements.leftForearmRelaxed) || 0,
-      parseFloat(measurements.rightForearmRelaxed) || 0,
-      parseFloat(measurements.leftWristRelaxed) || 0,
-      parseFloat(measurements.rightWristRelaxed) || 0,
-      parseFloat(measurements.waistRelaxed) || 0,
-      parseFloat(measurements.abdomenRelaxed) || 0,
-      parseFloat(measurements.hipsRelaxed) || 0,
-      parseFloat(measurements.leftUpperThighRelaxed) || 0,
-      parseFloat(measurements.rightUpperThighRelaxed) || 0,
-      parseFloat(measurements.leftMidThighRelaxed) || 0,
-      parseFloat(measurements.rightMidThighRelaxed) || 0,
-      parseFloat(measurements.leftLowerThighRelaxed) || 0,
-      parseFloat(measurements.rightLowerThighRelaxed) || 0,
-      parseFloat(measurements.leftCalvesRelaxed) || 0,
-      parseFloat(measurements.rightCalvesRelaxed) || 0,
-      parseFloat(measurements.leftAnkleRelaxed) || 0,
-      parseFloat(measurements.rightAnkleRelaxed) || 0,
+      ...Object.keys(initialMeasurements)
+        .filter(key => key !== 'date' && key !== 'weight')
+        .map(key => parseFloat(measurements[key]) || 0)
     ];
-  };
+  }, [convertValue, unit]);
 
-  const handleSave = async () => {
+  const handleSave = useCallback(async () => {
     if (!measurements.date || !measurements.weight) {
       setError("Date and Weight are required fields.");
       setSaveStatus("");
@@ -242,62 +251,211 @@ const BodyMeasurements = ({ accessToken, onNavigate, themeMode }) => {
       setError("Failed to save measurements. Please try again.");
       setSaveStatus("");
     }
-  };
+  }, [accessToken, measurements, prepareData, resetMeasurements]);
 
-  const handleSelectionChange = (group, value) => {
+  const handleSelectionChange = useCallback((group, value) => {
     setSelectedMeasurements((prev) => ({ ...prev, [group]: value }));
-  };
+  }, []);
 
-  const dynamicChartData = {
-    labels: logs ? logs.map((log) => log[0]) : [],
-    datasets: Object.entries(selectedMeasurements).flatMap(([group, fields]) =>
-      fields.map((field) => ({
-        label: measurementLabels[field],
-        data: logs
-          ? logs.map(
-              (log) =>
-                parseFloat(log[Object.keys(measurements).indexOf(field)]) || 0
-            )
-          : [],
-        backgroundColor: `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(
-          Math.random() * 255
-        )}, ${Math.floor(Math.random() * 255)}, 0.8)`,
-      }))
-    ),
-  };
+  // Memoize chart data to prevent recalculations on every render
+  const dynamicChartData = useMemo(() => {
+    const chartData = {
+      labels: logs.map((log) => log[0]),
+      datasets: Object.entries(selectedMeasurements).flatMap(([group, fields], groupIndex) =>
+        fields.map((field, fieldIndex) => {
+          const colorIndex = (groupIndex * 2 + fieldIndex) % chartColors.length;
+          return {
+            label: measurementLabels[field] || field,
+            data: logs.map(
+              (log) => parseFloat(log[Object.keys(initialMeasurements).indexOf(field)]) || 0
+            ),
+            backgroundColor: chartColors[colorIndex],
+          };
+        })
+      ),
+    };
+    return chartData;
+  }, [logs, selectedMeasurements]);
 
-  const dynamicChartOptions = {
+  // Memoize chart options to prevent recreation on every render
+  const dynamicChartOptions = useMemo(() => ({
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         position: "top",
         labels: {
-          color: themeMode === "dark" ? "#ffffff" : "#000000", // Adjusted for dark mode
+          color: themeMode === "dark" ? "#ffffff" : "#000000",
+          padding: 10,
+          usePointStyle: true,
+          font: {
+            size: 11
+          }
         },
       },
       title: {
         display: true,
         text: "Selected Body Measurements Over Time",
-        color: themeMode === "dark" ? "#ffffff" : "#000000", // Adjusted for dark mode
+        color: themeMode === "dark" ? "#ffffff" : "#000000",
+        font: {
+          size: 16,
+          weight: 'bold'
+        },
+        padding: 20
+      },
+      tooltip: {
+        mode: 'index',
+        intersect: false,
       },
     },
     scales: {
       x: {
-        ticks: { color: themeMode === "dark" ? "#b0bec5" : "#000000" }, // Adjusted for dark mode
-        grid: { color: themeMode === "dark" ? "#424242" : "#e0e0e0" }, // Adjusted for dark mode
+        ticks: { color: themeMode === "dark" ? "#b0bec5" : "#000000" },
+        grid: { color: themeMode === "dark" ? "#424242" : "#e0e0e0" },
       },
       y: {
-        ticks: { color: themeMode === "dark" ? "#b0bec5" : "#000000" }, // Adjusted for dark mode
-        grid: { color: themeMode === "dark" ? "#424242" : "#e0e0e0" }, // Adjusted for dark mode
+        ticks: { color: themeMode === "dark" ? "#b0bec5" : "#000000" },
+        grid: { color: themeMode === "dark" ? "#424242" : "#e0e0e0" },
         beginAtZero: true,
         title: {
           display: true,
-          text: "Measurement (cm)",
-          color: themeMode === "dark" ? "#ffffff" : "#000000", // Adjusted for dark mode
+          text: unit === "metric" ? "Measurement (cm)" : "Measurement (in)",
+          color: themeMode === "dark" ? "#ffffff" : "#000000",
         },
       },
     },
-  };
+  }), [themeMode, unit]);
+
+  // Memoize the measurement form to prevent unnecessary re-renders
+  const MeasurementForm = useMemo(() => (
+    <>
+      <Box sx={{ mb: 2 }}>
+        <ToggleButtonGroup
+          value={unit}
+          exclusive
+          onChange={handleUnitChange}
+          aria-label="unit selection"
+          size="small"
+        >
+          <ToggleButton value="metric">Metric (kg/cm)</ToggleButton>
+          <ToggleButton value="imperial">Imperial (lbs/in)</ToggleButton>
+        </ToggleButtonGroup>
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={!quickEntry}
+              onChange={(e) => setQuickEntry(!e.target.checked)}
+            />
+          }
+          label="Full Entry (All Measurements)"
+          sx={{ ml: 2 }}
+        />
+      </Box>
+      <Grid container spacing={2}>
+        <Grid item xs={12} sm={6}>
+          <DatePicker
+            label="Date"
+            value={measurements.date}
+            onChange={(newValue) =>
+              setMeasurements((prev) => ({ ...prev, date: newValue }))
+            }
+            slotProps={{ textField: { fullWidth: true, required: true } }}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            fullWidth
+            label={`Weight (${unit === "metric" ? "kg" : "lbs"})`}
+            name="weight"
+            type="number"
+            value={measurements.weight}
+            onChange={handleInputChange}
+            required
+            inputProps={{ step: "0.1" }}
+          />
+        </Grid>
+      </Grid>
+
+      {!quickEntry && (
+        <>
+          {Object.entries(fieldGroups).map(([group, fields]) => (
+            <Accordion key={group} defaultExpanded={group === "upperBody"}>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography>{group.replace(/([A-Z])/g, " $1")}</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Grid container spacing={2}>
+                  {fields.map((field) => (
+                    <Grid item xs={12} sm={6} key={field}>
+                      <MeasurementField 
+                        field={field} 
+                        value={measurements[field]} 
+                        onChange={handleInputChange}
+                        unit={unit}
+                      />
+                    </Grid>
+                  ))}
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
+          ))}
+        </>
+      )}
+
+      <Grid container spacing={2} sx={{ mt: 2 }}>
+        <Grid item xs={12}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleSave}
+            disabled={!measurements.date || !measurements.weight}
+          >
+            Save Measurements
+          </Button>
+        </Grid>
+      </Grid>
+
+      {saveStatus && (
+        <Alert severity="success" sx={{ mt: 2 }}>
+          {saveStatus}
+        </Alert>
+      )}
+      {error && (
+        <Alert severity="error" sx={{ mt: 2 }}>
+          {error}
+        </Alert>
+      )}
+    </>
+  ), [measurements, quickEntry, unit, handleInputChange, handleSave, handleUnitChange, saveStatus, error]);
+
+  // Memoize the chart selection controls
+  const ChartControls = useMemo(() => (
+    <Box sx={{ mb: 2 }}>
+      {["upperBody", "arms", "torso", "legs"].map((group) => (
+        <FormControl key={group} sx={{ m: 1, minWidth: 200 }}>
+          <InputLabel>{group.replace(/([A-Z])/g, " $1")}</InputLabel>
+          <Select
+            multiple
+            value={selectedMeasurements[group]}
+            onChange={(e) => handleSelectionChange(group, e.target.value)}
+            renderValue={(selected) =>
+              selected
+                .map((field) => measurementLabels[field] || field)
+                .join(", ")
+            }
+          >
+            {fieldGroups[group]
+              .filter(field => Object.keys(measurementLabels).includes(field))
+              .map((field) => (
+                <MenuItem key={field} value={field}>
+                  {measurementLabels[field]}
+                </MenuItem>
+              ))}
+          </Select>
+        </FormControl>
+      ))}
+    </Box>
+  ), [selectedMeasurements, handleSelectionChange]);
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -320,253 +478,22 @@ const BodyMeasurements = ({ accessToken, onNavigate, themeMode }) => {
         <Box className="card">
           <Typography className="card-title">Body Measurements</Typography>
           {loading ? (
-            <Typography variant="h6" align="center">
-              Loading...
-            </Typography>
+            <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
+              <CircularProgress />
+            </Box>
           ) : (
             <>
-              <Box sx={{ mb: 2 }}>
-                <ToggleButtonGroup
-                  value={unit}
-                  exclusive
-                  onChange={handleUnitChange}
-                  aria-label="unit selection"
-                >
-                  <ToggleButton value="metric">Metric (kg/cm)</ToggleButton>
-                  <ToggleButton value="imperial">
-                    Imperial (lbs/in)
-                  </ToggleButton>
-                </ToggleButtonGroup>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={!quickEntry}
-                      onChange={(e) => setQuickEntry(!e.target.checked)}
-                    />
-                  }
-                  label="Full Entry (All Measurements)"
-                  sx={{ ml: 2 }}
-                />
-              </Box>
-              <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                  <DatePicker
-                    label="Date"
-                    value={measurements.date}
-                    onChange={(newValue) =>
-                      setMeasurements((prev) => ({ ...prev, date: newValue }))
-                    }
-                    renderInput={(params) => (
-                      <TextField {...params} fullWidth required />
-                    )}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    label={`Weight (${unit === "metric" ? "kg" : "lbs"})`}
-                    name="weight"
-                    type="number"
-                    value={measurements.weight}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </Grid>
-              </Grid>
-
-              {!quickEntry && (
+              {MeasurementForm}
+              
+              {logs.length > 0 && (
                 <>
-                  <Accordion defaultExpanded>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                      <Typography>Upper Body</Typography>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                      <Grid container spacing={2}>
-                        {[
-                          "neckRelaxed",
-                          "shouldersRelaxed",
-                          "chestRelaxed",
-                          "chestFlexed",
-                          "upperChestRelaxed",
-                          "lowerChestRelaxed",
-                        ].map((field) => (
-                          <Grid item xs={12} sm={6} key={field}>
-                            <TextField
-                              fullWidth
-                              label={`${field.replace(/([A-Z])/g, " $1")} (cm)`}
-                              name={field}
-                              type="number"
-                              value={measurements[field]}
-                              onChange={handleInputChange}
-                            />
-                          </Grid>
-                        ))}
-                      </Grid>
-                    </AccordionDetails>
-                  </Accordion>
-
-                  <Accordion>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                      <Typography>Arms</Typography>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                      <Grid container spacing={2}>
-                        {[
-                          "leftUpperArmRelaxed",
-                          "leftUpperArmFlexed",
-                          "rightUpperArmRelaxed",
-                          "rightUpperArmFlexed",
-                          "leftForearmRelaxed",
-                          "rightForearmRelaxed",
-                          "leftWristRelaxed",
-                          "rightWristRelaxed",
-                        ].map((field) => (
-                          <Grid item xs={12} sm={6} key={field}>
-                            <TextField
-                              fullWidth
-                              label={`${field.replace(/([A-Z])/g, " $1")} (cm)`}
-                              name={field}
-                              type="number"
-                              value={measurements[field]}
-                              onChange={handleInputChange}
-                            />
-                          </Grid>
-                        ))}
-                      </Grid>
-                    </AccordionDetails>
-                  </Accordion>
-
-                  <Accordion>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                      <Typography>Torso</Typography>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                      <Grid container spacing={2}>
-                        {["waistRelaxed", "abdomenRelaxed", "hipsRelaxed"].map(
-                          (field) => (
-                            <Grid item xs={12} sm={6} key={field}>
-                              <TextField
-                                fullWidth
-                                label={`${field.replace(
-                                  /([A-Z])/g,
-                                  " $1"
-                                )} (cm)`}
-                                name={field}
-                                type="number"
-                                value={measurements[field]}
-                                onChange={handleInputChange}
-                              />
-                            </Grid>
-                          )
-                        )}
-                      </Grid>
-                    </AccordionDetails>
-                  </Accordion>
-
-                  <Accordion>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                      <Typography>Legs</Typography>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                      <Grid container spacing={2}>
-                        {[
-                          "leftUpperThighRelaxed",
-                          "rightUpperThighRelaxed",
-                          "leftMidThighRelaxed",
-                          "rightMidThighRelaxed",
-                          "leftLowerThighRelaxed",
-                          "rightLowerThighRelaxed",
-                          "leftCalvesRelaxed",
-                          "rightCalvesRelaxed",
-                          "leftAnkleRelaxed",
-                          "rightAnkleRelaxed",
-                        ].map((field) => (
-                          <Grid item xs={12} sm={6} key={field}>
-                            <TextField
-                              fullWidth
-                              label={`${field.replace(/([A-Z])/g, " $1")} (cm)`}
-                              name={field}
-                              type="number"
-                              value={measurements[field]}
-                              onChange={handleInputChange}
-                            />
-                          </Grid>
-                        ))}
-                      </Grid>
-                    </AccordionDetails>
-                  </Accordion>
+                  {ChartControls}
+                  
+                  <Box className="chart-wrapper" sx={{ height: 350, mt: 2 }}>
+                    <Bar data={dynamicChartData} options={dynamicChartOptions} />
+                  </Box>
                 </>
               )}
-
-              <Grid container spacing={2} sx={{ mt: 2 }}>
-                <Grid item xs={12}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleSave}
-                    disabled={!measurements.date || !measurements.weight}
-                  >
-                    Save Measurements
-                  </Button>
-                </Grid>
-              </Grid>
-
-              {saveStatus && (
-                <Alert severity="success" sx={{ mt: 2 }}>
-                  {saveStatus}
-                </Alert>
-              )}
-              {error && (
-                <Alert severity="error" sx={{ mt: 2 }}>
-                  {error}
-                </Alert>
-              )}
-
-              <Box sx={{ mb: 2 }}>
-                {["upperBody", "arms", "torso", "legs"].map((group) => (
-                  <FormControl key={group} sx={{ m: 1, minWidth: 200 }}>
-                    <InputLabel>{group.replace(/([A-Z])/g, " $1")}</InputLabel>
-                    <Select
-                      multiple
-                      value={selectedMeasurements[group]}
-                      onChange={(e) =>
-                        handleSelectionChange(group, e.target.value)
-                      }
-                      renderValue={(selected) =>
-                        selected
-                          .map((field) => measurementLabels[field])
-                          .join(", ")
-                      }
-                    >
-                      {Object.keys(measurements)
-                        .filter((field) =>
-                          group === "upperBody"
-                            ? ["chestRelaxed", "chestFlexed"].includes(field)
-                            : group === "arms"
-                            ? [
-                                "leftUpperArmRelaxed",
-                                "rightUpperArmRelaxed",
-                              ].includes(field)
-                            : group === "torso"
-                            ? ["waistRelaxed", "abdomenRelaxed"].includes(field)
-                            : [
-                                "leftUpperThighRelaxed",
-                                "rightUpperThighRelaxed",
-                              ].includes(field)
-                        )
-                        .map((field) => (
-                          <MenuItem key={field} value={field}>
-                            {measurementLabels[field]}
-                          </MenuItem>
-                        ))}
-                    </Select>
-                  </FormControl>
-                ))}
-              </Box>
-
-              <Box className="chart-wrapper" sx={{ height: 350 }}>
-                <Bar data={dynamicChartData} options={dynamicChartOptions} />
-              </Box>
             </>
           )}
         </Box>
@@ -575,4 +502,4 @@ const BodyMeasurements = ({ accessToken, onNavigate, themeMode }) => {
   );
 };
 
-export default BodyMeasurements;
+export default React.memo(BodyMeasurements);

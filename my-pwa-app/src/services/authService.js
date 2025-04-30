@@ -11,7 +11,7 @@ const ID_TOKEN_KEY = "id_token";
 // for production applications, but you mentioned you'll manage it manually
 // You can get your client secret from the Google Cloud Console:
 // https://console.cloud.google.com/ -> APIs & Services -> Credentials -> OAuth 2.0 Client IDs
-const CLIENT_SECRET = "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"; // <-- Replace this with your actual client secret
+const CLIENT_SECRET = config.google.CLIENT_SECRET; // <-- Replace this with your actual client secret
 
 /**
  * Handles token exchange for authorization code flow
