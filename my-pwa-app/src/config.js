@@ -3,7 +3,7 @@ const config = {
   google: {
     API_KEY: "AIzaSyAEOr-6nIoOfiKiN_EbMyeZxuagJWpzCrQ",
     CLIENT_ID:
-      "25723638150-fda1h3p3e1bm8s65m90a03vkvpscfnb9.apps.googleusercontent.com",
+      "25723638150-gbnd67r57fl8o0vhvqjguedcjnii25aj.apps.googleusercontent.com",
     SPREADSHEET_ID: "1Tll9R5KtdfZO7-w8Sn2KrZx8PG3_nTSiJpkRYOXl9Sk",
     DISCOVERY_DOCS: [
       "https://sheets.googleapis.com/$discovery/rest?version=v4",

@@ -1,6 +1,7 @@
 import { gapi } from "gapi-script";
 import config from "../config";
 import React from "react";
+import { getAccessToken, refreshAccessToken } from "../services/authService";
 
 const { SPREADSHEET_ID, API_KEY, CLIENT_ID, DISCOVERY_DOCS, SCOPES } =
   config.google;
@@ -13,6 +14,23 @@ const retryOperation = async (operation, maxRetries = 3, delay = 1000) => {
     try {
       return await operation();
     } catch (error) {
+      // Check if error is due to token expiration
+      if (error.status === 401 || error.message?.includes("auth")) {
+        try {
+          // Try to refresh the token
+          await refreshAccessToken();
+          
+          // If token refresh succeeds, retry the operation immediately
+          if (attempt < maxRetries) {
+            console.log("Token refreshed, retrying operation");
+            continue;
+          }
+        } catch (refreshError) {
+          console.error("Token refresh failed:", refreshError);
+          throw new Error("Authentication required");
+        }
+      }
+      
       if (attempt === maxRetries) throw error;
       console.warn(`Retry ${attempt}/${maxRetries} failed: ${error.message}`);
       await new Promise((resolve) => setTimeout(resolve, delay * attempt));
@@ -20,12 +38,13 @@ const retryOperation = async (operation, maxRetries = 3, delay = 1000) => {
   }
 };
 
-export const initClient = (accessToken) => {
+export const initClient = async (accessToken) => {
   return new Promise((resolve, reject) => {
     if (isInitialized) {
       resolve();
       return;
     }
+    
     gapi.load("client", () => {
       gapi.client
         .init({
@@ -35,13 +54,19 @@ export const initClient = (accessToken) => {
           scope: SCOPES,
         })
         .then(() => {
-          gapi.client.setToken({ access_token: accessToken });
-          console.log(
-            "GAPI Client Initialized with Spreadsheet ID:",
-            SPREADSHEET_ID
-          );
-          isInitialized = true;
-          resolve();
+          // Use the provided access token or get a fresh one
+          const token = accessToken || localStorage.getItem("access_token");
+          if (token) {
+            gapi.client.setToken({ access_token: token });
+            console.log(
+              "GAPI Client Initialized with Spreadsheet ID:",
+              SPREADSHEET_ID
+            );
+            isInitialized = true;
+            resolve();
+          } else {
+            reject(new Error("No access token available"));
+          }
         })
         .catch((error) => {
           console.error("GAPI Initialization Error:", error);
@@ -53,6 +78,15 @@ export const initClient = (accessToken) => {
 
 export const fetchData = async (range, mapFn = (row) => row) => {
   return retryOperation(async () => {
+    // Get a fresh token before making the request
+    try {
+      const token = await getAccessToken();
+      gapi.client.setToken({ access_token: token });
+    } catch (error) {
+      console.error("Failed to refresh token before fetching data:", error);
+      throw new Error("Authentication required");
+    }
+    
     const response = await gapi.client.sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
       range,
@@ -63,6 +97,15 @@ export const fetchData = async (range, mapFn = (row) => row) => {
 
 export const appendData = async (range, values) => {
   return retryOperation(async () => {
+    // Get a fresh token before making the request
+    try {
+      const token = await getAccessToken();
+      gapi.client.setToken({ access_token: token });
+    } catch (error) {
+      console.error("Failed to refresh token before appending data:", error);
+      throw new Error("Authentication required");
+    }
+    
     // Ensure values is a two-dimensional array
     const formattedValues = Array.isArray(values[0]) ? values : [values];
     await gapi.client.sheets.spreadsheets.values.append({
@@ -76,6 +119,15 @@ export const appendData = async (range, values) => {
 
 export const clearSheet = async (range) => {
   return retryOperation(async () => {
+    // Get a fresh token before making the request
+    try {
+      const token = await getAccessToken();
+      gapi.client.setToken({ access_token: token });
+    } catch (error) {
+      console.error("Failed to refresh token before clearing sheet:", error);
+      throw new Error("Authentication required");
+    }
+    
     await gapi.client.sheets.spreadsheets.values.clear({
       spreadsheetId: SPREADSHEET_ID,
       range,
@@ -86,6 +138,15 @@ export const clearSheet = async (range) => {
 
 export const updateData = async (range, values) => {
   return retryOperation(async () => {
+    // Get a fresh token before making the request
+    try {
+      const token = await getAccessToken();
+      gapi.client.setToken({ access_token: token });
+    } catch (error) {
+      console.error("Failed to refresh token before updating data:", error);
+      throw new Error("Authentication required");
+    }
+    
     await gapi.client.sheets.spreadsheets.values.update({
       spreadsheetId: SPREADSHEET_ID,
       range,
@@ -151,29 +212,57 @@ export const syncData = async (
 };
 
 export const appendData2 = async (range, values, accessToken) => {
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${
-    process.env.REACT_APP_SPREADSHEET_ID || config.google.SPREADSHEET_ID
-  }/values/${range}:append?valueInputOption=RAW`;
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      values: values,
-    }),
-  });
+  try {
+    // Get a fresh token if none provided
+    const token = accessToken || await getAccessToken();
+    
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${
+      process.env.REACT_APP_SPREADSHEET_ID || config.google.SPREADSHEET_ID
+    }/values/${range}:append?valueInputOption=RAW`;
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        values: values,
+      }),
+    });
 
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(`Failed to append data: ${error.error.message}`);
+    if (!response.ok) {
+      const error = await response.json();
+      // Check if token has expired
+      if (response.status === 401) {
+        // Try to refresh the token and retry once
+        try {
+          const newToken = await refreshAccessToken();
+          return appendData2(range, values, newToken.access_token);
+        } catch (refreshError) {
+          console.error("Token refresh failed:", refreshError);
+          throw new Error("Authentication required");
+        }
+      }
+      throw new Error(`Failed to append data: ${error.error.message}`);
+    }
+    return response.json();
+  } catch (error) {
+    console.error("Error in appendData2:", error);
+    throw error;
   }
-  return response.json();
 };
 
 export const saveBodyMeasurementToSheet = async (range, row, accessToken) => {
   return retryOperation(async () => {
+    // Get a fresh token if none provided
+    try {
+      const token = accessToken || await getAccessToken();
+      gapi.client.setToken({ access_token: token });
+    } catch (error) {
+      console.error("Failed to refresh token before saving body measurement:", error);
+      throw new Error("Authentication required");
+    }
+    
     const formattedValues = Array.isArray(row[0]) ? row : [row];
     await gapi.client.sheets.spreadsheets.values.append({
       spreadsheetId: SPREADSHEET_ID,

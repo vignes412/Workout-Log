@@ -16,6 +16,12 @@ import ExerciseList from "./pages/ExerciseList";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { initClient, syncData } from "./utils/sheetsApi";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
+import { 
+  isAuthenticated, 
+  getAccessToken, 
+  setupTokenRefresh, 
+  logout as authLogout 
+} from "./services/authService";
 import config from "./config";
 import "./styles/global.css";
 import BodyMeasurements from "./components/BodyMeasurements";
@@ -38,9 +44,9 @@ import {
 } from "@mui/icons-material";
 
 const initialState = {
-  isAuthenticated: !!localStorage.getItem("authToken"),
-  accessToken: localStorage.getItem("authToken"),
-  currentPage: !!localStorage.getItem("authToken") ? "dashboard" : "login",
+  isAuthenticated: false, // Will check in useEffect
+  accessToken: null,      // Will retrieve in useEffect
+  currentPage: "login",   // Default to login
   themeMode: "dark",
   logs: null,
   exercises: [],
@@ -72,6 +78,51 @@ export const useAppState = () => useContext(AppContext);
 
 const Main = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [tokenRefreshIntervalId, setTokenRefreshIntervalId] = useState(null);
+
+  // Check authentication status on app init
+  useEffect(() => {
+    const checkAuth = async () => {
+      if (isAuthenticated()) {
+        try {
+          const token = await getAccessToken();
+          dispatch({
+            type: "SET_AUTHENTICATION",
+            payload: { isAuthenticated: true, accessToken: token },
+          });
+          dispatch({ type: "SET_PAGE", payload: "dashboard" });
+        } catch (error) {
+          console.error("Initial auth check failed:", error);
+          dispatch({
+            type: "SET_AUTHENTICATION",
+            payload: { isAuthenticated: false, accessToken: null },
+          });
+        }
+      }
+    };
+    
+    checkAuth();
+  }, []);
+
+  // Set up token refresh mechanism when authenticated
+  useEffect(() => {
+    if (state.isAuthenticated) {
+      // Clear any existing interval
+      if (tokenRefreshIntervalId) {
+        clearInterval(tokenRefreshIntervalId);
+      }
+      
+      // Set up a new token refresh interval
+      const intervalId = setupTokenRefresh();
+      setTokenRefreshIntervalId(intervalId);
+      
+      return () => {
+        if (intervalId) {
+          clearInterval(intervalId);
+        }
+      };
+    }
+  }, [state.isAuthenticated, tokenRefreshIntervalId]);
 
   useEffect(() => {
     if (state.isAuthenticated && state.accessToken) {
@@ -96,6 +147,10 @@ const Main = () => {
           ]);
         } catch (error) {
           console.error("Error loading initial data:", error);
+          // If the error is due to authentication, log the user out
+          if (error.message === "Authentication required") {
+            handleLogout();
+          }
         }
       };
       loadData();
@@ -153,6 +208,18 @@ const Main = () => {
     return () => window.removeEventListener("popstate", handlePopState);
   }, []);
 
+  const handleLogout = () => {
+    // Use the authService logout function
+    authLogout();
+    
+    // Update app state
+    dispatch({
+      type: "SET_AUTHENTICATION",
+      payload: { isAuthenticated: false, accessToken: null },
+    });
+    dispatch({ type: "SET_PAGE", payload: "login" });
+  };
+
   const theme = state.themeMode === "light" ? lightTheme : darkTheme;
 
   const renderPage = () => {
@@ -194,6 +261,7 @@ const Main = () => {
               })
             }
             themeMode={state.themeMode}
+            onLogout={handleLogout}
           />
         );
       case "exerciselist":
@@ -208,6 +276,7 @@ const Main = () => {
               })
             }
             themeMode={state.themeMode}
+            onLogout={handleLogout}
           />
         );
       case "bodymeasurements":
@@ -216,6 +285,7 @@ const Main = () => {
             accessToken={state.accessToken}
             onNavigate={(page) => dispatch({ type: "SET_PAGE", payload: page })}
             themeMode={state.themeMode}
+            onLogout={handleLogout}
           />
         );
       default:
@@ -234,7 +304,9 @@ const Main = () => {
   };
 
   const onNavigate = (path) => {
-    localStorage.removeItem("authToken");
+    if (path === "login") {
+      handleLogout();
+    }
     dispatch({ type: "SET_PAGE", payload: path });
   };
 
