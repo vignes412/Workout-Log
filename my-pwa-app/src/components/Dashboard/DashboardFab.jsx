@@ -1,5 +1,5 @@
 import React from "react";
-import { Fab, Menu, MenuItem } from "@mui/material";
+import { Fab, Menu, MenuItem, useMediaQuery, useTheme } from "@mui/material";
 import { Add } from "@mui/icons-material";
 
 const DashboardFab = ({ 
@@ -14,6 +14,9 @@ const DashboardFab = ({
   recentLogs, 
   handleQuickAdd 
 }) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  
   return (
     <>
       <Fab
@@ -21,7 +24,15 @@ const DashboardFab = ({
         onClick={handleMenuOpen}
         aria-label="add"
         className="fab-add"
-        sx={{ "&:hover": { transform: "scale(1.1)" } }}
+        size={isMobile ? "medium" : "large"}
+        sx={{ 
+          "&:hover": { transform: "scale(1.1)" },
+          // Mobile specific styles - position above bottom nav
+          ...(isMobile && {
+            bottom: '70px',
+            right: '16px'
+          })
+        }}
       >
         <Add />
       </Fab>
@@ -52,16 +63,34 @@ const DashboardFab = ({
         anchorEl={quickAddAnchorEl}
         open={Boolean(quickAddAnchorEl)}
         onClose={handleQuickAddClose}
-        anchorOrigin={{ vertical: "top", horizontal: "left" }}
-        transformOrigin={{ vertical: "top", horizontal: "right" }}
-        PaperProps={{ sx: { bgcolor: "background.paper" } }}
+        anchorOrigin={isMobile ? 
+          { vertical: "top", horizontal: "center" } : 
+          { vertical: "top", horizontal: "left" }
+        }
+        transformOrigin={isMobile ? 
+          { vertical: "bottom", horizontal: "center" } : 
+          { vertical: "top", horizontal: "right" }
+        }
+        PaperProps={{ 
+          sx: { 
+            bgcolor: "background.paper",
+            maxWidth: isMobile ? 'calc(100vw - 32px)' : 'auto',
+            maxHeight: isMobile ? '60vh' : 'auto'
+          } 
+        }}
       >
         {recentLogs.length > 0 ? (
           recentLogs.map((log, index) => (
             <MenuItem
               key={index}
               onClick={() => handleQuickAdd(log)}
-              sx={{ color: "text.primary" }}
+              sx={{ 
+                color: "text.primary",
+                ...(isMobile && {
+                  fontSize: '0.9rem',
+                  py: 1.5
+                })
+              }}
             >
               {log.exercise} ({log.muscleGroup}) - {log.date}
             </MenuItem>
