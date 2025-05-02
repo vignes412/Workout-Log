@@ -5,6 +5,7 @@ const ACCESS_TOKEN_KEY = "access_token";
 const REFRESH_TOKEN_KEY = "refresh_token";
 const EXPIRES_AT_KEY = "expires_at";
 const ID_TOKEN_KEY = "id_token";
+const AUTH_STATE_KEY = "auth_state"; // New key for tracking auth state
 
 // You'll need to replace this with your actual client secret
 // NOTE: Including client secrets in client-side code is generally not recommended
@@ -12,6 +13,10 @@ const ID_TOKEN_KEY = "id_token";
 // You can get your client secret from the Google Cloud Console:
 // https://console.cloud.google.com/ -> APIs & Services -> Credentials -> OAuth 2.0 Client IDs
 const CLIENT_SECRET = config.google.CLIENT_SECRET; // <-- Replace this with your actual client secret
+
+// Track refresh attempts to prevent infinite loops
+let refreshAttemptInProgress = false;
+let refreshAttemptQueue = [];
 
 /**
  * Handles token exchange for authorization code flow
@@ -45,6 +50,9 @@ export const exchangeCodeForTokens = async (code) => {
     // Store tokens
     saveTokens(tokenData);
     
+    // Update auth state
+    updateAuthState(true);
+    
     return tokenData;
   } catch (error) {
     console.error("Error exchanging code for tokens:", error);
@@ -58,6 +66,14 @@ export const exchangeCodeForTokens = async (code) => {
  */
 export const refreshAccessToken = async () => {
   try {
+    // If a refresh is already in progress, add to the queue and wait
+    if (refreshAttemptInProgress) {
+      return new Promise((resolve, reject) => {
+        refreshAttemptQueue.push({ resolve, reject });
+      });
+    }
+    
+    refreshAttemptInProgress = true;
     const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
     
     if (!refreshToken) {
@@ -102,11 +118,46 @@ export const refreshAccessToken = async () => {
       localStorage.setItem(ID_TOKEN_KEY, tokenData.id_token);
     }
     
+    // Update auth state
+    updateAuthState(true);
+    
+    // Process any queued refreshes
+    refreshAttemptQueue.forEach(request => request.resolve(tokenData));
+    refreshAttemptQueue = [];
+    
+    refreshAttemptInProgress = false;
     return tokenData;
   } catch (error) {
     console.error("Error refreshing access token:", error);
-    clearTokens();
+    
+    // Process any queued refreshes with the error
+    refreshAttemptQueue.forEach(request => request.reject(error));
+    refreshAttemptQueue = [];
+    
+    refreshAttemptInProgress = false;
+    
+    // If the refresh token is invalid, clear tokens and update state
+    if (error.message.includes("invalid_grant") || error.message.includes("Token refresh failed")) {
+      clearTokens();
+      updateAuthState(false);
+    }
+    
     throw error;
+  }
+};
+
+/**
+ * Updates the authentication state in localStorage
+ * @param {boolean} isAuthenticated - The authentication state
+ */
+export const updateAuthState = (isAuthenticated) => {
+  if (isAuthenticated) {
+    localStorage.setItem(AUTH_STATE_KEY, "true");
+    // Dispatch an event that other parts of the app can listen for
+    window.dispatchEvent(new Event('authStateChanged'));
+  } else {
+    localStorage.removeItem(AUTH_STATE_KEY);
+    window.dispatchEvent(new Event('authStateChanged'));
   }
 };
 
@@ -131,6 +182,9 @@ export const saveTokens = (tokenData) => {
   const expiresIn = tokenData.expires_in || 3600;
   const expiresAt = Date.now() + (expiresIn * 1000) - (5 * 60 * 1000);
   localStorage.setItem(EXPIRES_AT_KEY, expiresAt.toString());
+  
+  // Update auth state
+  updateAuthState(true);
 };
 
 /**
@@ -141,6 +195,7 @@ export const clearTokens = () => {
   localStorage.removeItem(REFRESH_TOKEN_KEY);
   localStorage.removeItem(EXPIRES_AT_KEY);
   localStorage.removeItem(ID_TOKEN_KEY);
+  updateAuthState(false);
 };
 
 /**
@@ -148,15 +203,35 @@ export const clearTokens = () => {
  * @returns {boolean} - True if authenticated
  */
 export const isAuthenticated = () => {
-  const accessToken = localStorage.getItem(ACCESS_TOKEN_KEY);
-  const expiresAt = localStorage.getItem(EXPIRES_AT_KEY);
+  // First, check the auth state for a quick answer
+  const authState = localStorage.getItem(AUTH_STATE_KEY);
   
-  if (!accessToken || !expiresAt) {
-    return false;
+  // If we have tokens but no auth state, update the auth state
+  const accessToken = localStorage.getItem(ACCESS_TOKEN_KEY);
+  const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
+  
+  if (!authState && (accessToken || refreshToken)) {
+    // Check if the token is expired
+    const expiresAt = localStorage.getItem(EXPIRES_AT_KEY);
+    
+    if (accessToken && expiresAt && Date.now() < parseInt(expiresAt, 10)) {
+      // We have a valid access token
+      updateAuthState(true);
+      return true;
+    } else if (refreshToken) {
+      // We have a refresh token, assume logged in and trigger a refresh
+      updateAuthState(true);
+      // Trigger a refresh in the background
+      setTimeout(() => {
+        refreshAccessToken().catch(() => {
+          // If refresh fails, will clear tokens and update state
+        });
+      }, 0);
+      return true;
+    }
   }
   
-  // Check if token is expired
-  return Date.now() < parseInt(expiresAt, 10);
+  return authState === "true";
 };
 
 /**
@@ -164,24 +239,32 @@ export const isAuthenticated = () => {
  * @returns {Promise<string>} - The access token
  */
 export const getAccessToken = async () => {
-  // If no token or expired, try to refresh
-  if (!isAuthenticated()) {
-    const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
-    if (refreshToken) {
-      try {
-        const newTokenData = await refreshAccessToken();
-        return newTokenData.access_token;
-      } catch (error) {
-        clearTokens();
-        throw new Error("Authentication required");
-      }
-    } else {
-      clearTokens();
-      throw new Error("Authentication required");
-    }
+  const accessToken = localStorage.getItem(ACCESS_TOKEN_KEY);
+  const expiresAt = localStorage.getItem(EXPIRES_AT_KEY);
+  
+  // If we have a valid token, use it
+  if (accessToken && expiresAt && Date.now() < parseInt(expiresAt, 10)) {
+    return accessToken;
   }
   
-  return localStorage.getItem(ACCESS_TOKEN_KEY);
+  // Otherwise try to refresh
+  const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
+  if (refreshToken) {
+    try {
+      const newTokenData = await refreshAccessToken();
+      return newTokenData.access_token;
+    } catch (error) {
+      // Only clear tokens if this is an auth error
+      if (error.message.includes("invalid_grant") || 
+          error.message.includes("Token refresh failed")) {
+        clearTokens();
+      }
+      throw new Error("Authentication required");
+    }
+  } else {
+    clearTokens();
+    throw new Error("Authentication required");
+  }
 };
 
 /**
@@ -203,26 +286,54 @@ export const logout = () => {
   clearTokens();
 };
 
+// Alias for backward compatibility
+export const authLogout = logout;
+
 /**
  * Sets up periodic token refresh
  * @param {number} interval - Refresh interval in milliseconds
  * @returns {number} - The interval ID for clearing if needed
  */
-export const setupTokenRefresh = (interval = 10 * 60 * 1000) => {
+export const setupTokenRefresh = (interval = 5 * 60 * 1000) => { // Reduced interval to 5 minutes
   const intervalId = setInterval(async () => {
     try {
-      if (isAuthenticated()) {
-        const expiresAt = parseInt(localStorage.getItem(EXPIRES_AT_KEY), 10);
-        // Refresh if token will expire in the next 15 minutes
-        if (Date.now() > expiresAt - (15 * 60 * 1000)) {
-          await refreshAccessToken();
-          console.log("Access token refreshed successfully");
-        }
+      const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
+      const accessToken = localStorage.getItem(ACCESS_TOKEN_KEY);
+      const expiresAt = localStorage.getItem(EXPIRES_AT_KEY);
+      
+      if (!refreshToken) {
+        // No refresh token, nothing to do
+        return;
+      }
+      
+      // Refresh if:
+      // 1. No access token or no expiration
+      // 2. Token will expire in the next 10 minutes
+      if (!accessToken || !expiresAt || 
+          Date.now() > parseInt(expiresAt, 10) - (10 * 60 * 1000)) {
+        await refreshAccessToken();
+        console.log("Access token refreshed successfully");
       }
     } catch (error) {
       console.error("Error during token refresh:", error);
+      // Only log out if this is an auth error
+      if (error.message.includes("invalid_grant") || 
+          error.message.includes("Token refresh failed")) {
+        clearTokens();
+      }
     }
   }, interval);
   
   return intervalId;
 };
+
+// Initialize auth state listener
+if (typeof window !== 'undefined') {
+  // Set initial auth state if needed
+  const hasTokens = !!localStorage.getItem(ACCESS_TOKEN_KEY) || !!localStorage.getItem(REFRESH_TOKEN_KEY);
+  const authState = localStorage.getItem(AUTH_STATE_KEY);
+  
+  if (hasTokens && !authState) {
+    updateAuthState(true);
+  }
+}

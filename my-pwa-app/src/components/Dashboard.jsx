@@ -213,12 +213,33 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
   }, [logs, exercises]);
 
   const handleLogout = () => {
-    localStorage.removeItem("authToken");
-    dispatch({
-      type: "SET_AUTHENTICATION",
-      payload: { isAuthenticated: false, accessToken: null },
+    // Call the centralized auth logout function first
+    import("../services/authService").then(({ logout }) => {
+      logout(); // This properly clears all tokens and updates auth state
+      
+      // Then update the app state
+      dispatch({
+        type: "SET_AUTHENTICATION",
+        payload: { isAuthenticated: false, accessToken: null },
+      });
+      
+      // Navigate to login page
+      onNavigate("login");
+    }).catch(error => {
+      console.error("Error during logout:", error);
+      // Fallback logout - direct localStorage removal
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
+      localStorage.removeItem("expires_at");
+      localStorage.removeItem("id_token");
+      localStorage.removeItem("auth_state");
+      
+      dispatch({
+        type: "SET_AUTHENTICATION",
+        payload: { isAuthenticated: false, accessToken: null },
+      });
+      onNavigate("login");
     });
-    onNavigate("login");
   };
 
   const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);

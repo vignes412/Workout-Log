@@ -21,7 +21,8 @@ import {
   isAuthenticated, 
   getAccessToken, 
   setupTokenRefresh, 
-  logout as authLogout 
+  logout as authLogout,
+  updateAuthState
 } from "./services/authService";
 import config from "./config";
 import "./styles/global.css";
@@ -48,7 +49,7 @@ const initialState = {
   isAuthenticated: false, // Will check in useEffect
   accessToken: null,      // Will retrieve in useEffect
   currentPage: "login",   // Default to login
-  themeMode: "dark",
+  themeMode: localStorage.getItem("themeMode") || "dark",
   logs: null,
   exercises: [],
   isLoading: {
@@ -68,7 +69,9 @@ const reducer = (state, action) => {
     case "SET_PAGE":
       return { ...state, currentPage: action.payload };
     case "SET_THEME":
-      return { ...state, themeMode: action.payload };
+      const newTheme = action.payload;
+      localStorage.setItem("themeMode", newTheme);
+      return { ...state, themeMode: newTheme };
     case "SET_LOGS":
       return { ...state, logs: action.payload };
     case "SET_EXERCISES":
@@ -92,6 +95,7 @@ export const useAppState = () => useContext(AppContext);
 const Main = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [tokenRefreshIntervalId, setTokenRefreshIntervalId] = useState(null);
+  const [initialAuthCheckDone, setInitialAuthCheckDone] = useState(false);
 
   // Check authentication status on app init
   useEffect(() => {
@@ -103,18 +107,54 @@ const Main = () => {
             type: "SET_AUTHENTICATION",
             payload: { isAuthenticated: true, accessToken: token },
           });
-          dispatch({ type: "SET_PAGE", payload: "dashboard" });
+          
+          // Only navigate to dashboard if we're on the login page
+          if (state.currentPage === "login") {
+            dispatch({ type: "SET_PAGE", payload: "dashboard" });
+          }
         } catch (error) {
           console.error("Initial auth check failed:", error);
           dispatch({
             type: "SET_AUTHENTICATION",
             payload: { isAuthenticated: false, accessToken: null },
           });
+          // Only force navigate to login if auth check actually failed
+          if (error.message === "Authentication required") {
+            dispatch({ type: "SET_PAGE", payload: "login" });
+          }
         }
       }
+      setInitialAuthCheckDone(true);
     };
     
     checkAuth();
+
+    // Listen for auth state changes
+    const handleAuthChange = async () => {
+      if (isAuthenticated()) {
+        try {
+          const token = await getAccessToken();
+          dispatch({
+            type: "SET_AUTHENTICATION",
+            payload: { isAuthenticated: true, accessToken: token },
+          });
+        } catch (error) {
+          console.error("Auth state change check failed:", error);
+        }
+      } else {
+        dispatch({
+          type: "SET_AUTHENTICATION",
+          payload: { isAuthenticated: false, accessToken: null },
+        });
+        dispatch({ type: "SET_PAGE", payload: "login" });
+      }
+    };
+
+    window.addEventListener('authStateChanged', handleAuthChange);
+    
+    return () => {
+      window.removeEventListener('authStateChanged', handleAuthChange);
+    };
   }, []);
 
   // Set up token refresh mechanism when authenticated
@@ -126,8 +166,11 @@ const Main = () => {
       }
       
       // Set up a new token refresh interval
-      const intervalId = setupTokenRefresh();
+      const intervalId = setupTokenRefresh(5 * 60 * 1000); // refresh every 5 minutes
       setTokenRefreshIntervalId(intervalId);
+      
+      // Update auth state in case it wasn't set
+      updateAuthState(true);
       
       return () => {
         if (intervalId) {
@@ -135,11 +178,17 @@ const Main = () => {
         }
       };
     }
-  }, [state.isAuthenticated]);
+  }, [state.isAuthenticated, tokenRefreshIntervalId]);
 
+  // Load data when authenticated
   useEffect(() => {
-    if (state.isAuthenticated && state.accessToken) {
+    if (state.isAuthenticated && state.accessToken && initialAuthCheckDone) {
       const loadData = async () => {
+        // Check to see if we already have data loaded
+        if (state.logs && state.exercises.length > 0) {
+          return; // Skip loading if we already have data
+        }
+        
         try {
           // Set loading state
           dispatch({ type: "SET_LOADING", payload: { key: "logs", value: true } });
@@ -183,7 +232,7 @@ const Main = () => {
           }
         } catch (error) {
           console.error("Error loading initial data:", error);
-          // If the error is due to authentication, log the user out
+          // Only log out if the error is specifically an auth error
           if (error.message === "Authentication required") {
             handleLogout();
           }
@@ -197,7 +246,7 @@ const Main = () => {
       // Call loadData only once when authentication changes
       loadData();
     }
-  }, [state.isAuthenticated, state.accessToken]);
+  }, [state.isAuthenticated, state.accessToken, initialAuthCheckDone]);
 
   useEffect(() => {
     if (state.exercises.length > 0 && navigator.serviceWorker.controller) {
@@ -277,6 +326,11 @@ const Main = () => {
       payload: { isAuthenticated: false, accessToken: null },
     });
     dispatch({ type: "SET_PAGE", payload: "login" });
+    
+    // Optionally show a toast notification
+    if (window.showToast) {
+      window.showToast("Successfully logged out", "success");
+    }
   };
 
   const theme = state.themeMode === "light" ? lightTheme : darkTheme;
@@ -389,10 +443,12 @@ const Main = () => {
   };
 
   const onNavigate = (path) => {
-    if (path === "login") {
+    // Only log out if explicitly navigating to the login page
+    if (path === "login" && state.currentPage !== "login") {
       handleLogout();
+    } else {
+      dispatch({ type: "SET_PAGE", payload: path });
     }
-    dispatch({ type: "SET_PAGE", payload: path });
   };
 
   return (
