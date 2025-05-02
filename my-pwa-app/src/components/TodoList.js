@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { fetchTodos, appendTodo, updateTodos } from "../utils/sheetsApi";
+import { fetchTodos, appendTodo, updateTodo } from "../utils/sheetsApi";
 
 const TodoList = () => {
   const [todos, setTodos] = useState([]);
@@ -30,14 +30,19 @@ const TodoList = () => {
     }
   };
 
-  const toggleTodo = async (todo, isCompleted) => {
+  const toggleTodo = async (todo, isCompleted, index) => {
     const updatedTodo = { ...todo, completed: isCompleted };
-    const updatedTodos = [
-      ...todos.map((t) => (t === todo ? updatedTodo : t)),
-      ...completedTodos.map((t) => (t === todo ? updatedTodo : t)),
-    ];
+    
     try {
-      await updateTodos(updatedTodos); // Update the spreadsheet
+      // Find the index in the combined list of todos
+      const allTodos = [...todos, ...completedTodos];
+      const todoIndex = allTodos.findIndex(t => t.text === todo.text && t.completed === todo.completed);
+      
+      if (todoIndex !== -1) {
+        // Update the specific todo in the spreadsheet
+        await updateTodo(todoIndex, updatedTodo);
+      }
+      
       if (isCompleted) {
         setTodos(todos.filter((t) => t !== todo));
         setCompletedTodos([...completedTodos, updatedTodo]);
@@ -74,7 +79,7 @@ const TodoList = () => {
             <input
               type="checkbox"
               checked={false} // Ensure unchecked for not completed todos
-              onChange={() => toggleTodo(todo, true)}
+              onChange={() => toggleTodo(todo, true, index)}
               className="todo-checkbox"
             />
             <span className="todo-text">{todo.text}</span>
@@ -90,11 +95,11 @@ const TodoList = () => {
       {showCompleted && (
         <div className="todo-completed-list">
           {completedTodos.map((todo, index) => (
-            <div key={index} className="todo-item">
+            <div key={index} className="todo-item completed">
               <input
                 type="checkbox"
                 checked={true} // Ensure checked for completed todos
-                onChange={() => toggleTodo(todo, false)}
+                onChange={() => toggleTodo(todo, false, todos.length + index)}
                 className="todo-checkbox"
               />
               <span className="todo-text">{todo.text}</span>

@@ -1,39 +1,60 @@
 import { gapi } from "gapi-script";
+import React from 'react';
 import config from "../config";
-import React from "react";
-import { getAccessToken, refreshAccessToken } from "../services/authService";
+import { getAccessToken } from "../services/authService";
 
-const { SPREADSHEET_ID, API_KEY, CLIENT_ID, DISCOVERY_DOCS, SCOPES } =
+// Extract values from config
+const { API_KEY, CLIENT_ID, SPREADSHEET_ID, DISCOVERY_DOCS, SCOPES } =
   config.google;
 const { DATA_CACHE_NAME } = config.cache;
 
 let isInitialized = false;
 
-const retryOperation = async (operation, maxRetries = 3, delay = 1000) => {
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+const MAX_RETRIES = 3;
+const RETRY_BASE_DELAY = 1000; // 1 second initial delay
+
+// Enhanced retry operation with exponential backoff
+export const retryOperation = async (operation, retries = MAX_RETRIES) => {
+  let attempt = 0;
+  
+  while (attempt <= retries) {
     try {
       return await operation();
     } catch (error) {
-      // Check if error is due to token expiration
-      if (error.status === 401 || error.message?.includes("auth")) {
-        try {
-          // Try to refresh the token
-          await refreshAccessToken();
-          
-          // If token refresh succeeds, retry the operation immediately
-          if (attempt < maxRetries) {
-            console.log("Token refreshed, retrying operation");
-            continue;
-          }
-        } catch (refreshError) {
-          console.error("Token refresh failed:", refreshError);
-          throw new Error("Authentication required");
-        }
+      attempt++;
+      
+      // Check if we've exhausted our retries
+      if (attempt > retries) {
+        throw error;
       }
       
-      if (attempt === maxRetries) throw error;
-      console.warn(`Retry ${attempt}/${maxRetries} failed: ${error.message}`);
-      await new Promise((resolve) => setTimeout(resolve, delay * attempt));
+      // Check if the error is retryable
+      if (
+        error.result?.error?.status === "UNAUTHENTICATED" ||
+        error.result?.error?.status === "PERMISSION_DENIED" ||
+        error.message === "Authentication required"
+      ) {
+        // These are auth errors, no point in retrying without fixing auth
+        throw error;
+      }
+      
+      // For rate limiting or temporary issues, wait with exponential backoff
+      const isRateLimitError = 
+        error.result?.error?.status === "RESOURCE_EXHAUSTED" ||
+        error.result?.error?.code === 429;
+        
+      if (isRateLimitError && attempt === retries) {
+        console.error("Rate limit reached, maximum retries exhausted");
+        throw error;
+      }
+      
+      // Exponential backoff with jitter to prevent thundering herd
+      const exponentialDelay = RETRY_BASE_DELAY * Math.pow(2, attempt - 1);
+      const jitter = Math.random() * 0.3 * exponentialDelay; // 0-30% jitter
+      const delay = exponentialDelay + jitter;
+      
+      console.warn(`Retrying operation, attempt ${attempt}/${retries} after ${Math.round(delay)}ms`);
+      await new Promise((resolve) => setTimeout(resolve, delay));
     }
   }
 };
@@ -87,19 +108,34 @@ export const fetchData = async (range, mapFn = (row) => row) => {
       throw new Error("Authentication required");
     }
     
+    const cacheKey = `${SPREADSHEET_ID}_${range}`;
+    
+    // Check if there's a background sync in progress for this data
+    if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+      try {
+        await navigator.serviceWorker.ready;
+      } catch (error) {
+        console.warn("Service worker not available for background sync", error);
+      }
+    }
+    
     const response = await gapi.client.sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
       range,
     });
-    return (response.result.values || []).map(mapFn);
+    
+    // Transform and return the data
+    const mappedData = (response.result.values || []).map(mapFn);
+    
+    return mappedData;
   });
 };
 
-export const appendData = async (range, values) => {
+export const appendData = async (range, values, accessToken = null) => {
   return retryOperation(async () => {
-    // Get a fresh token before making the request
+    // Get a fresh token if none provided
     try {
-      const token = await getAccessToken();
+      const token = accessToken || await getAccessToken();
       gapi.client.setToken({ access_token: token });
     } catch (error) {
       console.error("Failed to refresh token before appending data:", error);
@@ -108,12 +144,51 @@ export const appendData = async (range, values) => {
     
     // Ensure values is a two-dimensional array
     const formattedValues = Array.isArray(values[0]) ? values : [values];
-    await gapi.client.sheets.spreadsheets.values.append({
+    
+    // If offline, store for background sync
+    if (!navigator.onLine) {
+      try {
+        if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+          await storePendingMutation({
+            url: `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${range}:append`,
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${accessToken || await getAccessToken()}`
+            },
+            body: {
+              range,
+              valueInputOption: "RAW",
+              values: formattedValues
+            }
+          });
+          
+          await navigator.serviceWorker.ready;
+          await navigator.serviceWorker.controller.postMessage({
+            type: 'REGISTER_SYNC',
+            tag: 'syncPendingData'
+          });
+          
+          console.log("Queued data append for background sync");
+          // Return a mock result for offline mode
+          return { status: "pending", offline: true };
+        }
+      } catch (error) {
+        console.error("Failed to queue offline mutation:", error);
+      }
+      
+      throw new Error("Cannot append data while offline");
+    }
+    
+    const response = await gapi.client.sheets.spreadsheets.values.append({
       spreadsheetId: SPREADSHEET_ID,
       range,
       valueInputOption: "RAW",
       resource: { values: formattedValues },
     });
+    
+    console.log(`Appended data to ${range} successfully`);
+    return response.result;
   });
 };
 
@@ -136,25 +211,82 @@ export const clearSheet = async (range) => {
   });
 };
 
-export const updateData = async (range, values) => {
+export const updateData = async (range, values, accessToken = null) => {
   return retryOperation(async () => {
-    // Get a fresh token before making the request
+    // Get a fresh token if none provided
     try {
-      const token = await getAccessToken();
+      const token = accessToken || await getAccessToken();
       gapi.client.setToken({ access_token: token });
     } catch (error) {
       console.error("Failed to refresh token before updating data:", error);
       throw new Error("Authentication required");
     }
     
-    await gapi.client.sheets.spreadsheets.values.update({
+    // If offline, store for background sync
+    if (!navigator.onLine) {
+      try {
+        if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+          await storePendingMutation({
+            url: `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${range}`,
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${accessToken || await getAccessToken()}`
+            },
+            body: {
+              range,
+              valueInputOption: "RAW",
+              values
+            }
+          });
+          
+          await navigator.serviceWorker.ready;
+          await navigator.serviceWorker.controller.postMessage({
+            type: 'REGISTER_SYNC',
+            tag: 'syncPendingData'
+          });
+          
+          console.log("Queued data update for background sync");
+          // Return a mock result for offline mode
+          return { status: "pending", offline: true };
+        }
+      } catch (error) {
+        console.error("Failed to queue offline mutation:", error);
+      }
+      
+      throw new Error("Cannot update data while offline");
+    }
+    
+    const response = await gapi.client.sheets.spreadsheets.values.update({
       spreadsheetId: SPREADSHEET_ID,
       range,
       valueInputOption: "RAW",
       resource: { values },
     });
+    
     console.log(`Updated range ${range} successfully`);
+    return response.result;
   });
+};
+
+// Store pending mutations for background sync when online again
+const storePendingMutation = async (mutationData) => {
+  try {
+    // Generate a unique ID for this mutation
+    const mutationId = `mutation_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+    
+    // Store in offline mutations cache
+    const cache = await caches.open('offline-mutations');
+    await cache.put(
+      new Request(`/pending-mutations/${mutationId}`),
+      new Response(JSON.stringify(mutationData))
+    );
+    
+    return mutationId;
+  } catch (error) {
+    console.error('Failed to store pending mutation:', error);
+    throw error;
+  }
 };
 
 export const cacheData = async (cacheKey, data) => {
@@ -211,67 +343,9 @@ export const syncData = async (
   }
 };
 
-export const appendData2 = async (range, values, accessToken) => {
-  try {
-    // Get a fresh token if none provided
-    const token = accessToken || await getAccessToken();
-    
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${
-      process.env.REACT_APP_SPREADSHEET_ID || config.google.SPREADSHEET_ID
-    }/values/${range}:append?valueInputOption=RAW`;
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        values: values,
-      }),
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      // Check if token has expired
-      if (response.status === 401) {
-        // Try to refresh the token and retry once
-        try {
-          const newToken = await refreshAccessToken();
-          return appendData2(range, values, newToken.access_token);
-        } catch (refreshError) {
-          console.error("Token refresh failed:", refreshError);
-          throw new Error("Authentication required");
-        }
-      }
-      throw new Error(`Failed to append data: ${error.error.message}`);
-    }
-    return response.json();
-  } catch (error) {
-    console.error("Error in appendData2:", error);
-    throw error;
-  }
-};
-
-export const saveBodyMeasurementToSheet = async (range, row, accessToken) => {
-  return retryOperation(async () => {
-    // Get a fresh token if none provided
-    try {
-      const token = accessToken || await getAccessToken();
-      gapi.client.setToken({ access_token: token });
-    } catch (error) {
-      console.error("Failed to refresh token before saving body measurement:", error);
-      throw new Error("Authentication required");
-    }
-    
-    const formattedValues = Array.isArray(row[0]) ? row : [row];
-    await gapi.client.sheets.spreadsheets.values.append({
-      spreadsheetId: SPREADSHEET_ID,
-      range,
-      valueInputOption: "RAW",
-      resource: { values: formattedValues },
-    });
-    console.log(`Saved body measurement to ${range} successfully`);
-  });
+export const saveBodyMeasurementToSheet = async (range, row, accessToken = null) => {
+  // Simply use our improved appendData function
+  return appendData(range, row, accessToken);
 };
 
 export const fetchTodos = async () => {
@@ -282,12 +356,15 @@ export const fetchTodos = async () => {
 };
 
 export const appendTodo = async (todo) => {
-  return appendData("ToDO", [[todo.text, todo.completed]]);
+  return appendData("ToDO", [todo.text, todo.completed.toString()]);
 };
 
-export const updateTodos = async (todos) => {
-  return updateData(
-    "ToDO",
-    todos.map((todo) => [todo.text, todo.completed])
-  );
+export const updateTodo = async (index, todo) => {
+  return updateData(`ToDO!A${index + 2}:B${index + 2}`, [
+    [todo.text, todo.completed.toString()],
+  ]);
+};
+
+export const deleteTodo = async (index) => {
+  return clearSheet(`ToDO!A${index + 2}:B${index + 2}`);
 };

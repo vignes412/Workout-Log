@@ -14,7 +14,8 @@ import Login from "./pages/Login";
 import Dashboard from "./components/Dashboard";
 import ExerciseList from "./pages/ExerciseList";
 import ErrorBoundary from "./components/ErrorBoundary";
-import { initClient, syncData } from "./utils/sheetsApi";
+import { initClient } from "./utils/sheetsApi";
+import { syncData, batchFetchData, prefetchData } from "./utils/dataFetcher";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import { 
   isAuthenticated, 
@@ -24,7 +25,7 @@ import {
 } from "./services/authService";
 import config from "./config";
 import "./styles/global.css";
-import BodyMeasurements from "./components/BodyMeasurements";
+import BodyMeasurements from "./components/measurements/BodyMeasurements";
 import { lightTheme, darkTheme } from "./themes/theme";
 import {
   Add,
@@ -50,6 +51,10 @@ const initialState = {
   themeMode: "dark",
   logs: null,
   exercises: [],
+  isLoading: {
+    logs: false,
+    exercises: false
+  }
 };
 
 const reducer = (state, action) => {
@@ -68,6 +73,14 @@ const reducer = (state, action) => {
       return { ...state, logs: action.payload };
     case "SET_EXERCISES":
       return { ...state, exercises: action.payload };
+    case "SET_LOADING":
+      return { 
+        ...state, 
+        isLoading: { 
+          ...state.isLoading, 
+          [action.payload.key]: action.payload.value 
+        } 
+      };
     default:
       return state;
   }
@@ -122,37 +135,66 @@ const Main = () => {
         }
       };
     }
-  }, [state.isAuthenticated, tokenRefreshIntervalId]);
+  }, [state.isAuthenticated]);
 
   useEffect(() => {
     if (state.isAuthenticated && state.accessToken) {
       const loadData = async () => {
         try {
+          // Set loading state
+          dispatch({ type: "SET_LOADING", payload: { key: "logs", value: true } });
+          dispatch({ type: "SET_LOADING", payload: { key: "exercises", value: true } });
+          
           await initClient(state.accessToken);
-          await Promise.all([
-            syncData("Workout_Logs!A2:F", "/api/workout", (data) =>
-              dispatch({ type: "SET_LOGS", payload: data })
-            ),
-            syncData(
-              "Exercises!A2:D",
-              "/api/exercises",
-              (data) => dispatch({ type: "SET_EXERCISES", payload: data }),
-              (row) => ({
+          
+          // Fetch data in parallel using batchFetchData for efficiency
+          const results = await batchFetchData([
+            {
+              range: "Workout_Logs!A2:F",
+              cacheKey: "/api/workout",
+              mapFn: (row) => row
+            },
+            {
+              range: "Exercises!A2:D",
+              cacheKey: "/api/exercises",
+              mapFn: (row) => ({
                 muscleGroup: row[0],
                 exercise: row[1],
                 exerciseLink: row[2],
                 imageLink: row[3],
               })
-            ),
+            }
           ]);
+          
+          // Update state with fetched data
+          if (results["/api/workout"]?.data) {
+            dispatch({ type: "SET_LOGS", payload: results["/api/workout"].data });
+          }
+          
+          if (results["/api/exercises"]?.data) {
+            dispatch({ type: "SET_EXERCISES", payload: results["/api/exercises"].data });
+          }
+          
+          // Pre-fetch other potentially useful data without blocking UI
+          if (state.currentPage === "dashboard") {
+            // Background prefetch body measurements for dashboard
+            prefetchData("Body_Measurements!A2:C", "/api/bodymeasurements")
+              .catch(err => console.warn("Failed to prefetch body measurements", err));
+          }
         } catch (error) {
           console.error("Error loading initial data:", error);
           // If the error is due to authentication, log the user out
           if (error.message === "Authentication required") {
             handleLogout();
           }
+        } finally {
+          // Clear loading state regardless of success/failure
+          dispatch({ type: "SET_LOADING", payload: { key: "logs", value: false } });
+          dispatch({ type: "SET_LOADING", payload: { key: "exercises", value: false } });
         }
       };
+      
+      // Call loadData only once when authentication changes
       loadData();
     }
   }, [state.isAuthenticated, state.accessToken]);
@@ -170,35 +212,6 @@ const Main = () => {
   }, [state.exercises]);
 
   useEffect(() => {
-    if ("Notification" in window && Notification.permission !== "granted") {
-      Notification.requestPermission();
-    }
-
-    const scheduleNotification = () => {
-      const now = new Date();
-      const targetTime = new Date();
-      targetTime.setHours(8, 20, 0, 0);
-
-      if (now > targetTime) {
-        targetTime.setDate(targetTime.getDate() + 1);
-      }
-
-      const timeUntilNotification = targetTime - now;
-
-      setTimeout(() => {
-        if (Notification.permission === "granted") {
-          new Notification(
-            "Good Morning! Don't forget to log your workout today!"
-          );
-        }
-        scheduleNotification();
-      }, timeUntilNotification);
-    };
-
-    scheduleNotification();
-  }, []);
-
-  useEffect(() => {
     const handlePopState = () => {
       const path = window.location.pathname.slice(1) || "login";
       dispatch({ type: "SET_PAGE", payload: path });
@@ -207,6 +220,52 @@ const Main = () => {
     window.addEventListener("popstate", handlePopState);
     return () => window.removeEventListener("popstate", handlePopState);
   }, []);
+  
+  // Prefetch data for the next page when user navigates
+  useEffect(() => {
+    // Store current state values in variables to avoid closure issues
+    const { currentPage, isAuthenticated, accessToken, exercises } = state;
+    
+    if (isAuthenticated && accessToken) {
+      // Determine what data to prefetch based on current page
+      const prefetchForCurrentPage = async () => {
+        try {
+          switch (currentPage) {
+            case "dashboard":
+              // Dashboard already loads the main data
+              break;
+            case "exerciselist":
+              // Ensure exercises are loaded for the exercise list page
+              if (!exercises || exercises.length === 0) {
+                // Use a different approach to prevent infinite updates
+                // Don't directly update state inside this effect
+                prefetchData(
+                  "Exercises!A2:D",
+                  "/api/exercises"
+                ).catch(err => console.warn("Failed to prefetch exercises", err));
+              }
+              break;
+            case "bodymeasurements":
+              // Prefetch body measurements data without callback
+              prefetchData("Body_Measurements!A2:C", "/api/bodymeasurements")
+                .catch(err => console.warn("Failed to prefetch body measurements", err));
+              break;
+            default:
+              break;
+          }
+        } catch (error) {
+          console.warn("Error prefetching data:", error);
+        }
+      };
+      
+      // Use a flag to ensure we only run this once per page change
+      const prefetchTimeoutId = setTimeout(() => {
+        prefetchForCurrentPage();
+      }, 0);
+      
+      return () => clearTimeout(prefetchTimeoutId);
+    }
+  }, [state.currentPage]);
 
   const handleLogout = () => {
     // Use the authService logout function
@@ -262,6 +321,7 @@ const Main = () => {
             }
             themeMode={state.themeMode}
             onLogout={handleLogout}
+            isLoading={state.isLoading}
           />
         );
       case "exerciselist":
@@ -277,6 +337,7 @@ const Main = () => {
             }
             themeMode={state.themeMode}
             onLogout={handleLogout}
+            isLoading={state.isLoading.exercises}
           />
         );
       case "bodymeasurements":
@@ -286,6 +347,30 @@ const Main = () => {
             onNavigate={(page) => dispatch({ type: "SET_PAGE", payload: page })}
             themeMode={state.themeMode}
             onLogout={handleLogout}
+          />
+        );
+      case "settings":
+        return (
+          <Dashboard
+            isAuthenticated={state.isAuthenticated}
+            setIsAuthenticated={(isAuthenticated) =>
+              dispatch({
+                type: "SET_AUTHENTICATION",
+                payload: { isAuthenticated, accessToken: null },
+              })
+            }
+            accessToken={state.accessToken}
+            onNavigate={(page) => dispatch({ type: "SET_PAGE", payload: page })}
+            toggleTheme={() =>
+              dispatch({
+                type: "SET_THEME",
+                payload: state.themeMode === "light" ? "dark" : "light",
+              })
+            }
+            themeMode={state.themeMode}
+            onLogout={handleLogout}
+            settingsOpen={true}
+            isLoading={state.isLoading}
           />
         );
       default:
