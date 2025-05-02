@@ -10,6 +10,9 @@ const { DATA_CACHE_NAME } = config.cache;
 
 let isInitialized = false;
 
+// Cache for in-flight requests to prevent duplicate API calls
+const pendingRequests = new Map();
+
 const MAX_RETRIES = 3;
 const RETRY_BASE_DELAY = 1000; // 1 second initial delay
 
@@ -59,8 +62,14 @@ export const retryOperation = async (operation, retries = MAX_RETRIES) => {
   }
 };
 
+// Enhanced client initialization with more robust error handling
 export const initClient = async (accessToken) => {
-  return new Promise((resolve, reject) => {
+  // Use a cached promise to deduplicate initialization requests
+  if (pendingRequests.has('init')) {
+    return pendingRequests.get('init');
+  }
+  
+  const initPromise = new Promise((resolve, reject) => {
     if (isInitialized) {
       resolve();
       return;
@@ -86,7 +95,9 @@ export const initClient = async (accessToken) => {
             isInitialized = true;
             resolve();
           } else {
-            reject(new Error("No access token available"));
+            const error = new Error("No access token available");
+            console.error(error);
+            reject(error);
           }
         })
         .catch((error) => {
@@ -95,10 +106,31 @@ export const initClient = async (accessToken) => {
         });
     });
   });
+  
+  // Store the promise and clean it up once resolved/rejected
+  pendingRequests.set('init', initPromise);
+  initPromise.finally(() => {
+    pendingRequests.delete('init');
+  });
+  
+  return initPromise;
+};
+
+// Helper to create a request key for deduplication
+const createRequestKey = (operation, params) => {
+  return `${operation}_${JSON.stringify(params)}`;
 };
 
 export const fetchData = async (range, mapFn = (row) => row) => {
-  return retryOperation(async () => {
+  // Create a unique key for this request to deduplicate
+  const requestKey = createRequestKey('fetch', { range });
+  
+  // If this exact request is already in flight, return the existing promise
+  if (pendingRequests.has(requestKey)) {
+    return pendingRequests.get(requestKey);
+  }
+  
+  const fetchPromise = retryOperation(async () => {
     // Get a fresh token before making the request
     try {
       const token = await getAccessToken();
@@ -119,16 +151,43 @@ export const fetchData = async (range, mapFn = (row) => row) => {
       }
     }
     
-    const response = await gapi.client.sheets.spreadsheets.values.get({
-      spreadsheetId: SPREADSHEET_ID,
-      range,
-    });
-    
-    // Transform and return the data
-    const mappedData = (response.result.values || []).map(mapFn);
-    
-    return mappedData;
+    try {
+      const response = await gapi.client.sheets.spreadsheets.values.get({
+        spreadsheetId: SPREADSHEET_ID,
+        range,
+      });
+      
+      // Transform and return the data
+      const mappedData = (response.result.values || []).map(mapFn);
+      
+      // Cache the fetched data
+      await cacheData(cacheKey, mappedData);
+      
+      return mappedData;
+    } catch (error) {
+      // Try to load from cache if available when fetch fails
+      try {
+        const cachedData = await loadCachedData(cacheKey);
+        if (cachedData) {
+          console.log(`Loaded data for ${range} from cache after fetch failure`);
+          return cachedData;
+        }
+      } catch (cacheError) {
+        console.warn(`Cache fallback failed for ${range}:`, cacheError);
+      }
+      
+      // Re-throw the original error if cache isn't available
+      throw error;
+    }
   });
+  
+  // Store the promise and clean it up once resolved/rejected
+  pendingRequests.set(requestKey, fetchPromise);
+  fetchPromise.finally(() => {
+    pendingRequests.delete(requestKey);
+  });
+  
+  return fetchPromise;
 };
 
 export const appendData = async (range, values, accessToken = null) => {
@@ -188,6 +247,16 @@ export const appendData = async (range, values, accessToken = null) => {
     });
     
     console.log(`Appended data to ${range} successfully`);
+    
+    // Invalidate cache for this range
+    const cacheKey = `${SPREADSHEET_ID}_${range}`;
+    try {
+      const cache = await caches.open(DATA_CACHE_NAME);
+      await cache.delete(cacheKey);
+    } catch (e) {
+      console.warn(`Failed to invalidate cache for ${range}:`, e);
+    }
+    
     return response.result;
   });
 };
@@ -207,6 +276,16 @@ export const clearSheet = async (range) => {
       spreadsheetId: SPREADSHEET_ID,
       range,
     });
+    
+    // Invalidate cache for this range
+    const cacheKey = `${SPREADSHEET_ID}_${range}`;
+    try {
+      const cache = await caches.open(DATA_CACHE_NAME);
+      await cache.delete(cacheKey);
+    } catch (e) {
+      console.warn(`Failed to invalidate cache for ${range}:`, e);
+    }
+    
     console.log(`Cleared range ${range} successfully`);
   });
 };
@@ -264,6 +343,15 @@ export const updateData = async (range, values, accessToken = null) => {
       resource: { values },
     });
     
+    // Invalidate cache for this range
+    const cacheKey = `${SPREADSHEET_ID}_${range}`;
+    try {
+      const cache = await caches.open(DATA_CACHE_NAME);
+      await cache.delete(cacheKey);
+    } catch (e) {
+      console.warn(`Failed to invalidate cache for ${range}:`, e);
+    }
+    
     console.log(`Updated range ${range} successfully`);
     return response.result;
   });
@@ -300,20 +388,29 @@ export const cacheData = async (cacheKey, data) => {
 
 export const loadCachedData = async (cacheKey) => {
   try {
-    const cache = await caches.match(cacheKey);
-    return cache ? await cache.json() : null;
+    const cacheResponse = await caches.match(cacheKey);
+    if (cacheResponse) {
+      return await cacheResponse.json();
+    }
+    return null;
   } catch (error) {
     console.error(`Load Cache Error for ${cacheKey}:`, error);
     return null;
   }
 };
 
+// Memoized hook for online status to prevent multiple listeners
 export const useOnlineStatus = (setIsOffline) => {
   React.useEffect(() => {
+    // Initial status check
+    setIsOffline(!navigator.onLine);
+    
     const handleOnline = () => setIsOffline(false);
     const handleOffline = () => setIsOffline(true);
+    
     window.addEventListener("online", handleOnline);
     window.addEventListener("offline", handleOffline);
+    
     return () => {
       window.removeEventListener("online", handleOnline);
       window.removeEventListener("offline", handleOffline);
@@ -335,9 +432,13 @@ export const syncData = async (
     const data = await fetchData(range, mapFn);
     setData(data);
     await cacheData(cacheKey, data);
+    return { success: true, data };
   } catch (error) {
     const cached = await loadCachedData(cacheKey);
-    if (cached) setData(cached);
+    if (cached) {
+      setData(cached);
+      return { success: false, data: cached, fromCache: true };
+    }
     console.error(`Sync error for ${range}:`, error);
     throw error; // Re-throw for UI notification
   }
