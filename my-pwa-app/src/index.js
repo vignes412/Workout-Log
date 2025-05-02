@@ -25,7 +25,7 @@ import {
 } from "./services/authService";
 import config from "./config";
 import "./styles/global.css";
-import BodyMeasurements from "./components/BodyMeasurements";
+import BodyMeasurements from "./components/measurements/BodyMeasurements";
 import { lightTheme, darkTheme } from "./themes/theme";
 import {
   Add,
@@ -135,7 +135,7 @@ const Main = () => {
         }
       };
     }
-  }, [state.isAuthenticated, tokenRefreshIntervalId]);
+  }, [state.isAuthenticated]);
 
   useEffect(() => {
     if (state.isAuthenticated && state.accessToken) {
@@ -193,6 +193,8 @@ const Main = () => {
           dispatch({ type: "SET_LOADING", payload: { key: "exercises", value: false } });
         }
       };
+      
+      // Call loadData only once when authentication changes
       loadData();
     }
   }, [state.isAuthenticated, state.accessToken]);
@@ -221,32 +223,32 @@ const Main = () => {
   
   // Prefetch data for the next page when user navigates
   useEffect(() => {
-    if (state.isAuthenticated && state.accessToken) {
+    // Store current state values in variables to avoid closure issues
+    const { currentPage, isAuthenticated, accessToken, exercises } = state;
+    
+    if (isAuthenticated && accessToken) {
       // Determine what data to prefetch based on current page
       const prefetchForCurrentPage = async () => {
         try {
-          switch (state.currentPage) {
+          switch (currentPage) {
             case "dashboard":
               // Dashboard already loads the main data
               break;
             case "exerciselist":
               // Ensure exercises are loaded for the exercise list page
-              if (!state.exercises || state.exercises.length === 0) {
+              if (!exercises || exercises.length === 0) {
+                // Use a different approach to prevent infinite updates
+                // Don't directly update state inside this effect
                 prefetchData(
                   "Exercises!A2:D",
-                  "/api/exercises",
-                  (row) => ({
-                    muscleGroup: row[0],
-                    exercise: row[1],
-                    exerciseLink: row[2],
-                    imageLink: row[3],
-                  })
-                );
+                  "/api/exercises"
+                ).catch(err => console.warn("Failed to prefetch exercises", err));
               }
               break;
             case "bodymeasurements":
-              // Prefetch body measurements data
-              prefetchData("Body_Measurements!A2:C", "/api/bodymeasurements");
+              // Prefetch body measurements data without callback
+              prefetchData("Body_Measurements!A2:C", "/api/bodymeasurements")
+                .catch(err => console.warn("Failed to prefetch body measurements", err));
               break;
             default:
               break;
@@ -256,9 +258,14 @@ const Main = () => {
         }
       };
       
-      prefetchForCurrentPage();
+      // Use a flag to ensure we only run this once per page change
+      const prefetchTimeoutId = setTimeout(() => {
+        prefetchForCurrentPage();
+      }, 0);
+      
+      return () => clearTimeout(prefetchTimeoutId);
     }
-  }, [state.currentPage, state.isAuthenticated, state.accessToken, state.exercises]);
+  }, [state.currentPage]);
 
   const handleLogout = () => {
     // Use the authService logout function
