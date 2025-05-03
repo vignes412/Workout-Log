@@ -1,6 +1,17 @@
 export const defaultLayouts = {
   lg: [
     {
+      i: "workout-features",
+      x: 0,
+      y: 19,
+      w: 2,
+      h: 12,
+      minW: 2,
+      maxW: 6,
+      minH: 10,
+      maxH: 16,
+    },
+    {
       i: "status",
       x: 0,
       y: 0,
@@ -191,6 +202,17 @@ export const defaultLayouts = {
     },
   ],
   md: [
+    {
+      i: "workout-features",
+      x: 4,
+      y: 24,
+      w: 4,
+      h: 12,
+      minW: 2,
+      maxW: 6,
+      minH: 10,
+      maxH: 16,
+    },
     {
       i: "status",
       x: 0,
@@ -383,6 +405,17 @@ export const defaultLayouts = {
   ],
   sm: [
     {
+      i: "workout-features",
+      x: 0,
+      y: 19,
+      w: 6,
+      h: 12,
+      minW: 3,
+      maxW: 6,
+      minH: 10,
+      maxH: 16,
+    },
+    {
       i: "status",
       x: 0,
       y: 0,
@@ -573,6 +606,17 @@ export const defaultLayouts = {
     },
   ],
   xs: [
+    {
+      i: "workout-features",
+      x: 0,
+      y: 8,
+      w: 4,
+      h: 10,
+      minW: 2,
+      maxW: 4,
+      minH: 8,
+      maxH: 14,
+    },
     {
       i: "status",
       x: 0,

@@ -16,6 +16,7 @@ import AchievementsCard from "../AchievementsCard";
 import WeeklySummaryCard from "../WeeklySummaryCard";
 import MonthlySummaryCard from "../MonthlySummaryCard";
 import StreakTracker from "../StreakTracker";
+import WorkoutFeaturesCard from "./WorkoutFeaturesCard";
 
 // Helper component for creating draggable card headers
 const CardHeader = ({ title }) => (
@@ -57,6 +58,12 @@ const DashboardWidgets = ({
       <div key="status" className="card" style={{ backgroundColor: theme.palette.background.paper }}>
         {isCustomizing && <CardHeader title="Status" />}
         <StatusCard isOffline={isOffline} logsCount={logs?.length || 0} />
+      </div>
+    ),
+    layout.visibility["workout-features"] && (
+      <div key="workout-features" className="card" style={{ backgroundColor: theme.palette.background.paper }}>
+        {isCustomizing && <CardHeader title="Workout Features" />}
+        <WorkoutFeaturesCard />
       </div>
     ),
     layout.visibility.train && (

@@ -3,6 +3,7 @@ import { useGoogleLogin, googleLogout } from "@react-oauth/google";
 import { gapi } from "gapi-script";
 import config from "./config";
 import TodoList from "./components/TodoList";
+import { ensureSheetExists } from "./utils/sheetsApi";
 
 const App = ({ onNavigate }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -84,6 +85,9 @@ const App = ({ onNavigate }) => {
     setError(null);
     
     try {
+      // First, ensure the Sheet1 exists before trying to access it
+      await ensureSheetExists("Sheet1", ["Name", "Value"]);
+      
       const response = await gapi.client.sheets.spreadsheets.values.get({
         spreadsheetId: SPREADSHEET_ID,
         range: "Sheet1!A2:B",

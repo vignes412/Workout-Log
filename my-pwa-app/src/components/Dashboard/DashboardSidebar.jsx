@@ -5,6 +5,8 @@ import {
   FitnessCenter as WorkoutsIcon,
   DirectionsRun as BodyMeasurementsIcon,
   Message as MessagesIcon,
+  ListAlt as TemplatesIcon,
+  Today as TodaysWorkoutIcon,
 } from "@mui/icons-material";
 
 const DashboardSidebar = ({ onNavigate }) => {
@@ -33,6 +35,30 @@ const DashboardSidebar = ({ onNavigate }) => {
       </Box>
       <Box
         className="sidebar-item"
+        onClick={() => onNavigate("todaysWorkout")}
+        sx={{ 
+          "&:hover": { bgcolor: "action.hover" },
+          flex: isMobile ? 1 : 'unset',
+          justifyContent: 'center'
+        }}
+      >
+        <TodaysWorkoutIcon sx={{ color: "text.primary" }} />
+        <span>Today's Workout</span>
+      </Box>
+      <Box
+        className="sidebar-item"
+        onClick={() => onNavigate("workoutTemplates")}
+        sx={{ 
+          "&:hover": { bgcolor: "action.hover" },
+          flex: isMobile ? 1 : 'unset',
+          justifyContent: 'center'
+        }}
+      >
+        <TemplatesIcon sx={{ color: "text.primary" }} />
+        <span>Templates</span>
+      </Box>
+      <Box
+        className="sidebar-item"
         onClick={() => onNavigate("exerciselist")}
         sx={{ 
           "&:hover": { bgcolor: "action.hover" },
@@ -41,7 +67,7 @@ const DashboardSidebar = ({ onNavigate }) => {
         }}
       >
         <WorkoutsIcon sx={{ color: "text.primary" }} />
-        <span>Workouts</span>
+        <span>Exercises</span>
       </Box>
       <Box
         className="sidebar-item"

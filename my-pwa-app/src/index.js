@@ -13,6 +13,9 @@ import App from "./App";
 import Login from "./pages/Login";
 import Dashboard from "./components/Dashboard";
 import ExerciseList from "./pages/ExerciseList";
+import WorkoutTemplates from "./pages/WorkoutTemplates";
+import WorkoutTemplateBuilder from "./pages/WorkoutTemplateBuilder";
+import TodaysWorkout from "./pages/TodaysWorkout";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { initClient } from "./utils/sheetsApi";
 import { syncData, batchFetchData, prefetchData } from "./utils/dataFetcher";
@@ -376,6 +379,48 @@ const Main = () => {
             themeMode={state.themeMode}
             onLogout={handleLogout}
             isLoading={state.isLoading}
+          />
+        );
+      case "workoutTemplates":
+        return (
+          <WorkoutTemplates
+            accessToken={state.accessToken}
+            onNavigate={(page) => dispatch({ type: "SET_PAGE", payload: page })}
+            toggleTheme={() =>
+              dispatch({
+                type: "SET_THEME",
+                payload: state.themeMode === "light" ? "dark" : "light",
+              })
+            }
+            themeMode={state.themeMode}
+          />
+        );
+      case "workoutTemplateBuilder":
+        return (
+          <WorkoutTemplateBuilder
+            accessToken={state.accessToken}
+            onNavigate={(page) => dispatch({ type: "SET_PAGE", payload: page })}
+            toggleTheme={() =>
+              dispatch({
+                type: "SET_THEME",
+                payload: state.themeMode === "light" ? "dark" : "light",
+              })
+            }
+            themeMode={state.themeMode}
+          />
+        );
+      case "todaysWorkout":
+        return (
+          <TodaysWorkout
+            accessToken={state.accessToken}
+            onNavigate={(page) => dispatch({ type: "SET_PAGE", payload: page })}
+            toggleTheme={() =>
+              dispatch({
+                type: "SET_THEME",
+                payload: state.themeMode === "light" ? "dark" : "light",
+              })
+            }
+            themeMode={state.themeMode}
           />
         );
       case "exerciselist":
