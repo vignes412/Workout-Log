@@ -1,0 +1,232 @@
+/* src/styles/global.css */
+:root {
+    --sidebar-width: 80px;
+    --sidebar-width-hover: 200px;
+    --mobile-sidebar-height: 60px;
+    --transition-speed: 0.3s;
+    --spacing-unit: 16px;
+    --mobile-spacing-unit: 12px;
+    --border-radius: 12px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.6;
+    background-color: var(--background-default);
+    color: var(--text-primary);
+    transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+}
+
+/* Common Width Classes */
+.width-24 {
+    width: 24px;
+}
+
+.width-100 {
+    width: 100%;
+}
+
+.muscleGroupIcon {
+    width: 40px;
+    height: 40px;
+    margin-right: 8px;
+}
+
+.width-auto {
+    width: auto;
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: var(--sidebar-width);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--spacing-unit) 0;
+    z-index: 1000;
+    transition: width var(--transition-speed) ease;
+}
+
+.sidebar:hover {
+    width: var(--sidebar-width-hover);
+}
+
+.sidebar-item {
+    width: 100%;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: background-color var(--transition-speed) ease;
+}
+
+.sidebar-item span {
+    display: none;
+}
+
+.sidebar:hover .sidebar-item span {
+    display: inline;
+}
+
+.main-container {
+    margin-left: var(--sidebar-width);
+    padding: var(--spacing-unit);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-unit);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-radius: var(--border-radius);
+}
+
+/* FAB Add Button */
+.fab-add {
+    position: fixed !important;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1100;
+    transition: transform var(--transition-speed) ease;
+}
+
+.todo-container {
+    border-radius: 8px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.todo-input-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: var(--spacing-unit);
+}
+
+.todo-input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 16px;
+    transition: border-color var(--transition-speed) ease;
+    width: 100%;
+}
+
+.todo-list,
+.todo-completed-list {
+    overflow-y: auto;
+    border-radius: 4px;
+    padding: 10px;
+    transition: background-color var(--transition-speed) ease;
+    flex: 1;
+}
+
+.todo-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+    transition: background-color var(--transition-speed) ease;
+}
+
+.todo-checkbox {
+    margin-right: 10px;
+    cursor: pointer;
+    transform: scale(1.2);
+    transition: transform 0.2s ease;
+}
+
+.todo-checkbox:hover {
+    transform: scale(1.3);
+}
+
+/* Responsive Design */
+@media (max-width: 960px) {
+    :root {
+        --sidebar-width: 60px;
+        --sidebar-width-hover: 150px;
+        --spacing-unit: 12px;
+    }
+
+    .main-container {
+        margin-left: 60px;
+        padding: 12px;
+    }
+
+    .header {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .muscleGroupIcon {
+        width: 40px;
+        height: 40px;
+        margin-right: 6px;
+    }
+}
+
+@media (max-width: 600px) {
+    :root {
+        --sidebar-width: 100%;
+        --sidebar-width-hover: 100%;
+        --spacing-unit: var(--mobile-spacing-unit);
+    }
+
+    .sidebar {
+        height: var(--mobile-sidebar-height);
+        flex-direction: row;
+        justify-content: space-around;
+        bottom: 0;
+        top: auto;
+    }
+
+    .sidebar-item span {
+        display: none;
+    }
+
+    .sidebar:hover .sidebar-item span {
+        display: none;
+    }
+
+    .main-container {
+        margin-left: 0;
+        margin-bottom: var(--mobile-sidebar-height);
+        padding: var(--mobile-spacing-unit);
+    }
+
+    .bottom-menu {
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: var(--mobile-sidebar-height);
+        justify-content: space-around;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    .fab-add {
+        bottom: 80px;
+        right: 20px;
+    }
+
+    .muscleGroupIcon {
+        width: 40px;
+        height: 40px;
+        margin-right: 4px;
+    }
+}

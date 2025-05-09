@@ -1,0 +1,192 @@
+/* Dashboard layout styles - simplified without react-grid-layout */
+.main-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding: 16px;
+  overflow-y: auto;
+  box-sizing: border-box;
+  background-color: #f5f5f5;
+  /* These properties will be overridden by our !important rules in AppLayout */
+  margin-left: 60px;
+  width: calc(100% - 60px);
+  transition: margin-left 0.3s ease, width 0.3s ease;
+}
+
+/* Dashboard layout - core grid structure */
+.dashboard-grid-container {
+  width: 100%;
+  position: relative;
+  min-height: 500px;
+  padding-bottom: 80px; /* Space for fab button */
+  overflow: visible;
+}
+
+/* Widget grid item styling */
+.dashboard-widget-grid-item {
+  margin-bottom: 16px;
+  height: 100%;
+  min-height: 220px; /* Minimum height for grid items */
+  display: flex;
+}
+
+/* Dashboard widget container */
+.dashboard-widget-container {
+  width: 100%;
+  height: 100%;
+  min-height: 200px;
+  padding: 0;
+  margin: 0;
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+/* Chart container optimization */
+.chart-wrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 200px;
+}
+
+/* Canvas and chart fixes */
+canvas.chartjs-render-monitor {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.recharts-wrapper {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Dashboard header styles */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-header-title {
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.dashboard-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* FAB styling */
+.fab-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 10;
+}
+
+/* Responsive styles */
+@media (max-width: 960px) {
+  .main-container {
+    padding: 12px;
+    /* These will be overridden by AppLayout styles */
+    margin-left: 0;
+    width: 100%;
+  }
+  
+  .dashboard-header {
+    padding: 10px 12px;
+    margin-bottom: 12px;
+  }
+  
+  .dashboard-header-title {
+    font-size: 1.2rem;
+  }
+  
+  .fab-button {
+    bottom: 70px;
+    right: 16px;
+  }
+  
+  .recharts-responsive-container {
+    min-height: 120px;
+  }
+  
+  .dashboard-widget-grid-item {
+    min-height: 200px;
+  }
+}
+
+/* Small mobile screens */
+@media (max-width: 480px) {
+  .main-container {
+    padding: 8px;
+    padding-bottom: 70px;
+  }
+  
+  .dashboard-header {
+    padding: 8px 10px;
+    margin-bottom: 8px;
+  }
+  
+  .customizing-message {
+    font-size: 12px;
+    padding: 8px 16px;
+  }
+  
+  .dashboard-widget-grid-item {
+    min-height: 180px;
+  }
+}
+
+/* Specific widget styling */
+.workout-logs-table {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.workout-logs-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* Status card icons */
+.muscle-icon-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.muscleGroupIcon {
+  width: 24px;
+  height: 24px;
+}
+
+/* Progress indicator */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* Ensure widgets maintain proper spacing in grid layout */
+.MuiGrid-container {
+  padding: 8px;
+}
+
+.MuiGrid-item {
+  padding: 8px;
+}
