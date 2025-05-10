@@ -1,49 +1,32 @@
 import React from 'react';
-import {
-  Box,
-  Badge,
-  Chip,
-  Typography,
-  Paper,
-  useTheme,
-  alpha
-} from '@mui/material';
-import {
-  SignalWifiBad as OfflineIcon,
-  SignalWifi4Bar as OnlineIcon,
-  FitnessCenter as TrainIcon,
-  BatteryFull as ChargedIcon,
-  AccessTime as RestIcon
+import { Paper, Typography, Box, useTheme } from '@mui/material';
+import { 
+  DirectionsRun as TrainIcon, 
+  SelfImprovement as RestIcon,
+  CloudOff as OfflineIcon,
+  Cloud as OnlineIcon
 } from '@mui/icons-material';
 
 interface StatusCardProps {
+  items: string[];
+}
+
+interface SimpleStatusCardProps {
   isOffline: boolean;
-  logsCount: number;
 }
 
-interface TrainMusclesCardProps {
-  readyToTrain: string[];
-}
-
-interface RestMusclesCardProps {
-  restMuscles: string[];
-}
-
-export const StatusCard: React.FC<StatusCardProps> = ({ isOffline, logsCount }) => {
+export const StatusCard: React.FC<SimpleStatusCardProps> = React.memo(({ isOffline }) => {
   const theme = useTheme();
   
   return (
     <Paper
       elevation={1}
-      sx={{ 
-        height: '100%',
+      sx={{
         width: '100%',
+        height: '100%',
         display: 'flex', 
         flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        textAlign: 'center',
-        p: 2.5,
+        p: 2,
         borderRadius: 2,
         bgcolor: theme.palette.background.paper,
         transition: theme.transitions.create(['box-shadow', 'transform'], {
@@ -55,72 +38,71 @@ export const StatusCard: React.FC<StatusCardProps> = ({ isOffline, logsCount }) 
         }
       }}
     >
-      <Badge
-        overlap="circular"
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        badgeContent={
-          <Box
-            sx={{
-              bgcolor: isOffline ? theme.palette.error.main : theme.palette.success.main,
-              width: 16,
-              height: 16,
-              borderRadius: '50%',
-              border: `2px solid ${theme.palette.background.paper}`,
-            }}
-          />
-        }
-      >
-        {isOffline ? (
-          <OfflineIcon sx={{ fontSize: 48, color: theme.palette.error.main }} />
-        ) : (
-          <OnlineIcon sx={{ fontSize: 48, color: theme.palette.success.main }} />
-        )}
-      </Badge>
-      
-      <Typography 
-        variant="h6" 
+      <Box 
         sx={{ 
-          mt: 1,
-          fontWeight: 600,
-          color: theme.palette.text.primary
-        }}
-      >
-        {isOffline ? 'Offline Mode' : 'Online Mode'}
-      </Typography>
-      
-      <Typography 
-        variant="body2" 
-        sx={{ 
-          color: theme.palette.text.secondary,
+          display: 'flex', 
+          alignItems: 'center',
           mb: 1.5
         }}
       >
-        {isOffline
-          ? 'Changes will sync when online'
-          : 'Connected to cloud storage'}
-      </Typography>
+        {isOffline ? (
+          <OfflineIcon 
+            sx={{ 
+              mr: 1, 
+              color: theme.palette.error.main 
+            }} 
+          />
+        ) : (
+          <OnlineIcon 
+            sx={{ 
+              mr: 1, 
+              color: theme.palette.success.main 
+            }} 
+          />
+        )}
+        <Typography 
+          variant="subtitle1" 
+          sx={{ 
+            fontWeight: 600,
+            color: theme.palette.text.primary
+          }}
+        >
+          Current Status
+        </Typography>
+      </Box>
       
-      <Chip 
-        label={`${logsCount} Total Logs`}
+      <Box 
         sx={{ 
-          backgroundColor: alpha(theme.palette.primary.main, 0.1),
-          color: theme.palette.primary.main,
-          fontWeight: 'medium'
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'flex-start',
+          flex: 1
         }}
-      />
+      >
+        {isOffline ? (
+          <Typography color="error.main">
+            Offline Mode
+          </Typography>
+        ) : (
+          <Typography color="success.main">
+            Online - Synced
+          </Typography>
+        )}
+      </Box>
     </Paper>
   );
-};
+});
 
-export const TrainMusclesCard: React.FC<TrainMusclesCardProps> = ({ readyToTrain }) => {
+export const TrainMusclesCard: React.FC<StatusCardProps> = React.memo(({ items }) => {
   const theme = useTheme();
   
   return (
     <Paper
       elevation={1}
-      sx={{ 
-        height: '100%',
+      sx={{
         width: '100%',
+        height: '100%',
         display: 'flex', 
         flexDirection: 'column',
         p: 2,
@@ -162,56 +144,35 @@ export const TrainMusclesCard: React.FC<TrainMusclesCardProps> = ({ readyToTrain
       <Box 
         sx={{ 
           display: 'flex', 
-          flexWrap: 'wrap', 
-          gap: 0.75,
-          flex: 1,
-          overflowY: 'auto',
-          py: 0.5
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'flex-start',
+          flex: 1
         }}
       >
-        {readyToTrain.length === 0 ? (
-          <Typography 
-            variant="body2" 
-            sx={{ 
-              fontStyle: 'italic',
-              color: theme.palette.text.secondary,
-              py: 1
-            }}
-          >
-            No muscle groups ready to train
+        {items && items.length > 0 ? (
+          <Typography>
+            {items.join(', ')}
           </Typography>
         ) : (
-          readyToTrain.map((muscle) => (
-            <Chip
-              key={muscle}
-              label={muscle}
-              size="small"
-              icon={<ChargedIcon />}
-              sx={{ 
-                backgroundColor: alpha(theme.palette.success.main, 0.1),
-                color: theme.palette.success.main,
-                fontWeight: 500,
-                '& .MuiChip-icon': {
-                  color: theme.palette.success.main
-                }
-              }}
-            />
-          ))
+          <Typography color="text.secondary">
+            No muscles ready to train
+          </Typography>
         )}
       </Box>
     </Paper>
   );
-};
+});
 
-export const RestMusclesCard: React.FC<RestMusclesCardProps> = ({ restMuscles }) => {
+export const RestMusclesCard: React.FC<StatusCardProps> = React.memo(({ items }) => {
   const theme = useTheme();
   
   return (
     <Paper
       elevation={1}
-      sx={{ 
-        height: '100%',
+      sx={{
         width: '100%',
+        height: '100%',
         display: 'flex', 
         flexDirection: 'column',
         p: 2,
@@ -236,7 +197,7 @@ export const RestMusclesCard: React.FC<RestMusclesCardProps> = ({ restMuscles })
         <RestIcon 
           sx={{ 
             mr: 1, 
-            color: theme.palette.warning.main 
+            color: theme.palette.info.main 
           }} 
         />
         <Typography 
@@ -246,50 +207,34 @@ export const RestMusclesCard: React.FC<RestMusclesCardProps> = ({ restMuscles })
             color: theme.palette.text.primary
           }}
         >
-          Needs Rest
+          Rest
         </Typography>
       </Box>
       
       <Box 
         sx={{ 
           display: 'flex', 
-          flexWrap: 'wrap', 
-          gap: 0.75,
-          flex: 1,
-          overflowY: 'auto',
-          py: 0.5
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'flex-start',
+          flex: 1
         }}
       >
-        {restMuscles.length === 0 ? (
-          <Typography 
-            variant="body2" 
-            sx={{ 
-              fontStyle: 'italic',
-              color: theme.palette.text.secondary,
-              py: 1
-            }}
-          >
-            All muscle groups are ready
+        {items && items.length > 0 ? (
+          <Typography>
+            {items.join(', ')}
           </Typography>
         ) : (
-          restMuscles.map((muscle) => (
-            <Chip
-              key={muscle}
-              label={muscle}
-              size="small"
-              icon={<RestIcon />}
-              sx={{ 
-                backgroundColor: alpha(theme.palette.warning.main, 0.1),
-                color: theme.palette.warning.main,
-                fontWeight: 500,
-                '& .MuiChip-icon': {
-                  color: theme.palette.warning.main
-                }
-              }}
-            />
-          ))
+          <Typography color="text.secondary">
+            No muscles need rest
+          </Typography>
         )}
       </Box>
     </Paper>
   );
-};
+});
+
+// Add display names for debugging
+StatusCard.displayName = 'StatusCard';
+TrainMusclesCard.displayName = 'TrainMusclesCard';
+RestMusclesCard.displayName = 'RestMusclesCard';

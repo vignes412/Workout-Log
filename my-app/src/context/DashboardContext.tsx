@@ -1,11 +1,17 @@
 import React, { createContext, useContext, useState, useCallback, useMemo, ReactNode, useEffect } from 'react';
-import { DashboardVisibility, defaultVisibility } from '../components/Dashboard/dashboardUtils';
+import { DashboardVisibility, defaultVisibility, DashboardWidgetId } from '../components/Dashboard/dashboardUtils';
 import { WorkoutLog, Exercise, LogEntry } from '../types';
 import { AlertColor } from '@mui/material';
 
-// Simplified dashboard layout without react-grid-layout
+// Enhanced dashboard layout to support react-grid-layout
 interface DashboardLayout {
   visibility: DashboardVisibility;
+  layouts?: {
+    lg: any[];
+    md: any[];
+    sm: any[];
+    xs: any[];
+  };
 }
 
 interface DashboardContextType {
@@ -13,7 +19,7 @@ interface DashboardContextType {
   layout: DashboardLayout;
   isCustomizing: boolean;
   toggleCustomizing: () => void;
-  saveLayout: () => void;
+  saveLayout: (gridLayouts?: any) => void;
   resetLayout: () => void;
   toggleWidgetVisibility: (widgetId: string) => void;
   
@@ -66,21 +72,23 @@ export const DashboardProvider: React.FC<DashboardProviderProps> = ({
   onUpdateLogs,
   themeMode = 'light'
 }) => {
-  // Initialize layout from localStorage or use defaults - simplified without grid layouts
+  // Initialize layout from localStorage or use defaults - now with grid layouts
   const [layout, setLayout] = useState<DashboardLayout>(() => {
     try {
       const savedLayout = localStorage.getItem('dashboardLayout');
       if (savedLayout) {
         const parsed = JSON.parse(savedLayout);
         return {
-          visibility: { ...defaultVisibility, ...parsed.visibility }
+          visibility: { ...defaultVisibility, ...parsed.visibility },
+          layouts: parsed.layouts || undefined
         };
       }
     } catch (e) {
       console.error("Error loading dashboard layout:", e);
     }
     return {
-      visibility: defaultVisibility
+      visibility: defaultVisibility,
+      layouts: undefined
     };
   });
   
@@ -110,9 +118,15 @@ export const DashboardProvider: React.FC<DashboardProviderProps> = ({
     setIsCustomizing(prev => !prev);
   }, []);
   
-  const saveLayout = useCallback(() => {
+  const saveLayout = useCallback((gridLayouts?: any) => {
     try {
-      localStorage.setItem("dashboardLayout", JSON.stringify(layout));
+      const layoutToSave = {
+        ...layout,
+        layouts: gridLayouts || layout.layouts
+      };
+      
+      localStorage.setItem("dashboardLayout", JSON.stringify(layoutToSave));
+      setLayout(layoutToSave);
       onShowToast?.("Dashboard layout saved", "success");
       setIsCustomizing(false);
     } catch (error) {
@@ -123,7 +137,8 @@ export const DashboardProvider: React.FC<DashboardProviderProps> = ({
   
   const resetLayout = useCallback(() => {
     setLayout({
-      visibility: defaultVisibility
+      visibility: defaultVisibility,
+      layouts: undefined
     });
     onShowToast?.("Layout reset successfully", "success");
   }, [onShowToast]);
@@ -133,7 +148,8 @@ export const DashboardProvider: React.FC<DashboardProviderProps> = ({
       ...prev,
       visibility: {
         ...prev.visibility,
-        [widgetId]: !prev.visibility[widgetId]
+        // Fix type error by using type assertion
+        [widgetId as DashboardWidgetId]: !prev.visibility[widgetId as DashboardWidgetId]
       }
     }));
   }, []);

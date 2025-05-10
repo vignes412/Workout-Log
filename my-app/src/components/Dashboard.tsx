@@ -1,347 +1,155 @@
-import React, { useState, useCallback, useEffect } from "react";
-import {
-  Box,
-  Snackbar,
-  CircularProgress,
-  useTheme,
-  Alert,
-  AlertColor
-} from "@mui/material";
-import { useAppState } from "../index";
-import { useWorkoutLogs, useExerciseLibrary } from "../hooks/dataHooks";
-import WorkoutLogModal, { EditLog } from "../pages/WorkoutLogModal";
-import SettingsModal from "./SettingsModal";
+import React, { useMemo } from 'react';
+import { Box, useTheme } from '@mui/material';
+import DashboardHeader from './Dashboard/DashboardHeader';
+import ResponsiveDashboardGrid from './Dashboard/ResponsiveDashboardGrid';
+import DashboardFab from './Dashboard/DashboardFab';
+import { getRecentWorkoutLogs } from './Dashboard/dashboardUtils';
+import { useDashboard } from '../context/DashboardContext';
+import * as WidgetComponents from './Dashboard/Widgets';
+import { WIDGET_IDS } from './Dashboard/dashboardUtils';
+import WorkoutLogModal from '../pages/WorkoutLogModal';
 
-// Import dashboard components
-import {
-  DashboardHeader,
-  DashboardSidebar,
-  DashboardGrid,
-  DashboardWidgets,
-  DashboardFab,
-  getRecentWorkoutLogs,
-  defaultVisibility
-} from "./Dashboard/index";
+// Define a type for the widget ID keys
+type WidgetId = typeof WIDGET_IDS[number];
 
-// Import dashboard styles
-import "../styles/dashboard.css";
+// Define a type for the widget components map
+type WidgetComponentsMap = {
+  [key in WidgetId]?: React.ReactNode;
+} & {
+  [key: string]: React.ReactNode | undefined;
+};
 
-// Import context provider
-import { DashboardProvider } from "../context/DashboardContext";
-
-// Import types
-import { 
-  NavigationProps, 
-  WorkoutLog,
-  AppState,
-  AppAction,
-  DashboardLayout
-} from "../types";
-
-interface ToastState {
-  open: boolean;
-  message: string;
-  severity: AlertColor;
-}
-
-interface DashboardProps extends NavigationProps {
-  isAuthenticated?: boolean;
-  setIsAuthenticated?: (isAuthenticated: boolean) => void;
-  accessToken: string | null;
-  onNavigate: (page: string) => void;
-  toggleTheme: () => void;
-  themeMode: 'light' | 'dark';
+interface DashboardProps {
   onLogout?: () => void;
-  settingsOpen?: boolean;
-  isLoading?: {
-    logs: boolean;
-    exercises: boolean;
-    [key: string]: boolean;
-  };
+  onOpenSettings?: () => void;
+  handleMobileMenuOpen?: (event: React.MouseEvent<HTMLElement>) => void;
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ 
-  onNavigate, 
-  accessToken, 
-  toggleTheme, 
-  themeMode 
+const Dashboard: React.FC<DashboardProps> = ({
+  onLogout,
+  onOpenSettings,
+  handleMobileMenuOpen
 }) => {
-  const { state, dispatch } = useAppState() as {
-    state: AppState;
-    dispatch: React.Dispatch<AppAction>;
+  const theme = useTheme();
+  const { logs } = useDashboard();
+  
+  // Create Map of widget IDs to their respective components
+  const widgetComponentsMap = useMemo<WidgetComponentsMap>(() => {
+    const mapping: WidgetComponentsMap = {
+      "status": <WidgetComponents.StatusWidget id="status" />,
+      "train": <WidgetComponents.TrainWidget id="train" />,
+      "rest": <WidgetComponents.RestWidget id="rest" />,
+      "workout-features": <WidgetComponents.WorkoutFeaturesWidget id="workout-features" />,
+      "workout-logs": <WidgetComponents.WorkoutLogsWidget id="workout-logs" />,
+      "muscle-distribution": <WidgetComponents.MuscleDistributionWidget id="muscle-distribution" />,
+      "workout-count": <WidgetComponents.WorkoutCountWidget id="workout-count" />,
+      "total-volume": <WidgetComponents.TotalVolumeWidget id="total-volume" />,
+      "todo-list": <WidgetComponents.TodoListWidget id="todo-list" />,
+      "workout-summary": <WidgetComponents.WorkoutSummaryWidget id="workout-summary" />,
+      "workout-summary-table": <WidgetComponents.WorkoutSummaryTableWidget id="workout-summary-table" />,
+      "progression-fatigue": <WidgetComponents.ProgressionFatigueWidget id="progression-fatigue" />,
+      "progression-muscle": <WidgetComponents.ProgressionByMuscleWidget id="progression-muscle" />,
+      "volume-over-time": <WidgetComponents.VolumeOverTimeWidget id="volume-over-time" />,
+      "fatigue-by-muscle": <WidgetComponents.FatigueByMuscleWidget id="fatigue-by-muscle" />,
+      "progress-goals": <WidgetComponents.ProgressGoalsWidget id="progress-goals" />,
+      "achievements": <WidgetComponents.AchievementsWidget id="achievements" />,
+      "weekly-summary": <WidgetComponents.WeeklySummaryWidget id="weekly-summary" />,
+      "monthly-summary": <WidgetComponents.MonthlySummaryWidget id="monthly-summary" />,
+      "streak-tracker": <WidgetComponents.StreakTrackerWidget id="streak-tracker" />
+    };
+    return mapping;
+  }, []);
+  
+  // FAB Menu state
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [quickAddAnchorEl, setQuickAddAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [modalEditLog, setModalEditLog] = React.useState(null);
+  const [openModal, setOpenModal] = React.useState(false);
+  
+  // Get recent logs for quick add menu
+  const recentLogs = useMemo(() => getRecentWorkoutLogs(logs), [logs]);
+  
+  // Handle FAB menu open/close
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
   };
   
-  const { isAuthenticated, currentPage } = state;
-  
-  // Use custom hooks for data
-  const { 
-    data: logs, 
-    isLoading: logsLoading,
-    refreshData: refreshLogs 
-  } = useWorkoutLogs();
-  
-  const { 
-    data: exercises, 
-    isLoading: exercisesLoading,
-    refreshData: refreshExercises 
-  } = useExerciseLibrary();
-  
-  // Dashboard state for UI
-  const [isOffline, setIsOffline] = useState<boolean>(!navigator.onLine);
-  const [openModal, setOpenModal] = useState<boolean>(false);
-  const [modalEditLog, setModalEditLog] = useState<EditLog | null>(null);
-  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-  const [quickAddAnchorEl, setQuickAddAnchorEl] = useState<HTMLElement | null>(null);
-  const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
-  const [toast, setToast] = useState<ToastState>({
-    open: false,
-    message: "",
-    severity: "info",
-  });
-  
-  // Mobile menu state
-  const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
-  
-  // Track refresh operations in progress
-  const refreshInProgressRef = React.useRef<boolean>(false);
+  // Handle quick add menu open/close
+  const handleQuickAddOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setQuickAddAnchorEl(event.currentTarget);
+    handleMenuClose();
+  };
 
-  const theme = useTheme();
-  
-  // Calculate data that isn't dependent on rendering
-  const [readyToTrain, setReadyToTrain] = useState<string[]>([]);
-  const [restMuscles, setRestMuscles] = useState<string[]>([]);
-  
-  // Dashboard layout - simplified without DEFAULT_LAYOUTS
-  const [currentLayout, setCurrentLayout] = useState<DashboardLayout>({
-    visibility: defaultVisibility
-  });
-  
-  // Show toast notification
-  const showToast = useCallback((message: string, severity: AlertColor = "info") => {
-    setToast({ open: true, message, severity });
-  }, []);
-  
-  // Mobile menu handler
-  const handleMobileMenuOpen = useCallback((event: React.MouseEvent<HTMLElement>) => {
-    setMobileMenuOpen(true);
-  }, []);
-  
-  const handleMobileMenuClose = useCallback(() => {
-    setMobileMenuOpen(false);
-  }, []);
-  
-  // Check network status
-  useEffect(() => {
-    const handleOnline = () => setIsOffline(false);
-    const handleOffline = () => setIsOffline(true);
-    
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
-    
-    return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
-    };
-  }, []);
-
-  // Data reload handler
-  const handleReloadData = useCallback(async () => {
-    if (refreshInProgressRef.current) {
-      showToast("Data refresh already in progress", "info");
-      return;
-    }
-    
-    refreshInProgressRef.current = true;
-    
-    try {
-      showToast("Refreshing dashboard data...", "info");
-      
-      await Promise.all([
-        refreshLogs().catch(err => { 
-          console.error("Error refreshing logs:", err);
-          throw new Error("Failed to refresh workout logs"); 
-        }),
-        refreshExercises().catch(err => { 
-          console.error("Error refreshing exercises:", err);
-          throw new Error("Failed to refresh exercise library"); 
-        })
-      ]);
-      
-      showToast("Dashboard data refreshed successfully!", "success");
-    } catch (error) {
-      console.error("Error reloading data:", error);
-      showToast(`Failed to reload data: ${error instanceof Error ? error.message : "Unknown error"}`, "error");
-    } finally {
-      refreshInProgressRef.current = false;
-    }
-  }, [refreshLogs, refreshExercises, showToast]);
-
-  // Menu handlers
-  const handleMenuOpen = useCallback((event: React.MouseEvent<HTMLElement>) => 
-    setAnchorEl(event.currentTarget), []);
-    
-  const handleMenuClose = useCallback(() => {
-    setAnchorEl(null);
+  const handleQuickAddClose = () => {
     setQuickAddAnchorEl(null);
-  }, []);
-
-  const handleQuickAddOpen = useCallback((event: React.MouseEvent<HTMLElement>) =>
-    setQuickAddAnchorEl(event.currentTarget), []);
-    
-  const handleQuickAddClose = useCallback(() => setQuickAddAnchorEl(null), []);
-
-  // Handle quick add from recent logs
-  const handleQuickAdd = useCallback((recentLog: WorkoutLog) => {
-    setModalEditLog(recentLog as unknown as EditLog);
+  };
+  
+  // Handle quick add
+  const handleQuickAdd = (log: any) => {
+    setModalEditLog(log);
     setOpenModal(true);
     handleQuickAddClose();
-  }, [handleQuickAddClose]);
+  };
 
-  // Update layout
-  const handleUpdateLayout = useCallback((updater: (prevLayout: any) => any) => {
-    setCurrentLayout(prevLayout => {
-      const newLayout = typeof updater === 'function' ? updater(prevLayout) : updater;
-      return newLayout;
-    });
-  }, []);
-  
-  // Reset to default layout - simplified without DEFAULT_LAYOUTS
-  const handleResetLayout = useCallback(() => {
-    setCurrentLayout({
-      visibility: defaultVisibility
-    });
-    showToast("Layout reset successfully", "success");
-  }, [showToast]);
-
-  // Recent logs for quick add menu
-  const recentLogs = logs ? getRecentWorkoutLogs(logs) : [];
-  
-  // Check user authentication
-  if (!isAuthenticated) {
-    onNavigate("login");
-    return null;
-  }
-
-  // Show loading state
-  if (logsLoading || exercisesLoading) {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-          bgcolor: "background.default",
-        }}
-      >
-        <CircularProgress />
-      </Box>
-    );
-  }
-
-  // Main dashboard render - now wrapped with our context provider
   return (
-    <DashboardProvider 
-      initialLogs={logs}
-      initialExercises={exercises}
-      isOffline={isOffline}
-      onShowToast={showToast}
-      onReloadData={handleReloadData}
-      onUpdateLogs={async (updatedLogs) => {
-        console.log("Updating logs from DashboardProvider:", updatedLogs.length);
-        // Refresh logs after update
-        await refreshLogs();
+    <Box 
+      className="dashboard-container"
+      sx={{
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        overflow: 'auto',
+        bgcolor: theme => theme.palette.mode === 'dark' ? 'background.default' : 'grey.50',
+        padding: 2,
+        boxSizing: 'border-box'
       }}
-      themeMode={themeMode}
     >
-      <DashboardSidebar 
-        onNavigate={onNavigate} 
-        currentPage={currentPage || "dashboard"}
+      {/* Dashboard Header */}
+      <DashboardHeader 
+        handleMobileMenuOpen={handleMobileMenuOpen}
+        onLogout={onLogout}
+        onOpenSettings={onOpenSettings}
       />
-
-      <Box className={`main-container ${theme.palette.mode}`}>
-        <DashboardHeader
-          handleMobileMenuOpen={handleMobileMenuOpen}
-          onOpenSettings={() => setSettingsOpen(true)}
-          onLogout={() => {
-            if (state.isAuthenticated) {
-              // Dispatch logout action with the required payload property
-              dispatch({ 
-                type: "LOGOUT", 
-                payload: null // Adding the required payload property
-              });
-              // Navigate to login page
-              onNavigate("login");
-              showToast("Logged out successfully", "success");
-            }
-          }}
-        />
-
-        <DashboardGrid>
-          <DashboardWidgets />
-        </DashboardGrid>
-
-        <DashboardFab 
-          handleMenuOpen={handleMenuOpen}
-          anchorEl={anchorEl}
-          handleMenuClose={handleMenuClose}
-          setModalEditLog={setModalEditLog}
-          setOpenModal={setOpenModal}
-          handleQuickAddOpen={handleQuickAddOpen}
-          quickAddAnchorEl={quickAddAnchorEl}
-          handleQuickAddClose={handleQuickAddClose}
-          recentLogs={recentLogs}
-          handleQuickAdd={handleQuickAdd}
-        />
-
+      
+      {/* Dashboard Grid with all widgets */}
+      <ResponsiveDashboardGrid>
+        {/* Map all widget IDs to their respective components */}
+        {WIDGET_IDS.map(widgetId => {
+          // Handle the case where a widget might not exist in our mapping
+          return widgetComponentsMap[widgetId] || null;
+        })}
+      </ResponsiveDashboardGrid>
+      
+      {/* FAB for adding workout logs */}
+      <DashboardFab
+        handleMenuOpen={handleMenuOpen}
+        anchorEl={anchorEl}
+        handleMenuClose={handleMenuClose}
+        setModalEditLog={setModalEditLog}
+        setOpenModal={setOpenModal}
+        handleQuickAddOpen={handleQuickAddOpen}
+        quickAddAnchorEl={quickAddAnchorEl}
+        handleQuickAddClose={handleQuickAddClose}
+        recentLogs={recentLogs}
+        handleQuickAdd={handleQuickAdd}
+      />
+      
+      {/* Workout Log Modal */}
+      {openModal && (
         <WorkoutLogModal
           open={openModal}
-          onClose={() => {
-            setOpenModal(false);
-            setModalEditLog(null);
-          }}
-          exercises={exercises || []}
-          isOffline={isOffline}
-          editLog={modalEditLog as EditLog | undefined}
-          onSave={async () => {
-            try {
-              showToast("Workout logged successfully!", "success");
-              
-              // Refresh logs after saving
-              await refreshLogs();
-              
-              setOpenModal(false);
-              setModalEditLog(null);
-            } catch (error) {
-              console.error("Error in WorkoutLogModal onSave callback:", error);
-              showToast(`Failed to process workout log: ${error instanceof Error ? error.message : "Unknown error"}`, "error");
-            }
-          }}
+          onClose={() => setOpenModal(false)}
+          editLog={modalEditLog || undefined}
+          exercises={[]} // Add missing required prop
+          isOffline={false} // Add missing required prop
         />
-        
-        <SettingsModal
-          open={settingsOpen}
-          onClose={() => setSettingsOpen(false)}
-          onUpdateLayout={handleUpdateLayout}
-          onResetLayout={handleResetLayout}
-          layout={currentLayout}
-        />
-      </Box>
-      
-      <Snackbar
-        open={toast.open}
-        autoHideDuration={6000}
-        onClose={() => setToast((prev) => ({ ...prev, open: false }))}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
-        <Alert
-          onClose={() => setToast((prev) => ({ ...prev, open: false }))}
-          severity={toast.severity}
-        >
-          {toast.message}
-        </Alert>
-      </Snackbar>
-    </DashboardProvider>
+      )}
+    </Box>
   );
 };
 

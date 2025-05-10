@@ -68,7 +68,6 @@ const TodaysWorkout = ({ accessToken, onNavigate, toggleTheme, themeMode }) => {
   const [restStartTime, setRestStartTime] = useState(null);
   const [restSeconds, setRestSeconds] = useState(0);
   const [restTimerActive, setRestTimerActive] = useState(false);
-  const [isFirstSet, setIsFirstSet] = useState(true);
   
   const [workoutLogModalOpen, setWorkoutLogModalOpen] = useState(false);
   const [logModalExercise, setLogModalExercise] = useState(null);
@@ -78,13 +77,87 @@ const TodaysWorkout = ({ accessToken, onNavigate, toggleTheme, themeMode }) => {
   const [restTimeExercise, setRestTimeExercise] = useState(null);
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(null);
   
+  // Add new state for continue dialog
+  const [continueDialogOpen, setContinueDialogOpen] = useState(false);
+  const [nextExerciseData, setNextExerciseData] = useState(null);
+  
+  // Add the missing isFirstSet state
+  const [isFirstSet, setIsFirstSet] = useState(true);
+  
   const autoStartRestTimers = true;
-  const defaultRestBetweenExercises = 90;
   const defaultRestBetweenSets = 60;
-  const autoScrollToNextExercise = true;
 
   // Flag to prevent duplicate API calls
   const dataLoadedRef = useRef(false);
+
+  // Function to save workout data to Google Sheets API
+  const saveWorkoutDataToSheets = async (workoutData) => {
+    try {
+      console.log("Saving workout data to Google Sheets:", workoutData);
+      
+      if (!accessToken) {
+        setSnackbar({
+          open: true,
+          message: "Authentication required to save data",
+          severity: "error"
+        });
+        return false;
+      }
+      
+      // Get the date in YYYY-MM-DD format
+      const today = new Date();
+      const dateStr = today.toISOString().split('T')[0];
+      
+      // Format the workout data for the sheets API
+      const rowData = exercises.flatMap(exercise => {
+        return exercise.sets.map((set, setIndex) => {
+          return [
+            dateStr,                     // Date
+            exercise.name,               // Exercise
+            exercise.muscleGroup,        // Muscle Group
+            setIndex + 1,                // Set Number
+            set.weight || 0,             // Weight
+            set.reps || 0,               // Reps
+            set.completed ? "Yes" : "No" // Completed
+          ];
+        });
+      });
+      
+      // Append data to the sheet
+      const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/YOUR_SHEET_ID/values/WorkoutLog:append?valueInputOption=USER_ENTERED`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          values: rowData
+        })
+      });
+      
+      if (!response.ok) {
+        throw new Error("Failed to save workout data");
+      }
+      
+      setSnackbar({
+        open: true,
+        message: "Workout data saved successfully!",
+        severity: "success"
+      });
+      
+      return true;
+    } catch (error) {
+      console.error("Error saving workout data:", error);
+      
+      setSnackbar({
+        open: true,
+        message: `Error saving workout: ${error.message}`,
+        severity: "error"
+      });
+      
+      return false;
+    }
+  };
 
   // Function to scroll to a specific exercise
   const scrollToExercise = (exerciseIndex) => {
@@ -495,19 +568,12 @@ const TodaysWorkout = ({ accessToken, onNavigate, toggleTheme, themeMode }) => {
       const allSetsComplete = completedSetsCount >= exercise.sets;
       const isLastExercise = exerciseIndex === currentWorkout.workoutData.exercises.length - 1;
       
-      if (allSetsComplete && !isLastExercise && autoStartRestTimers) {
-        // Start rest timer for next exercise
-        const nextExerciseIndex = exerciseIndex + 1;
-        startRestTimer(exercise.restBetweenExercises || defaultRestBetweenExercises, () => {
-          setCurrentExerciseIndex(nextExerciseIndex);
-          if (autoScrollToNextExercise) {
-            scrollToExercise(nextExerciseIndex);
-          }
-        });
-      } else if (!allSetsComplete && autoStartRestTimers) {
-        // Start rest timer for next set
-        startRestTimer(exercise.restBetweenSets || defaultRestBetweenSets);
-      }
+      // Get next exercise or set
+      const nextData = getNextExerciseOrSet(exerciseIndex, exercise);
+      
+      // Show continue dialog instead of automatically continuing
+      setNextExerciseData(nextData);
+      setContinueDialogOpen(true);
       
       // Save to Google Sheets API
       await updateTodaysWorkout(currentWorkout.workoutData, false, notes);
@@ -525,6 +591,73 @@ const TodaysWorkout = ({ accessToken, onNavigate, toggleTheme, themeMode }) => {
         severity: "error"
       });
     }
+  };
+
+  // Add a helper function to determine the next exercise or set
+  const getNextExerciseOrSet = (currentExerciseIndex, currentExercise) => {
+    if (!workout || !workout.workoutData || !workout.workoutData.exercises) {
+      return null;
+    }
+    
+    // Check if there are more sets in the current exercise
+    if (currentExercise.setsCompleted < currentExercise.sets) {
+      return {
+        type: 'set',
+        exerciseIndex: currentExerciseIndex,
+        exercise: currentExercise,
+        setIndex: currentExercise.setsCompleted
+      };
+    } 
+    
+    // If all sets for current exercise are done, move to next exercise
+    const nextExerciseIndex = currentExerciseIndex + 1;
+    if (nextExerciseIndex < workout.workoutData.exercises.length) {
+      return {
+        type: 'exercise',
+        exerciseIndex: nextExerciseIndex,
+        exercise: workout.workoutData.exercises[nextExerciseIndex],
+        setIndex: 0
+      };
+    }
+    
+    // If all exercises are done
+    return {
+      type: 'complete',
+      exerciseIndex: null,
+      exercise: null,
+      setIndex: null
+    };
+  };
+
+  // Handle the user's choice from the continue dialog
+  const handleContinueResponse = (shouldContinue) => {
+    setContinueDialogOpen(false);
+    
+    if (shouldContinue && nextExerciseData) {
+      // If it's a new set of the same exercise or a new exercise
+      if (nextExerciseData.type === 'set' || nextExerciseData.type === 'exercise') {
+        setCurrentExerciseIndex(nextExerciseData.exerciseIndex);
+        
+        // Start rest timer if auto-start is enabled
+        if (autoStartRestTimers && nextExerciseData.exercise) {
+          setRestTimeExercise(nextExerciseData.exercise);
+          setRestTimeDialogOpen(true);
+        }
+      } else if (nextExerciseData.type === 'complete') {
+        // Workout is complete
+        const updatedWorkout = { ...workout, completed: true };
+        setWorkout(updatedWorkout);
+        saveWorkoutDataToSheets(updatedWorkout);
+        setSnackbar({
+          open: true,
+          message: "Workout completed! Great job!",
+          severity: "success"
+        });
+      }
+    }
+    
+    // Clear the next exercise data
+    setNextExerciseData(null);
   };
 
   return (
@@ -878,6 +1011,24 @@ const TodaysWorkout = ({ accessToken, onNavigate, toggleTheme, themeMode }) => {
               variant="contained"
             >
               Save
+            </Button>
+          </DialogActions>
+        </Dialog>
+        
+        {/* Continue Dialog */}
+        <Dialog open={continueDialogOpen} onClose={() => handleContinueResponse(false)}>
+          <DialogTitle>Continue to iterate?</DialogTitle>
+          <DialogContent>
+            <Typography variant="body2" color="text.secondary">
+              {nextExerciseData?.type === 'set' && `Continue to Set ${nextExerciseData.setIndex + 1} of ${nextExerciseData.exercise.exercise}?`}
+              {nextExerciseData?.type === 'exercise' && `Continue to Exercise: ${nextExerciseData.exercise.exercise}?`}
+              {nextExerciseData?.type === 'complete' && "Workout is complete! Great job!"}
+            </Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => handleContinueResponse(false)}>Cancel</Button>
+            <Button onClick={() => handleContinueResponse(true)} color="primary" variant="contained">
+              Continue
             </Button>
           </DialogActions>
         </Dialog>

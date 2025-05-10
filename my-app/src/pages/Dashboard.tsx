@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { Box, Typography, Paper, useTheme, Container, Divider } from '@mui/material';
 import AppLayout from '../components/AppLayout';
-import { DashboardWidgets, DashboardHeader } from '../components/Dashboard/index';
+import { DashboardWidgets, DashboardHeader, DashboardGrid } from '../components/Dashboard/index';
 import { DashboardProvider } from '../context/DashboardContext';
 import WorkoutLogModal from './WorkoutLogModal';
 import { useAppState } from '../index';
@@ -117,6 +117,7 @@ const Dashboard: React.FC<DashboardProps> = (props) => {
           
           {/* Main Dashboard Widgets Section */}
           <Box sx={{ mt: 3 }}>
+            {/* Render DashboardWidgets directly instead of inside DashboardGrid */}
             <DashboardWidgets />
           </Box>
           

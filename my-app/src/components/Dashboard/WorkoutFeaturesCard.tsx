@@ -1,31 +1,57 @@
-import React, { useCallback } from "react";
-import { Button, Typography, Stack, Paper, Box, useTheme, alpha } from "@mui/material";
-import { Today as TodaysWorkoutIcon, ListAlt as TemplatesIcon, Add, FitnessCenter } from "@mui/icons-material";
-import { useAppState } from "../../index";
+import React from 'react';
+import { 
+  Paper, 
+  Typography, 
+  Box, 
+  useTheme,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText 
+} from '@mui/material';
+import {
+  DirectionsRun as WorkoutIcon,
+  AccessTime as TimerIcon,
+  AddBox as LogIcon,
+  ShowChart as StatisticsIcon
+} from '@mui/icons-material';
 
-interface WorkoutFeaturesCardProps {
-  // Add props if needed in the future
-}
-
-const WorkoutFeaturesCard: React.FC<WorkoutFeaturesCardProps> = React.memo(() => {
-  const { dispatch } = useAppState();
+const WorkoutFeaturesCard: React.FC = React.memo(() => {
   const theme = useTheme();
-
-  const handleNavigate = useCallback((page: string): void => {
-    dispatch({ type: "SET_PAGE", payload: page });
-  }, [dispatch]);
-
+  
+  const features = [
+    {
+      icon: <WorkoutIcon sx={{ color: theme.palette.primary.main }} />,
+      text: 'Start Workout',
+      description: 'Begin a new workout session'
+    },
+    {
+      icon: <TimerIcon sx={{ color: theme.palette.info.main }} />,
+      text: 'Rest Timer',
+      description: 'Time your rest between sets'
+    },
+    {
+      icon: <LogIcon sx={{ color: theme.palette.success.main }} />,
+      text: 'Log Exercise',
+      description: 'Record your sets and reps'
+    },
+    {
+      icon: <StatisticsIcon sx={{ color: theme.palette.warning.main }} />,
+      text: 'Track Progress',
+      description: 'Monitor your improvements'
+    }
+  ];
+  
   return (
-    <Paper 
+    <Paper
       elevation={1}
-      sx={{ 
-        height: '100%', 
+      sx={{
         width: '100%',
+        height: '100%',
         display: 'flex', 
         flexDirection: 'column',
-        borderRadius: 2,
         p: 0,
-        overflow: 'hidden',
+        borderRadius: 2,
         bgcolor: theme.palette.background.paper,
         transition: theme.transitions.create(['box-shadow', 'transform'], {
           duration: theme.transitions.duration.short
@@ -36,9 +62,9 @@ const WorkoutFeaturesCard: React.FC<WorkoutFeaturesCardProps> = React.memo(() =>
         }
       }}
     >
-      <Box
-        sx={{
-          display: 'flex',
+      <Box 
+        sx={{ 
+          display: 'flex', 
           alignItems: 'center',
           p: 1.5,
           borderBottom: '1px solid',
@@ -46,67 +72,46 @@ const WorkoutFeaturesCard: React.FC<WorkoutFeaturesCardProps> = React.memo(() =>
           bgcolor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.03)',
         }}
       >
-        <FitnessCenter sx={{ mr: 1, color: theme.palette.primary.main }} />
-        <Typography variant="subtitle1" fontWeight="medium">
+        <Typography 
+          variant="subtitle1" 
+          sx={{ 
+            fontWeight: 600,
+            color: theme.palette.text.primary
+          }}
+        >
           Workout Features
         </Typography>
       </Box>
       
-      <Box sx={{ flexGrow: 1, p: 2 }}>
-        <Stack spacing={1.5}>
-          <Button 
-            variant="contained" 
-            color="primary" 
-            fullWidth
-            startIcon={<TodaysWorkoutIcon />}
-            onClick={() => handleNavigate("todaysWorkout")}
-            size="large"
-            sx={{ 
-              py: 1,
-              textTransform: 'none',
-              fontWeight: 500,
-              fontSize: '0.95rem'
+      <List sx={{ width: '100%', p: 0 }}>
+        {features.map((feature, index) => (
+          <ListItem 
+            key={index}
+            sx={{
+              borderBottom: index < features.length - 1 ? `1px solid ${theme.palette.divider}` : 'none',
+              py: 0.75,
+              px: 2
             }}
           >
-            Today's Workout
-          </Button>
-          
-          <Button 
-            variant="outlined" 
-            color="primary" 
-            fullWidth
-            startIcon={<TemplatesIcon />}
-            onClick={() => handleNavigate("workoutTemplates")}
-            size="large"
-            sx={{ 
-              py: 1,
-              textTransform: 'none',
-              fontWeight: 500,
-              fontSize: '0.95rem'
-            }}
-          >
-            Workout Templates
-          </Button>
-          
-          <Button 
-            variant="outlined" 
-            color="secondary" 
-            fullWidth
-            startIcon={<Add />}
-            onClick={() => handleNavigate("workoutTemplates")}
-            size="large"
-            sx={{ 
-              py: 1,
-              textTransform: 'none',
-              fontWeight: 500,
-              fontSize: '0.95rem',
-              bgcolor: alpha(theme.palette.secondary.main, 0.1)
-            }}
-          >
-            Create New Template
-          </Button>
-        </Stack>
-      </Box>
+            <ListItemIcon sx={{ minWidth: 40 }}>
+              {feature.icon}
+            </ListItemIcon>
+            <ListItemText 
+              primary={feature.text}
+              secondary={feature.description}
+              primaryTypographyProps={{ 
+                variant: 'body1',
+                fontWeight: 500,
+                fontSize: '0.9rem'
+              }}
+              secondaryTypographyProps={{ 
+                variant: 'body2',
+                fontSize: '0.8rem'
+              }}
+            />
+          </ListItem>
+        ))}
+      </List>
     </Paper>
   );
 });

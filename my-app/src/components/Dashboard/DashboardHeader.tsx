@@ -26,7 +26,7 @@ import {
   Logout as LogoutIcon,
   AccountCircle as AccountIcon
 } from '@mui/icons-material';
-import { widgetTitles } from './dashboardUtils';
+import { widgetNames, getWidgetTitle, DashboardWidgetId } from './dashboardUtils';
 import { useDashboard } from '../../context/DashboardContext';
 
 interface DashboardHeaderProps {
@@ -126,19 +126,19 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
         {Object.keys(layout.visibility).map((widgetId) => (
           <MenuItem 
             key={widgetId}
-            onClick={() => toggleWidgetVisibility(widgetId)}
+            onClick={() => toggleWidgetVisibility(widgetId as DashboardWidgetId)}
             dense
           >
             <ListItemIcon>
-              {layout.visibility[widgetId] ? 
+              {layout.visibility[widgetId as DashboardWidgetId] ? 
                 <VisibilityIcon color="primary" /> : 
                 <VisibilityOffIcon color="action" />
               }
             </ListItemIcon>
             <ListItemText 
-              primary={widgetTitles[widgetId] || widgetId} 
+              primary={getWidgetTitle(widgetId as DashboardWidgetId) || widgetId} 
               primaryTypographyProps={{ 
-                color: layout.visibility[widgetId] ? 'textPrimary' : 'textSecondary',
+                color: layout.visibility[widgetId as DashboardWidgetId] ? 'textPrimary' : 'textSecondary',
                 variant: 'body2'
               }}
             />

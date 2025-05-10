@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, Fragment } from 'react';
 import { Paper, Typography, Box, useTheme } from '@mui/material';
 import MonthlySummaryCard from '../MonthlySummaryCard';
 import WeeklySummaryCard from '../WeeklySummaryCard';
@@ -15,8 +15,11 @@ import WorkoutSummaryTable from '../WorkoutSummaryTable';
 import ProgressionFatigueChart from '../charts/ProgressionFatigueChart';
 import WorkoutLogsTable from '../WorkoutLogsTable';
 import { TodaysWorkout } from '../../types';
-import { getWidgetTitle } from './dashboardUtils';
+import { getWidgetTitle, DashboardWidgetId } from './dashboardUtils';
 import { useDashboard } from '../../context/DashboardContext';
+import { StatusCard, TrainMusclesCard, RestMusclesCard } from './StatusCards';
+import WorkoutFeaturesCard from './WorkoutFeaturesCard';
+import { HighlightMetricCard } from './DashboardCards';
 
 // Helper component for creating card headers with Material UI styling
 const CardHeader = ({ title }: { title: string }) => {
@@ -56,6 +59,7 @@ const WidgetWrapper = React.memo(({ id, children }: { id: string, children: Reac
   return (
     <Paper 
       elevation={isCustomizing ? 3 : 1}
+      className={`widget-paper ${id}-widget`}
       sx={{
         height: '100%',
         width: '100%',
@@ -75,7 +79,7 @@ const WidgetWrapper = React.memo(({ id, children }: { id: string, children: Reac
         }
       }}
     >
-      <CardHeader title={getWidgetTitle(id)} />
+      <CardHeader title={getWidgetTitle(id as DashboardWidgetId)} />
       <Box 
         sx={{
           flex: '1 1 auto',
@@ -120,11 +124,6 @@ const DashboardWidgets: React.FC = () => {
     updateWorkoutLog
   } = useDashboard();
 
-  // Check if a widget is visible based on the current layout visibility
-  const isVisible = useMemo(() => (widgetId: string): boolean => {
-    return layout.visibility[widgetId] || false;
-  }, [layout.visibility]);
-
   // Get first log for workout summary
   const firstLogAsWorkout = useMemo(() => 
     logs.length > 0 
@@ -132,150 +131,192 @@ const DashboardWidgets: React.FC = () => {
       : emptyWorkout, 
     [logs]);
 
+  // Calculate workout stats for the metric cards
+  const totalWorkouts = useMemo(() => logs.length || 0, [logs]);
+  const totalVolume = useMemo(() => {
+    if (!logs || logs.length === 0) return 0;
+    
+    return logs.reduce((sum, log) => {
+      const weight = typeof log.weight === 'number' ? log.weight : 0;
+      const reps = typeof log.reps === 'number' ? log.reps : 0;
+      return sum + (weight * reps);
+    }, 0);
+  }, [logs]);
+
+  // Calculate workout streak
+  const workoutStreak = useMemo(() => {
+    if (!logs || logs.length === 0) return 0;
+    
+    // This is a simplified calculation; a more complex one would check for consecutive days
+    return Math.min(logs.length, 7);
+  }, [logs]);
+
+  // Render all widgets as separate individual components
   return (
-    <>
-      {/* Status Widget */}
-      {isVisible('status') && (
+    <Fragment>
+      {/* Only render widgets that are visible according to layout.visibility */}
+      {layout.visibility.status && (
         <WidgetWrapper id="status">
-          <Box>
-            {isOffline ? (
-              <Typography color="error">Offline Mode</Typography>
-            ) : (
-              <Typography color="success.main">Online - Synced</Typography>
-            )}
-          </Box>
+          <StatusCard isOffline={isOffline} />
         </WidgetWrapper>
       )}
 
-      {/* Ready to Train Widget */}
-      {isVisible('train') && (
+      {layout.visibility.train && (
         <WidgetWrapper id="train">
-          <Box>
-            {readyToTrain && readyToTrain.length > 0 ? (
-              <Typography>{readyToTrain.join(', ')}</Typography>
-            ) : (
-              <Typography color="text.secondary">No muscles ready to train</Typography>
-            )}
-          </Box>
+          <TrainMusclesCard items={readyToTrain || []} />
         </WidgetWrapper>
       )}
 
-      {/* Rest Widget */}
-      {isVisible('rest') && (
+      {layout.visibility.rest && (
         <WidgetWrapper id="rest">
-          <Box>
-            {restMuscles && restMuscles.length > 0 ? (
-              <Typography>{restMuscles.join(', ')}</Typography>
-            ) : (
-              <Typography color="text.secondary">No muscles need rest</Typography>
-            )}
-          </Box>
+          <RestMusclesCard items={restMuscles || []} />
         </WidgetWrapper>
       )}
-
-      {/* Workout Logs Table */}
-      {isVisible('workout-logs') && (
-        <WidgetWrapper id="workout-logs">
-          <WorkoutLogsTable 
-            logs={logsAsLogEntries} 
-            isOffline={isOffline} 
-            exercises={exercises || []}
-            setLogs={updateWorkoutLog}
+      
+      {layout.visibility["workout-features"] && (
+        <WidgetWrapper id="workout-features">
+          <WorkoutFeaturesCard />
+        </WidgetWrapper>
+      )}
+      
+      {layout.visibility["workout-count"] && (
+        <WidgetWrapper id="workout-count">
+          <HighlightMetricCard 
+            value={totalWorkouts}
+            label="Total Workouts"
+          />
+        </WidgetWrapper>
+      )}
+      
+      {layout.visibility["total-volume"] && (
+        <WidgetWrapper id="total-volume">
+          <HighlightMetricCard 
+            value={totalVolume.toLocaleString()}
+            label="Total Volume (lbs)"
           />
         </WidgetWrapper>
       )}
 
-      {/* Muscle Group Distribution Chart */}
-      {isVisible('muscle-distribution') && (
+      {layout.visibility["workout-logs"] && (
+        <WidgetWrapper id="workout-logs">
+          <Box sx={{ width: '100%', height: '100%', overflow: 'auto' }}>
+            <WorkoutLogsTable 
+              logs={logsAsLogEntries} 
+              isOffline={isOffline} 
+              exercises={exercises || []}
+              setLogs={updateWorkoutLog}
+            />
+          </Box>
+        </WidgetWrapper>
+      )}
+
+      {layout.visibility["muscle-distribution"] && (
         <WidgetWrapper id="muscle-distribution">
-          <MuscleGroupDistributionChart logs={logs} />
+          <Box sx={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
+            <MuscleGroupDistributionChart logs={logs} />
+          </Box>
         </WidgetWrapper>
       )}
 
-      {/* Workout Summary */}
-      {isVisible('workout-summary') && (
+      {layout.visibility["workout-summary"] && (
         <WidgetWrapper id="workout-summary">
-          <WorkoutSummary workout={firstLogAsWorkout} themeMode={themeMode} />
+          <Box sx={{ width: '100%', height: '100%', overflow: 'auto' }}>
+            <WorkoutSummary workout={firstLogAsWorkout} themeMode={themeMode} />
+          </Box>
         </WidgetWrapper>
       )}
 
-      {/* Workout Summary Table */}
-      {isVisible('workout-summary-table') && (
+      {layout.visibility["workout-summary-table"] && (
         <WidgetWrapper id="workout-summary-table">
-          <WorkoutSummaryTable logs={logsAsLogEntries} themeMode={themeMode} />
+          <Box sx={{ width: '100%', height: '100%', overflow: 'auto' }}>
+            <WorkoutSummaryTable logs={logsAsLogEntries} themeMode={themeMode} />
+          </Box>
         </WidgetWrapper>
       )}
 
-      {/* Progression by Muscle Chart */}
-      {isVisible('progression-muscle') && (
+      {layout.visibility["progression-muscle"] && (
         <WidgetWrapper id="progression-muscle">
-          <ProgressionByMuscleChart logs={chartLogsFormat} />
+          <Box sx={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
+            <ProgressionByMuscleChart logs={chartLogsFormat} />
+          </Box>
         </WidgetWrapper>
       )}
 
-      {/* Volume Over Time Chart */}
-      {isVisible('volume-over-time') && (
+      {layout.visibility["volume-over-time"] && (
         <WidgetWrapper id="volume-over-time">
-          <VolumeOverTimeChart logs={logs} />
+          <Box sx={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
+            <VolumeOverTimeChart logs={logs} />
+          </Box>
         </WidgetWrapper>
       )}
 
-      {/* Fatigue by Muscle Chart */}
-      {isVisible('fatigue-by-muscle') && (
+      {layout.visibility["fatigue-by-muscle"] && (
         <WidgetWrapper id="fatigue-by-muscle">
-          <FatigueByMuscleChart logs={chartLogsFormat} />
+          <Box sx={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
+            <FatigueByMuscleChart logs={chartLogsFormat} />
+          </Box>
         </WidgetWrapper>
       )}
 
-      {/* Progression & Fatigue Chart */}
-      {isVisible('progression-fatigue') && (
+      {layout.visibility["progression-fatigue"] && (
         <WidgetWrapper id="progression-fatigue">
-          <ProgressionFatigueChart logs={chartLogsFormat} />
+          <Box sx={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
+            <ProgressionFatigueChart logs={chartLogsFormat} />
+          </Box>
         </WidgetWrapper>
       )}
 
-      {/* Progress Goals */}
-      {isVisible('progress-goals') && (
+      {layout.visibility["progress-goals"] && (
         <WidgetWrapper id="progress-goals">
-          <ProgressGoals logs={logsAsLogEntries} />
+          <Box sx={{ width: '100%', height: '100%', overflow: 'auto' }}>
+            <ProgressGoals logs={logsAsLogEntries} />
+          </Box>
         </WidgetWrapper>
       )}
 
-      {/* Todo List */}
-      {isVisible('todo-list') && (
+      {layout.visibility["todo-list"] && (
         <WidgetWrapper id="todo-list">
-          <TodoList />
+          <Box sx={{ width: '100%', height: '100%', overflow: 'auto' }}>
+            <TodoList />
+          </Box>
         </WidgetWrapper>
       )}
 
-      {/* Achievements Card */}
-      {isVisible('achievements') && (
+      {layout.visibility.achievements && (
         <WidgetWrapper id="achievements">
-          <AchievementsCard logs={logsAsLogEntries} />
+          <Box sx={{ width: '100%', height: '100%', overflow: 'auto' }}>
+            <AchievementsCard logs={logsAsLogEntries} />
+          </Box>
         </WidgetWrapper>
       )}
 
-      {/* Weekly Summary Card */}
-      {isVisible('weekly-summary') && (
+      {layout.visibility["weekly-summary"] && (
         <WidgetWrapper id="weekly-summary">
-          <WeeklySummaryCard logs={logsAsLogEntries} />
+          <Box sx={{ width: '100%', height: '100%', overflow: 'auto' }}>
+            <WeeklySummaryCard logs={logsAsLogEntries} />
+          </Box>
         </WidgetWrapper>
       )}
 
-      {/* Monthly Summary Card */}
-      {isVisible('monthly-summary') && (
+      {layout.visibility["monthly-summary"] && (
         <WidgetWrapper id="monthly-summary">
-          <MonthlySummaryCard logs={logsAsLogEntries} />
+          <Box sx={{ width: '100%', height: '100%', overflow: 'auto' }}>
+            <MonthlySummaryCard logs={logsAsLogEntries} />
+          </Box>
         </WidgetWrapper>
       )}
 
-      {/* Streak Tracker */}
-      {isVisible('streak-tracker') && (
+      {layout.visibility["streak-tracker"] && (
         <WidgetWrapper id="streak-tracker">
-          <StreakTracker logs={logsAsLogEntries} />
+          <Box sx={{ width: '100%', height: '100%' }}>
+            <HighlightMetricCard 
+              value={workoutStreak}
+              label="Current Streak (days)"
+            />
+          </Box>
         </WidgetWrapper>
       )}
-    </>
+    </Fragment>
   );
 };
 

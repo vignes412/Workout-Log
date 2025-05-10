@@ -1,109 +1,147 @@
 // Dashboard utilities for widget configuration
 import { WorkoutLog } from '../../types';
 
-// Define widget IDs for all dashboard widgets
-export const WIDGET_IDS = [
-  "status",
-  "train",
-  "rest",
-  "workout-features",
-  "workout-logs",
-  "muscle-distribution",
-  "workout-count",
-  "total-volume",
-  "todo-list",
-  "workout-summary",
-  "workout-summary-table",
-  "progression-fatigue",
-  "progression-muscle",
-  "volume-over-time",
-  "fatigue-by-muscle",
-  "progress-goals",
-  "body-weight",
-  "achievements",
-  "weekly-summary",
-  "monthly-summary",
-  "streak-tracker"
+/**
+ * Dashboard configuration and utility functions
+ */
+
+// List of all available widgets in the dashboard
+export type DashboardWidgetId =
+  | 'status'
+  | 'train'
+  | 'rest'
+  | 'streak-tracker'
+  | 'workout-count'
+  | 'total-volume'
+  | 'workout-summary'
+  | 'weekly-summary'
+  | 'monthly-summary'
+  | 'workout-logs'
+  | 'workout-summary-table'
+  | 'volume-over-time'
+  | 'fatigue-by-muscle'
+  | 'progression-fatigue'
+  | 'progression-muscle'
+  | 'muscle-distribution'
+  | 'workout-features'
+  | 'todo-list'
+  | 'progress-goals'
+  | 'achievements';
+
+// Export all widget IDs as an array for easy iteration
+export const WIDGET_IDS: DashboardWidgetId[] = [
+  'status',
+  'train',
+  'rest',
+  'streak-tracker',
+  'workout-count',
+  'total-volume',
+  'workout-summary',
+  'weekly-summary',
+  'monthly-summary',
+  'workout-logs',
+  'workout-summary-table',
+  'volume-over-time',
+  'fatigue-by-muscle',
+  'progression-fatigue',
+  'progression-muscle',
+  'muscle-distribution',
+  'workout-features',
+  'todo-list',
+  'progress-goals',
+  'achievements'
 ];
 
-export interface DashboardVisibility {
-  status: boolean;
-  train: boolean;
-  rest: boolean;
-  "workout-features": boolean;
-  "workout-logs": boolean;
-  "muscle-distribution": boolean;
-  "workout-count": boolean;
-  "total-volume": boolean;
-  "todo-list": boolean;
-  "workout-summary": boolean;
-  "workout-summary-table": boolean;
-  "progression-fatigue": boolean;
-  "progression-muscle": boolean;
-  "volume-over-time": boolean;
-  "fatigue-by-muscle": boolean;
-  "progress-goals": boolean;
-  "body-weight": boolean;
-  achievements: boolean;
-  "weekly-summary": boolean;
-  "monthly-summary": boolean;
-  "streak-tracker": boolean;
-  [key: string]: boolean;
-}
-
-// Default visibility settings for dashboard widgets
-export const defaultVisibility: DashboardVisibility = {
-  status: true,
-  train: true,
-  rest: true,
-  "workout-features": true,
-  "workout-logs": true,
-  "muscle-distribution": true,
-  "workout-count": true,
-  "total-volume": true,
-  "todo-list": true,
-  "workout-summary": true,
-  "workout-summary-table": true,
-  "progression-fatigue": true,
-  "progression-muscle": true,
-  "volume-over-time": true,
-  "fatigue-by-muscle": true,
-  "progress-goals": true,
-  "body-weight": true,
-  achievements: true,
-  "weekly-summary": true,
-  "monthly-summary": true,
-  "streak-tracker": true
+// Type for widget visibility state
+export type DashboardVisibility = {
+  [key in DashboardWidgetId]: boolean;
 };
 
-// Widget title map for displaying proper titles
-export const widgetTitles: Record<string, string> = {
-  status: "Current Status",
-  train: "Ready to Train",
-  rest: "Rest",
-  "workout-features": "Workout Features",
-  "workout-logs": "Recent Workout Logs",
-  "muscle-distribution": "Muscle Group Distribution",
-  "workout-count": "Workout Count",
-  "total-volume": "Total Volume",
-  "todo-list": "Todo List",
-  "workout-summary": "Workout Summary",
-  "workout-summary-table": "Workout Summary Table",
-  "progression-fatigue": "Progression & Fatigue",
-  "progression-muscle": "Progression by Muscle",
-  "volume-over-time": "Volume Over Time",
-  "fatigue-by-muscle": "Fatigue by Muscle",
-  "progress-goals": "Progress Goals",
-  "body-weight": "Body Weight",
-  achievements: "Achievements",
-  "weekly-summary": "Weekly Summary",
-  "monthly-summary": "Monthly Summary",
-  "streak-tracker": "Streak Tracker"
+// Default visibility for all widgets
+export const defaultVisibility: DashboardVisibility = {
+  'status': true,
+  'train': true,
+  'rest': true,
+  'streak-tracker': true,
+  'workout-count': true,
+  'total-volume': true,
+  'workout-summary': true,
+  'weekly-summary': true,
+  'monthly-summary': true,
+  'workout-logs': true,
+  'workout-summary-table': true,
+  'volume-over-time': true,
+  'fatigue-by-muscle': true,
+  'progression-fatigue': true,
+  'progression-muscle': true,
+  'muscle-distribution': true,
+  'workout-features': true,
+  'todo-list': true,
+  'progress-goals': true,
+  'achievements': true
+};
+
+// Widget categorization
+export const widgetCategories = {
+  stats: [
+    'status',
+    'train',
+    'rest',
+    'streak-tracker',
+    'workout-count',
+    'total-volume'
+  ],
+  summaries: [
+    'workout-summary',
+    'weekly-summary',
+    'monthly-summary'
+  ],
+  tables: [
+    'workout-logs',
+    'workout-summary-table'
+  ],
+  charts: [
+    'volume-over-time',
+    'fatigue-by-muscle',
+    'progression-fatigue',
+    'progression-muscle',
+    'muscle-distribution'
+  ],
+  features: [
+    'workout-features',
+    'todo-list',
+    'progress-goals',
+    'achievements'
+  ]
+};
+
+// Widget names for display
+export const widgetNames: Record<DashboardWidgetId, string> = {
+  'status': 'Workout Status',
+  'train': 'Ready to Train',
+  'rest': 'Needs Rest',
+  'streak-tracker': 'Streak Tracker',
+  'workout-count': 'Workout Count',
+  'total-volume': 'Total Volume',
+  'workout-summary': 'Latest Workout',
+  'weekly-summary': 'Weekly Summary',
+  'monthly-summary': 'Monthly Progress',
+  'workout-logs': 'Workout Log History',
+  'workout-summary-table': 'Workout Summary',
+  'volume-over-time': 'Volume Over Time',
+  'fatigue-by-muscle': 'Muscle Fatigue',
+  'progression-fatigue': 'Progression & Fatigue',
+  'progression-muscle': 'Muscle Progression',
+  'muscle-distribution': 'Muscle Distribution',
+  'workout-features': 'Workout Features',
+  'todo-list': 'Todo List',
+  'progress-goals': 'Progress Goals',
+  'achievements': 'Achievements'
 };
 
 // Helper function to get widget title
-export const getWidgetTitle = (widgetId: string): string => {
-  return widgetTitles[widgetId] || widgetId;
+export const getWidgetTitle = (widgetId: DashboardWidgetId): string => {
+  return widgetNames[widgetId] || widgetId;
 };
 
 /**
