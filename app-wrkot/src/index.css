@@ -1,0 +1,277 @@
+@import './styles/black-white-theme.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base component styles */
+@layer base {
+  /* Ensure dark mode applies to all elements */
+  .dark {
+    color-scheme: dark;
+  }
+  
+  /* Apply text colors */
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  /* Updated card styles */
+  .card {
+    background-color: rgb(var(--card));
+    color: rgb(var(--card-foreground));
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: var(--spacing-md);
+    font-family: var(--font-family);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* Updated button styles */
+  .btn {
+    background-color: rgb(var(--primary));
+    color: rgb(var(--primary-foreground));
+    border-radius: var(--radius);
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-base);
+    font-family: var(--font-family);
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .btn:hover {
+    background-color: rgb(var(--secondary));
+    color: rgb(var(--secondary-foreground));
+  }
+
+  .btn:disabled {
+    background-color: rgb(var(--muted));
+    color: rgb(var(--muted-foreground));
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+  
+  /* Updated input styles */
+  .form-input {
+    background-color: rgb(var(--input));
+    color: rgb(var(--foreground));
+    border: 1px solid rgb(var(--border));
+    border-radius: var(--radius);
+    padding: var(--spacing-sm);
+    font-size: var(--font-size-base);
+    font-family: var(--font-family);
+    width: 100%;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .form-input:focus {
+    border-color: rgb(var(--primary));
+    box-shadow: 0 0 0 3px rgba(var(--primary), 0.2);
+    outline: none;
+  }
+  
+  /* Progress indicators */
+  .progress-circular {
+    @apply w-[var(--size-progress-circular)] h-[var(--size-progress-circular)];
+    border-width: var(--thickness-progress-circular);
+  }
+  
+  .progress-linear {
+    @apply h-[var(--height-progress-linear)] w-full;
+  }
+  
+  /* Layout utilities */
+  .container {
+    @apply max-w-container mx-auto px-md;
+  }
+  
+  .section {
+    @apply mb-xl p-lg;
+  }
+  
+  /* Page-specific layouts */
+  .login-page {
+    @apply min-h-screen flex items-center justify-center;
+  }
+  
+  .login-card {
+    @apply w-full max-w-[400px];
+  }
+  
+  .dashboard {
+    @apply min-h-screen grid;
+    grid-template-rows: var(--header-height) 1fr;
+    grid-template-columns: var(--sidebar-width) 1fr;
+  }
+  
+  .header {
+    @apply col-span-full h-header;
+  }
+  
+  .sidebar {
+    @apply w-sidebar row-start-2 row-span-full;
+  }
+  
+  .main-content {
+    @apply col-start-2 p-lg;
+  }
+  
+  /* Exercise list */
+  .exercise-card {
+    @apply min-w-card;
+  }
+  
+  .exercise-image {
+    @apply w-full;
+    aspect-ratio: 16/9;
+  }
+  
+  /* Workout page */
+  .exercise-row {
+    @apply h-exercise-row p-sm px-md;
+  }
+  
+  .set-counter {
+    @apply h-set-counter flex items-center;
+  }
+  
+  /* Responsive grid */
+  .grid-layout {
+    @apply grid gap-grid;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 600px) {
+    .dashboard {
+      grid-template-columns: var(--sidebar-collapsed-width) 1fr;
+    }
+    
+    .sidebar {
+      @apply w-sidebar-collapsed;
+    }
+    
+    .grid-layout {
+      @apply grid-cols-mobile;
+    }
+  }
+  
+  @media (min-width: 601px) and (max-width: 960px) {
+    .grid-layout {
+      @apply grid-cols-tablet;
+    }
+  }
+  
+  @media (min-width: 961px) {
+    .grid-layout {
+      @apply grid-cols-desktop;
+    }
+  }
+}
+
+/* Login Page Layout Styles */
+:root {
+  --background-dark: #121212;
+  --background-light: #1e1e1e;
+  --text-primary: #ffffff;
+  --text-secondary: #b3b3b3;
+  --border-color: #333333;
+  --button-bg: #007bff;
+  --button-hover-bg: #0056b3;
+  --button-text: #ffffff;
+}
+
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  background-color: var(--background-dark);
+  color: var(--text-primary);
+}
+
+/* Left Section */
+.left-section {
+  background-color: var(--background-light);
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  color: var(--text-secondary);
+}
+
+.left-section h1 {
+  color: var(--text-primary);
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.left-section blockquote {
+  font-style: italic;
+  margin: 1rem 0;
+}
+
+.left-section p {
+  font-size: 0.875rem;
+}
+
+/* Right Section */
+.right-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+.card {
+  background-color: var(--background-light);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.card p {
+  font-size: 0.875rem;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.card a {
+  color: var(--button-bg);
+  text-decoration: underline;
+}
+
+/* Button */
+.google-login-button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 0.75rem;
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.google-login-button:hover {
+  background-color: var(--button-hover-bg);
+}

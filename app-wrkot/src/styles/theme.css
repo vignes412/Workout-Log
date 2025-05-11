@@ -1,0 +1,89 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600&display=swap');
+
+:root {
+  /* Typography */
+  --font-family: 'Roboto', Helvetica, Arial, sans-serif;
+  
+  /* Font sizes */
+  --font-size-page-title: 34px;
+  --font-size-section-header: 24px;
+  --font-size-body: 16px;
+  --font-size-button: 15px;
+  --font-size-caption: 14px;
+  
+  /* Font weights */
+  --font-weight-regular: 400;
+  --font-weight-emphasis: 500;
+  --font-weight-header: 600;
+  
+  /* Line heights */
+  --line-height-header: 1.2;
+  --line-height-body: 1.5;
+  --line-height-button: 1.75;
+  
+  /* Spacing system */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-xxl: 48px;
+  
+  /* Component styling */
+  --border-radius-card: 12px;
+  --border-radius-button: 4px;
+  --border-radius-input: 4px;
+  
+  --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.05);
+  
+  --height-button: 36px;
+  --height-input: 56px;
+  --height-progress-linear: 4px;
+  --size-progress-circular: 40px;
+  --thickness-progress-circular: 4px;
+  
+  /* Page-specific */
+  --header-height: 64px;
+  --sidebar-width: 240px;
+  --sidebar-collapsed-width: 64px;
+  --exercise-row-height: 72px;
+  --set-counter-height: 48px;
+}
+
+/* Base typography */
+html {
+  font-family: var(--font-family);
+}
+
+body {
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+  font-weight: var(--font-weight-regular);
+}
+
+h1 {
+  font-size: var(--font-size-page-title);
+  line-height: var(--line-height-header);
+  font-weight: var(--font-weight-header);
+}
+
+h2, h3 {
+  font-size: var(--font-size-section-header);
+  line-height: var(--line-height-header);
+  font-weight: var(--font-weight-header);
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  body {
+    font-size: calc(var(--font-size-body) * 0.875);
+  }
+  
+  h1 {
+    font-size: calc(var(--font-size-page-title) * 0.875);
+  }
+  
+  h2, h3 {
+    font-size: calc(var(--font-size-section-header) * 0.875);
+  }
+}

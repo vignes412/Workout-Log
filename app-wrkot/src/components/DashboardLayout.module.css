@@ -1,0 +1,132 @@
+/* Mobile-first Dashboard Layout CSS Module */
+
+:root {
+  --background-dark: #121212;
+  --background-light: #1e1e1e;
+  --text-primary: #ffffff;
+  --text-secondary: #b3b3b3;
+  --border-color: #333333;
+  --accent-color: #555555;
+  --icon-size: 24px;
+  --header-height: 64px;
+  --sidebar-width: 64px;
+  --sidebar-mobile-height: 56px;
+}
+
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--background-dark);
+  color: var(--text-primary);
+}
+
+/* Sidebar - fixed at bottom on mobile */
+.sidebar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  background-color: var(--background-light);
+  padding: 8px;
+  border-top: 1px solid var(--border-color);
+  height: var(--sidebar-mobile-height);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+}
+
+.sidebarIcon {
+  width: var(--icon-size);
+  height: var(--icon-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  font-size: 20px;
+}
+
+.sidebarIcon:hover, .sidebarIcon:active {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Header styling */
+.header {
+  height: var(--header-height);
+  background-color: var(--background-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.header h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.profilePic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--accent-color);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.profilePic:hover {
+  transform: scale(1.05);
+}
+
+/* Main content area */
+.mainContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: var(--sidebar-mobile-height); /* Make space for fixed bottom sidebar */
+}
+
+.mainSection {
+  flex: 1;
+  padding: 16px;
+  background-color: #0f0f0f;
+  overflow-y: auto;
+}
+
+/* Desktop layout */
+@media (min-width: 768px) {
+  .dashboard {
+    flex-direction: row;
+  }
+
+  .sidebar {
+    flex-direction: column;
+    width: var(--sidebar-width);
+    height: 100%;
+    position: static;
+    border-top: none;
+    border-right: 1px solid var(--border-color);
+    padding: 16px 0;
+  }
+
+  .mainContent {
+    flex: 1;
+    padding-bottom: 0;
+  }
+  
+  .sidebarIcon {
+    margin: 8px 0;
+  }
+}

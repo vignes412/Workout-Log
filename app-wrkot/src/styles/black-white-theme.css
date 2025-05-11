@@ -1,0 +1,101 @@
+/* Enhanced Black & White Theme */
+:root {
+  /* Base colors */
+  --background: 255, 255, 255; /* white */
+  --foreground: 0, 0, 0;       /* black */
+
+  /* Muted colors */
+  --muted: 240, 240, 240;      /* light gray */
+  --muted-foreground: 80, 80, 80; /* dark gray */
+
+  /* UI elements */
+  --card: 245, 245, 245;       /* light gray */
+  --card-foreground: 0, 0, 0;  /* black */
+
+  --border: 220, 220, 220;     /* gray border */
+  --input: 230, 230, 230;      /* input background */
+
+  --primary: 0, 0, 0;          /* black */
+  --primary-foreground: 255, 255, 255; /* white */
+
+  --secondary: 200, 200, 200;  /* gray */
+  --secondary-foreground: 0, 0, 0; /* black */
+
+  --accent: 180, 180, 180;     /* medium gray */
+  --accent-foreground: 0, 0, 0; /* black */
+
+  --radius: 8px;               /* Border radius */
+  --shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+
+  /* Typography */
+  --font-family: 'Roboto', sans-serif;
+  --font-size-base: 16px;
+  --font-size-large: 20px;
+  --font-size-small: 14px;
+
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+}
+
+/* Dark theme */
+.dark {
+  /* Base colors - Dark theme */
+  --background: 0 0% 0%;      /* black */
+  --foreground: 0 0% 100%;    /* white */
+  
+  /* Gray shades for dark theme */
+  --muted: 0 0% 20%;          /* dark gray */
+  --muted-foreground: 0 0% 70%;  /* light gray */
+  
+  /* UI elements - Dark theme */
+  --card: 0 0% 10%;           /* very dark gray */
+  --card-foreground: 0 0% 100%;  /* white text */
+  
+  --border: 0 0% 30%;         /* dark gray border */
+  --input: 0 0% 40%;          /* input border */
+  
+  --primary: 0 0% 100%;       /* white primary */
+  --primary-foreground: 0 0% 0%;  /* black text on primary */
+  
+  --secondary: 0 0% 20%;      /* dark gray secondary */
+  --secondary-foreground: 0 0% 100%;  /* white text on secondary */
+  
+  --accent: 0 0% 30%;         /* medium dark gray accent */
+  --accent-foreground: 0 0% 100%;  /* white text on accent */
+  
+  --destructive: 0 0% 100%;   /* white destructive */
+  --destructive-foreground: 0 0% 0%;  /* black text on destructive */
+  
+  --ring: 0 0% 40%;           /* medium dark gray ring */
+  
+  /* Shadow is slightly lighter in dark mode for visibility */
+  --shadow: 0 2px 8px rgb(255 255 255 / 10%);
+}
+
+/* Apply transition for theme toggling */
+* {
+  transition-property: var(--transition-property);
+  transition-duration: var(--transition-duration);
+  transition-timing-function: var(--transition-ease);
+}
+
+/* Base typography */
+html {
+  font-family: var(--font-family);
+}
+
+body {
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+  font-weight: var(--font-weight-regular);
+}
+
+/* We keep a very minimal amount of color for UI indicators to maintain usability */
+.indicator-success { color: hsl(var(--success)); }
+.indicator-error { color: hsl(var(--error)); }
+.indicator-warning { color: hsl(var(--warning)); }
+.indicator-info { color: hsl(var(--info)); }
