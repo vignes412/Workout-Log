@@ -1,4 +1,5 @@
 export interface WorkoutLogEntry {
+  id: string; // Unique identifier for the log entry
   date: string;
   muscleGroup: string;
   exercise: string;
@@ -6,4 +7,5 @@ export interface WorkoutLogEntry {
   weight: number;
   rating: number;
   restTime: number | null;
+  rowIndex?: number; // Optional: For direct sheet manipulation if needed
 }

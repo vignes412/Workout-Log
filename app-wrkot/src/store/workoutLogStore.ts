@@ -1,0 +1,215 @@
+import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
+import { WorkoutLogEntry } from '@/types/Workout_Log';
+import {
+  readSpreadsheetData,
+  createSpreadsheetRow,
+  updateSpreadsheetRow,
+  deleteSpreadsheetRow,
+  GenericSheetRowData,
+} from '@/lib/spreadsheetAPI';
+
+interface WorkoutLogState {
+  workoutLogs: WorkoutLogEntry[];
+  isLoading: boolean;
+  error: string | null;
+  isDataFetched: boolean; // Added to track initial fetch status
+  fetchWorkoutLogs: () => Promise<void>;
+  addWorkoutLog: (newLog: Omit<WorkoutLogEntry, 'id' | 'rowIndex'>) => Promise<WorkoutLogEntry | null>;
+  editWorkoutLog: (updatedLog: WorkoutLogEntry) => Promise<void>;
+  removeWorkoutLog: (logId: string) => Promise<void>;
+}
+
+const generateId = () => `log_${new Date().getTime()}_${Math.random().toString(36).substring(2, 9)}`;
+
+type WorkoutLogSheetData = Omit<WorkoutLogEntry, 'id' | 'rowIndex'>;
+
+export const useWorkoutLogStore = create<WorkoutLogState>()(
+  persist(
+    (set, get) => ({
+      workoutLogs: [],
+      isLoading: false,
+      error: null,
+      isDataFetched: false, // Initial state for isDataFetched
+      fetchWorkoutLogs: async () => {
+        set({ isLoading: true, error: null });
+
+        if (!navigator.onLine) {
+          if (get().workoutLogs.length > 0) {
+            console.log('Offline, using cached workout logs.');
+            set({ isLoading: false, isDataFetched: true }); // Data is from cache
+            return;
+          } else {
+            console.log('Offline and no cached data available.');
+            set({ error: 'Offline and no data cached.', isLoading: false, isDataFetched: false });
+            return;
+          }
+        }
+
+        try {
+          const sheetName = 'Workout_Logs';
+          const result = await readSpreadsheetData<GenericSheetRowData>(sheetName);
+
+          if (result.success && result.data) {
+            const logsWithClientFields = result.data.map((rawRow, index) => {
+              const mappedRow = {
+                date: String(rawRow['date'] || rawRow['Date'] || 'N/A'),
+                muscleGroup: String(rawRow['muscleGroup'] || rawRow['Muscle Group'] || 'N/A'),
+                exercise: String(rawRow['exercise'] || rawRow['Exercise'] || 'N/A'),
+                reps: parseFloat(String(rawRow['reps'] || rawRow['Reps'])),
+                weight: parseFloat(String(rawRow['weight'] || rawRow['Weight'])),
+                rating: parseFloat(String(rawRow['rating'] || rawRow['Rating'])),
+                restTime: rawRow['restTime'] || rawRow['Rest Time'] || rawRow['Rest (s)'] ? 
+                          parseFloat(String(rawRow['restTime'] || rawRow['Rest Time'] || rawRow['Rest (s)'])) : null,
+              };
+
+              if (mappedRow.date === 'N/A' || mappedRow.exercise === 'N/A') {
+                console.warn('Skipping row due to missing essential data (date/exercise) after mapping:', rawRow);
+                return null;
+              }
+              if (isNaN(mappedRow.reps)) mappedRow.reps = 0;
+              if (isNaN(mappedRow.weight)) mappedRow.weight = 0;
+              if (isNaN(mappedRow.rating)) mappedRow.rating = 0;
+              if (mappedRow.restTime !== null && isNaN(mappedRow.restTime)) mappedRow.restTime = null;
+
+              return {
+                ...mappedRow,
+                id: generateId(),
+                rowIndex: index + 2,
+              } as WorkoutLogEntry;
+            }).filter(log => log !== null) as WorkoutLogEntry[];
+
+            set({ workoutLogs: logsWithClientFields, isLoading: false, isDataFetched: true });
+          } else {
+            console.error('Failed to fetch workout logs from sheet:', result.error);
+            set({ error: result.error || 'Failed to fetch workout logs.', isLoading: false, isDataFetched: false });
+          }
+        } catch (err) {
+          const error = err as Error;
+          console.error('Error in fetchWorkoutLogs:', error);
+          set({ error: error.message, isLoading: false, isDataFetched: false });
+        }
+      },
+      addWorkoutLog: async (newLogData: Omit<WorkoutLogEntry, 'id' | 'rowIndex'>) => {
+        if (navigator.onLine) {
+          set({ isLoading: true });
+        } else {
+          console.warn('Attempted to add workout log while offline.');
+          set({ error: 'Cannot add log while offline.', isLoading: false });
+          return null;
+        }
+        try {
+          const sheetName = 'Workout_Logs';
+
+          const sheetRow: GenericSheetRowData = {
+            date: newLogData.date,
+            muscleGroup: newLogData.muscleGroup,
+            exercise: newLogData.exercise,
+            reps: newLogData.reps,
+            weight: newLogData.weight,
+            rating: newLogData.rating,
+            restTime: newLogData.restTime ?? '',
+          };
+
+          const response = await createSpreadsheetRow(sheetName, sheetRow);
+
+          if (response.success) {
+            await get().fetchWorkoutLogs();
+            const createdEntry: WorkoutLogEntry = {
+              ...newLogData,
+              id: generateId(),
+            };
+            return createdEntry;
+          } else {
+            throw new Error(response.error || 'Failed to create spreadsheet row.');
+          }
+        } catch (error) {
+          console.error('Failed to add workout log:', error);
+          set({ error: (error as Error).message, isLoading: false });
+          return null;
+        }
+      },
+      editWorkoutLog: async (updatedLog) => {
+        if (navigator.onLine) {
+          set({ isLoading: true });
+        } else {
+          console.warn('Attempted to edit workout log while offline. Applying optimistically to cache.');
+        }
+        try {
+          if (typeof updatedLog.rowIndex !== 'number') {
+            throw new Error('Row index is missing for updating the log.');
+          }
+          const sheetName = 'Workout_Logs';
+
+          const dataToUpdate: WorkoutLogSheetData = {
+            date: updatedLog.date,
+            muscleGroup: updatedLog.muscleGroup,
+            exercise: updatedLog.exercise,
+            reps: updatedLog.reps,
+            weight: updatedLog.weight,
+            rating: updatedLog.rating,
+            restTime: updatedLog.restTime,
+          };
+
+          const sheetRowUpdate: GenericSheetRowData = { ...dataToUpdate };
+          if (sheetRowUpdate.restTime === null) sheetRowUpdate.restTime = '';
+
+          const response = await updateSpreadsheetRow(sheetName, updatedLog.rowIndex, sheetRowUpdate);
+
+          if (!response.success) {
+            throw new Error(response.error || 'Failed to update spreadsheet row.');
+          }
+
+          set((state) => ({
+            workoutLogs: state.workoutLogs.map((log) =>
+              log.id === updatedLog.id ? { ...log, ...updatedLog } : log
+            ),
+            isLoading: false,
+            error: null,
+          }));
+        } catch (error) {
+          console.error('Failed to edit workout log:', error);
+          set({ error: (error as Error).message, isLoading: false });
+        }
+      },
+      removeWorkoutLog: async (logId: string) => {
+        const logToDelete = get().workoutLogs.find(log => log.id === logId);
+
+        if (!logToDelete || typeof logToDelete.rowIndex !== 'number') {
+          set({ error: 'Log not found or rowIndex missing for deletion.', isLoading: false });
+          console.error('Log not found or rowIndex missing for deletion:', logId, logToDelete);
+          return;
+        }
+
+        if (navigator.onLine) {
+          set({ isLoading: true });
+        } else {
+          console.warn('Attempted to delete workout log while offline. Applying optimistically to cache.');
+        }
+
+        try {
+          const sheetName = 'Workout_Logs';
+          const response = await deleteSpreadsheetRow(sheetName, logToDelete.rowIndex);
+
+          if (!response.success) {
+            throw new Error(response.error || 'Failed to delete spreadsheet row.');
+          }
+
+          set((state) => ({
+            workoutLogs: state.workoutLogs.filter((log) => log.id !== logId),
+            isLoading: false,
+            error: null,
+          }));
+        } catch (error) {
+          console.error('Failed to delete workout log:', error);
+          set({ error: (error as Error).message, isLoading: false });
+        }
+      },
+    }),
+    {
+      name: 'workout-log-storage', // name of the item in the storage (must be unique)
+      storage: createJSONStorage(() => localStorage), // (optional) by default, 'localStorage' is used
+      partialize: (state) => ({ workoutLogs: state.workoutLogs, isDataFetched: state.isDataFetched }), // Persist only these fields
+    }
+  )
+);

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {  sheets_v4 } from 'googleapis';
+import { gapi } from 'gapi-script'; // Use gapi-script for browser environment
 import type { WorkoutLogEntry } from '../types/Workout_Log';
 import type { BodyWeightEntry } from '../types/Body_Weight';
 import type { Exercise } from '../types/Exercises';
@@ -7,22 +7,67 @@ import type { WorkoutTemplate } from '../types/Workout_Templates';
 import type { WorkoutSession } from '../types/Workout_Sessions';
 import { googleConfig } from '@/config/google.config';
 
-const SPREADSHEET_ID = googleConfig.sheets.spreadsheetId; // <<< --- ACTION REQUIRED: Replace with your Spreadsheet ID
+const SPREADSHEET_ID = googleConfig.sheets.spreadsheetId;
 
-async function getSheetsService(): Promise<sheets_v4.Sheets> {
-  // ACTION REQUIRED: Implement Google API authentication (OAuth 2.0 or Service Account)
-  // Example (conceptual - adapt to your auth flow):
-  // const auth = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
-  // auth.setCredentials({ refresh_token: USER_REFRESH_TOKEN });
-  // await auth.getAccessToken(); // Ensure token is valid
-  // return google.sheets({ version: 'v4', auth });
+async function getSheetsService(): Promise<any> { // Return type any for gapi.client.sheets
+  if (!gapi || !gapi.auth2 || !gapi.auth2.getAuthInstance()) {
+    console.error('Google Auth (gapi.auth2) not initialized. Ensure AuthProvider has initialized gapi.');
+    throw new Error('Google Auth (gapi.auth2) not initialized.');
+  }
 
-  console.error(
-    'getSheetsService is not implemented. ' +
-    'You must configure Google API authentication (OAuth 2.0 or Service Account) ' +
-    'and provide the SPREADSHEET_ID to use these spreadsheet functions.'
-  );
-  throw new Error('Google Sheets API client not configured.');
+  const authInstance = gapi.auth2.getAuthInstance();
+  if (!authInstance.isSignedIn.get()) {
+    console.error('User is not signed in via Google Auth.');
+    throw new Error('User not authenticated for Google Sheets API.');
+  }
+
+  // Ensure gapi.client is loaded. AuthContext initializes client:auth2.
+  // Loading 'client' ensures gapi.client object is ready for other APIs.
+  if (!gapi.client || typeof gapi.client.load !== 'function') {
+    await new Promise<void>((resolve, reject) => {
+      gapi.load('client', (err?: any) => { 
+        if (err || !gapi.client) {
+          console.error('Failed to load gapi.client:', err);
+          reject(err || new Error('Failed to load gapi.client'));
+        } else {
+          resolve();
+        }
+      });
+    });
+  }
+
+  // Load the Sheets API if not already loaded (gapi.client.sheets will be undefined initially)
+  if (!gapi.client.sheets) {
+    try {
+      await new Promise<void>((resolve, reject) => {
+        gapi.client.load('sheets', 'v4')
+          .then(
+            () => { // onFulfilled
+              if (gapi.client.sheets) {
+                resolve();
+              } else {
+                console.error('gapi.client.sheets not available after load call.');
+                reject(new Error('gapi.client.sheets not available after load call.'));
+              }
+            },
+            (err: any) => { // onRejected
+              console.error('Error in gapi.client.load(\'sheets\', \'v4\'):', err);
+              reject(err);
+            }
+          );
+      });
+    } catch (error) {
+      console.error('Error loading Google Sheets API (wrapped promise):', error);
+      throw new Error('Failed to load Google Sheets API.');
+    }
+  }
+  
+  if (!gapi.client.sheets) { // Final check
+      console.error('gapi.client.sheets is critically unavailable after loading attempts.');
+      throw new Error('Google Sheets API (gapi.client.sheets) is critically unavailable.');
+  }
+
+  return gapi.client.sheets;
 }
 
 export type SheetSpecificData =
@@ -55,24 +100,22 @@ export async function createSpreadsheetRow<T extends GenericSheetRowData = Gener
       spreadsheetId: SPREADSHEET_ID,
       range: sheetName,
       valueInputOption: 'USER_ENTERED',
-      requestBody: {
+      resource: { // gapi uses 'resource' for requestBody
         values: values,
       },
     });
-    return { success: true, rowId: response.data.updates?.updatedRange };
+    return { success: true, rowId: response.result.updates?.updatedRange }; // gapi response is in response.result
   } catch (err) {
-    const error = err as Error;
+    const error = err as any;
     console.error(`Error creating row in sheet "${sheetName}":`, error);
-    const errorMessage = (error as any).response?.data?.error?.message || error.message || 'Failed to create spreadsheet row.';
+    const errorMessage = error.result?.error?.message || error.message || 'Failed to create spreadsheet row.';
     return { success: false, error: errorMessage };
   }
 }
 
 export async function readSpreadsheetData<T extends GenericSheetRowData = GenericSheetRowData>(
-  sheetName: KnownSheetName | string,
-  _query?: unknown // Query parameter not used in this basic implementation
+  sheetName: KnownSheetName | string
 ): Promise<{ success: boolean; data?: T[]; error?: string }> {
-
   try {
     const sheets = await getSheetsService();
     const range = sheetName;
@@ -82,7 +125,7 @@ export async function readSpreadsheetData<T extends GenericSheetRowData = Generi
       range: range,
     });
 
-    const rows = response.data.values;
+    const rows = response.result.values; // gapi response is in response.result
     if (rows && rows.length > 0) {
       const headers = rows[0].map(String);
       const data = rows.slice(1).map((rowArray: unknown[]) => {
@@ -97,9 +140,9 @@ export async function readSpreadsheetData<T extends GenericSheetRowData = Generi
       return { success: true, data: [] };
     }
   } catch (err) {
-    const error = err as Error;
+    const error = err as any;
     console.error(`Error reading sheet "${sheetName}":`, error);
-    const errorMessage = (error as any).response?.data?.error?.message || error.message || 'Failed to read spreadsheet data.';
+    const errorMessage = error.result?.error?.message || error.message || 'Failed to read spreadsheet data.';
     return { success: false, error: errorMessage };
   }
 }
@@ -109,48 +152,41 @@ export async function updateSpreadsheetRow<T extends GenericSheetRowData = Gener
   identifier: RowIdentifier,
   newData: Partial<T>
 ): Promise<{ success: boolean; error?: string }> {
-
   try {
-    const sheets = await getSheetsService(); // Initialize sheets service
-    // Full implementation is complex and depends on how you identify rows.
-    // 1. Find the row: If identifier is a number, it's a 1-based row index.
-    //    If it's an object, you'll need to read the sheet, find the matching row, and get its 0-based index.
-    // 2. Construct the range string for the update (e.g., 'SheetName!A5:C5').
-    // 3. Prepare the values array in the correct column order.
-
+    const sheets = await getSheetsService();
     console.error(
       `updateSpreadsheetRow for sheet "${sheetName}" (identifier: ${JSON.stringify(identifier)}) ` +
       `is not fully implemented. You need to determine the exact row and range to update. ` +
       `Data to update:`, newData, `Sheets service initialized:`, !!sheets
     );
-    // Placeholder: return error until implemented
     return {
       success: false,
       error: 'updateSpreadsheetRow is not fully implemented. Check console for details.'
     };
-
-    // Conceptual: After finding rowIndex (0-based) and preparing orderedValues:
+    // Conceptual gapi adaptation:
+    // const rowIndex = 0; /* Determine 0-based row index */
+    // const orderedValues = Object.values(newData); /* This needs to map to sheet columns */
     // const rangeToUpdate = `${sheetName}!A${rowIndex + 1}`;
     // const response = await sheets.spreadsheets.values.update({
     //   spreadsheetId: SPREADSHEET_ID,
-    //   range: rangeToUpdate, // This should be specific, e.g., 'Sheet1!A5' or 'Sheet1!A5:C5'
+    //   range: rangeToUpdate,
     //   valueInputOption: 'USER_ENTERED',
-    //   requestBody: {
-    //     values: [orderedValues], // values should be an array of arrays
+    //   resource: {
+    //     values: [orderedValues],
     //   },
     // });
     // return { success: true };
 
   } catch (err) {
-    const error = err as Error;
+    const error = err as any;
     console.error(`Error updating row in sheet "${sheetName}":`, error);
-    const errorMessage = (error as any).response?.data?.error?.message || error.message || 'Failed to update spreadsheet row.';
+    const errorMessage = error.result?.error?.message || error.message || 'Failed to update spreadsheet row.';
     return { success: false, error: errorMessage };
   }
 }
 
 async function getSheetIdByTitle(
-  sheetsService: sheets_v4.Sheets,
+  sheetsService: any, 
   spreadsheetId: string,
   title: string
 ): Promise<number | undefined> {
@@ -159,12 +195,13 @@ async function getSheetIdByTitle(
       spreadsheetId: spreadsheetId,
       fields: 'sheets(properties(sheetId,title))',
     });
-    const sheet = response.data.sheets?.find(s => s.properties?.title === title);
+    const sheet = response.result.sheets?.find((s: any) => s.properties?.title === title);
     return sheet?.properties?.sheetId;
   } catch (err) {
-    const error = err as Error;
+    const error = err as any;
     console.error(`Error fetching sheetId for title "${title}":`, error);
-    return undefined;
+    const errorMessage = error.result?.error?.message || error.message || `Failed to fetch sheetId for title "${title}".`;
+    throw new Error(errorMessage); // Re-throw to be caught by calling function
   }
 }
 
@@ -172,59 +209,53 @@ export async function deleteSpreadsheetRow(
   sheetName: KnownSheetName | string,
   identifier: RowIdentifier
 ): Promise<{ success: boolean; error?: string }> {
-
   try {
     const sheets = await getSheetsService();
-    // Full implementation is complex.
-    // 1. Find the 0-based row index to delete based on 'identifier'.
-    // 2. Get the numeric sheetId for the given sheetName.
-
     const currentSheetId = await getSheetIdByTitle(sheets, SPREADSHEET_ID, sheetName);
+
     if (currentSheetId === undefined) {
       return {
         success: false,
         error: `Could not find sheetId for sheet name "${sheetName}". Deletion failed.`
       };
     }
-
     console.error(
       `deleteSpreadsheetRow for sheet "${sheetName}" (identifier: ${JSON.stringify(identifier)}) ` +
       `is not fully implemented. You need to determine the exact 0-based rowIndex to delete. ` +
       `SheetId found: ${currentSheetId}`
     );
-    // Placeholder: return error until implemented
     return {
       success: false,
       error: 'deleteSpreadsheetRow is not fully implemented. Check console for details.'
     };
-
-    // Conceptual: After finding rowIndexToDelete (0-based):
-    // const requests: sheets_v4.Schema$Request[] = [
+    // Conceptual gapi adaptation:
+    // const rowIndexToDelete = 0; /* Determine 0-based row index to delete */
+    // const requests = [
     //   {
     //     deleteDimension: {
     //       range: {
     //         sheetId: currentSheetId,
     //         dimension: 'ROWS',
-    //         startIndex: rowIndexToDelete, // 0-indexed
-    //         endIndex: rowIndexToDelete + 1, // Deletes one row
+    //         startIndex: rowIndexToDelete,
+    //         endIndex: rowIndexToDelete + 1,
     //       },
     //     },
     //   },
     // ];
     // await sheets.spreadsheets.batchUpdate({
     //   spreadsheetId: SPREADSHEET_ID,
-    //   requestBody: {
+    //   resource: { 
     //     requests: requests,
     //   },
     // });
     // return { success: true };
 
   } catch (err) {
-    const error = err as Error;
+    const error = err as any;
     console.error(`Error deleting row in sheet "${sheetName}":`, error);
-    const errorMessage = (error as any).response?.data?.error?.message || error.message || 'Failed to delete spreadsheet row.';
+    const errorMessage = error.result?.error?.message || error.message || 'Failed to delete spreadsheet row.';
     return { success: false, error: errorMessage };
   }
 }
 
-console.log('Spreadsheet API module (Google Sheets version) loaded. Ensure SPREADSHEET_ID and getSheetsService are configured.');
+console.log('Spreadsheet API module (Google Sheets GAPI client version) loaded.');
