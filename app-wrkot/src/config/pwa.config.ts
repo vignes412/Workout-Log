@@ -103,5 +103,19 @@ export const serviceWorkerOptions = {
   },
   onRegisterError: (error: Error) => {
     console.error('Service worker registration error:', error);
+    
+    // Don't show error in dev mode for 500 responses (dev-sw.js may not be ready yet)
+    if (import.meta.env.DEV && error.message.includes('500')) {
+      console.warn('Service worker registration failed with 500 error in dev mode. This is normal during hot reloading.');
+      return;
+    }
+    
+    // Show an error notification in production only
+    if (import.meta.env.PROD) {
+      const event = new CustomEvent('pwa-registration-error', {
+        detail: { error }
+      });
+      window.dispatchEvent(event);
+    }
   }
 };

@@ -4,9 +4,46 @@ import * as Sentry from '@sentry/react';
 import { browserTracingIntegration, replayIntegration } from '@sentry/react';
 import posthog from 'posthog-js';
 import './index.css';
+// @ts-expect-error - virtual module provided by vite-plugin-pwa
+import { registerSW } from 'virtual:pwa-register';
+import { serviceWorkerOptions, pwaConfig } from './config/pwa.config';
+import { handleServiceWorkerDev } from './lib/pwa-utils';
+
+// Import framer-motion for animations
+import { AnimatePresence } from 'framer-motion';
 
 // Import App component
 import { App } from './App';
+import { ThemeProvider } from './contexts/ThemeProvider';
+
+// Declare updateSW on window for TypeScript
+declare global {
+  interface Window {
+    updateSW: (reloadPage?: boolean) => Promise<void>;
+  }
+}
+
+// Handle development mode service worker issues before registration
+if (import.meta.env.DEV) {
+  handleServiceWorkerDev().catch(console.error);
+}
+
+// Register service worker for PWA functionality
+const updateSW = registerSW({
+  ...serviceWorkerOptions,
+  onRegisteredSW(swUrl, r) {
+    console.log(`Service Worker registered: ${swUrl}`);
+    // Initialize periodic service worker updates check
+    if (r) { // Check if registration was successful
+      setInterval(() => {
+        r.update();
+      }, pwaConfig.updates.checkInterval || 60 * 60 * 1000); // Default 1 hour
+    }
+  },
+});
+
+// Make the updateSW function available globally for use in components
+window.updateSW = updateSW;
 
 // Initialize monitoring tools in production only
 if (import.meta.env.PROD) {
@@ -37,6 +74,8 @@ if (import.meta.env.PROD) {
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <App />
+    <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+      <App />
+    </ThemeProvider>
   </React.StrictMode>
 );

@@ -65,9 +65,9 @@ interface AppState {
   
   // View actions
   setCurrentView: (view: ViewType) => void;
-  
-  // Theme actions
+    // Theme actions
   toggleTheme: () => void;
+  setThemeMode: (theme: 'light' | 'dark') => void;
 }
 
 export const useAppStore = create<AppState>()(
@@ -218,8 +218,7 @@ export const useAppStore = create<AppState>()(
       setCurrentView: (view: ViewType) => {
         set({ currentView: view });
       },
-      
-      // Theme actions
+        // Theme actions
       toggleTheme: () => {
         const newTheme = get().themeMode === 'light' ? 'dark' : 'light';
         set({ themeMode: newTheme });
@@ -229,6 +228,18 @@ export const useAppStore = create<AppState>()(
           document.documentElement.classList.remove('light', 'dark');
           document.documentElement.classList.add(newTheme);
           localStorage.setItem('theme', newTheme);
+        }
+      },
+      
+      // Directly set theme mode
+      setThemeMode: (theme: 'light' | 'dark') => {
+        set({ themeMode: theme });
+        
+        // Apply theme to document
+        if (typeof document !== 'undefined') {
+          document.documentElement.classList.remove('light', 'dark');
+          document.documentElement.classList.add(theme);
+          localStorage.setItem('theme', theme);
         }
       }
     }),

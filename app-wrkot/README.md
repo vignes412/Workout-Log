@@ -4,6 +4,16 @@ A web application for tracking personal items using React, TypeScript, and Googl
 
 ## Features
 
+### Progressive Web App (PWA)
+
+This application is built as a Progressive Web App with the following capabilities:
+
+- **Offline Support**: Continue using the app even when offline
+- **Installable**: Add to your home screen on mobile devices or desktop
+- **Background Sync**: Data is saved locally when offline and synced when connection returns
+- **Push Notifications**: Receive updates and reminders (requires user permission)
+- **App-like Experience**: Runs in a standalone window without browser UI
+
 - Google Authentication (OAuth 2.0)
 - Store and manage your personal items
 - Data stored in Google Sheets

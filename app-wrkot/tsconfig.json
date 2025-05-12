@@ -18,6 +18,10 @@
     "strictNullChecks": false,
     "strictFunctionTypes": false,
     "jsx": "react-jsx",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    },
     "plugins": [{ "name": "typescript-plugin-css-modules" }],
     "types": ["node", "react", "react-dom"]
   },

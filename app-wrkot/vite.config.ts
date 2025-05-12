@@ -3,41 +3,37 @@ import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 import { visualizer } from 'rollup-plugin-visualizer'
 import deadFile from 'vite-plugin-deadfile';
-
+import { fileURLToPath, URL } from 'node:url';
+import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   plugins: [
     react(),
+    tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
-      manifest: {
-        name: 'Personal Thing Tracker',
-        short_name: 'Thing Tracker',
-        description: 'Track your fitness journey with detailed workout logs and progress visualization',
-        theme_color: '#171717',
-        background_color: '#f5f5f5',
-        display: 'standalone',
-        orientation: 'portrait',
-        start_url: '/',
-        icons: [
-          {
-            src: 'icons/icon-192x192.png',
-            sizes: '192x192',
-            type: 'image/png'
-          },
-          {
-            src: 'icons/icon-512x512.png',
-            sizes: '512x512',
-            type: 'image/png'
-          },
-          {
-            src: 'icons/icon-512x512.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'maskable'
-          }
-        ]
+      includeAssets: [
+        'favicon.ico', 
+        'icons/*.png', 
+        'icons/*.svg', 
+        'offline.html',
+        'robots.txt'
+      ],
+      strategies: 'generateSW',
+      injectRegister: 'auto',
+      devOptions: {
+        enabled: true,
+        type: 'classic', // Using classic mode for better compatibility
+        navigateFallback: 'index.html',
       },
+      manifest: false, // Using our custom manifest.webmanifest
       workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,jpeg,jpg,json,woff,woff2,ttf,eot}'],
+        cleanupOutdatedCaches: true,
+        navigateFallback: 'index.html',
+        navigateFallbackDenylist: [/^\/__\//, /^\/api\//],
+        skipWaiting: true,
+        clientsClaim: true,
+        offlineGoogleAnalytics: false,
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/sheets\.googleapis\.com\/.*/,
@@ -71,7 +67,7 @@ export default defineConfig({
             }
           },
           {
-            urlPattern: /\.(?:png|jpg|jpeg|svg|gif)$/,
+            urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp)$/,
             handler: 'CacheFirst',
             options: {
               cacheName: 'images-cache',
@@ -110,17 +106,19 @@ export default defineConfig({
               }
             }
           }
-        ],
-        skipWaiting: true,
-        clientsClaim: true
-      }
-    }),
+        ]
+      }    }),
     visualizer(),
-      deadFile({
+    deadFile({
       root: 'src', // Scan files in src directory
       exclude: ['src/vite-env.d.ts'], // Exclude specific files
     })
   ],
+  resolve: {
+    alias: {
+      '@': fileURLToPath(new URL('./src', import.meta.url))
+    },
+  },
   server: {
     port: 3000,
     // Ensure error overlay is enabled (default is true)
@@ -128,4 +126,18 @@ export default defineConfig({
       overlay: true
     }
   },
+  // Optimize build for PWA
+  build: {
+    sourcemap: true,
+    assetsInlineLimit: 0,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom'],
+          'pwa-components': ['./src/components/PWAHandler.tsx', './src/components/OfflineIndicator.tsx'],
+          'db-utils': ['./src/lib/db.ts', './src/lib/pwa-utils.ts']
+        }
+      }
+    }
+  }
 })
