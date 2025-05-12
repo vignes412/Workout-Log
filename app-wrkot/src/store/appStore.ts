@@ -11,7 +11,7 @@ export interface User {
 }
 
 // Define View types
-export type ViewType = 'dashboard' | 'exercises' | 'workout' | 'progress' | 'settings' | 'login';
+export type ViewType = 'dashboard' | 'workouts' | 'exercises' | 'schedule' | 'stats' | 'profile' | 'settings' | 'login';
 
 // Define GoogleAuth interfaces
 interface GoogleUser {
@@ -58,6 +58,9 @@ interface AppState {
   // Theme state
   themeMode: 'light' | 'dark';
   
+  // Sidebar state
+  isSidebarCollapsed: boolean;
+
   // Auth actions
   login: () => Promise<void>;
   logout: () => Promise<void>;
@@ -65,9 +68,14 @@ interface AppState {
   
   // View actions
   setCurrentView: (view: ViewType) => void;
-    // Theme actions
+  
+  // Theme actions
   toggleTheme: () => void;
   setThemeMode: (theme: 'light' | 'dark') => void;
+
+  // Sidebar actions
+  toggleSidebar: () => void;
+  setIsSidebarCollapsed: (collapsed: boolean) => void;
 }
 
 export const useAppStore = create<AppState>()(
@@ -89,6 +97,9 @@ export const useAppStore = create<AppState>()(
         typeof window !== 'undefined' && window.matchMedia && 
         window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light',
       
+      // Sidebar state initial value
+      isSidebarCollapsed: false,
+
       // Auth actions
       initAuth: async () => {
         set({ authLoading: true });
@@ -218,7 +229,8 @@ export const useAppStore = create<AppState>()(
       setCurrentView: (view: ViewType) => {
         set({ currentView: view });
       },
-        // Theme actions
+      
+      // Theme actions
       toggleTheme: () => {
         const newTheme = get().themeMode === 'light' ? 'dark' : 'light';
         set({ themeMode: newTheme });
@@ -241,6 +253,14 @@ export const useAppStore = create<AppState>()(
           document.documentElement.classList.add(theme);
           localStorage.setItem('theme', theme);
         }
+      },
+      
+      // Sidebar actions
+      toggleSidebar: () => {
+        set((state) => ({ isSidebarCollapsed: !state.isSidebarCollapsed }));
+      },
+      setIsSidebarCollapsed: (collapsed: boolean) => {
+        set({ isSidebarCollapsed: collapsed });
       }
     }),
     {
@@ -250,7 +270,8 @@ export const useAppStore = create<AppState>()(
         token: state.token,
         user: state.user,
         isAuthenticated: state.isAuthenticated,
-        currentView: state.currentView
+        currentView: state.currentView,
+        isSidebarCollapsed: state.isSidebarCollapsed // Persist sidebar state
       })
     }
   )

@@ -3,38 +3,18 @@ import { useAppStore } from './store/appStore';
 import { LoginPage } from './components/LoginPage';
 import { OfflineIndicator } from './components/OfflineIndicator';
 import { PWAHandler } from './components/PWAHandler';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import DashboardPage from './views/DashboardPage';
 import SettingsPage from './views/SettingsPage';
 
 // Main App Component
 export const App: React.FC = () => {
-  const { initAuth } = useAppStore();
+  const { initAuth, isAuthenticated, authLoading,currentView } = useAppStore();
   
   // Initialize auth on app mount
   useEffect(() => {
     initAuth();
   }, [initAuth]);
   
-  return (
-    <>
-      <OfflineIndicator />
-      <PWAHandler />
-      <Router>
-        <AppContent />
-      </Router>
-    </>
-  );
-};
-
-// App Content Component with authentication
-const AppContent: React.FC = () => {
-  // Use the centralized store
-  const {
-    isAuthenticated,
-    authLoading
-  } = useAppStore();
-
   // Show auth loading state
   if (authLoading) {
     return (
@@ -47,17 +27,30 @@ const AppContent: React.FC = () => {
     );
   }
 
-  // Render app content based on auth state
   return (
     <>
+      <OfflineIndicator />
+      <PWAHandler />
       {isAuthenticated ? (
-        <Routes>
-          <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/dashboard/settings" element={<SettingsPage />} />
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
-        </Routes>
+      // Use switch case to determine which view to render based on currentView
+      (() => {
+        switch (currentView) {
+        case 'dashboard':
+          return <DashboardPage />;
+        case 'workouts':
+          return <DashboardPage/>;
+        case 'exercises':
+          return <DashboardPage />;
+        case 'stats':
+          return <DashboardPage />;
+        case 'settings':
+          return <SettingsPage />;
+        default:
+          return <DashboardPage />;
+        }
+      })()
       ) : (
-        <LoginPage />
+      <LoginPage />
       )}
     </>
   );

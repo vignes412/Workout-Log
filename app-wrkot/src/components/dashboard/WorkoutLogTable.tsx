@@ -17,6 +17,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Edit2, Trash2, ChevronLeft, ChevronRight, SortAsc, SortDesc } from 'lucide-react';
 
+// Add custom meta type for columns to include responsivePriority
+interface ColumnMeta {
+  responsivePriority?: number;
+}
+
 const columnHelper = createColumnHelper<WorkoutLogEntry>();
 
 const DebouncedInput: React.FC<{
@@ -50,14 +55,17 @@ export const WorkoutLogTable: React.FC = () => {
     error,
     fetchWorkoutLogs,
     removeWorkoutLog,
+    isDataFetched,
   } = useWorkoutLogStore();
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useState('');
   
   useEffect(() => {
-    fetchWorkoutLogs();
-  }, [fetchWorkoutLogs]);
+    if (!isDataFetched) {
+      fetchWorkoutLogs();
+    }
+  }, [fetchWorkoutLogs, isDataFetched]);
 
   const handleEditRow = useCallback((entry: WorkoutLogEntry) => {
     alert(`Edit functionality for ${entry.exercise} on ${entry.date} to be implemented. This will open EditWorkoutLogModal.`);
@@ -76,16 +84,52 @@ export const WorkoutLogTable: React.FC = () => {
   }, [removeWorkoutLog]);
 
   const columns = useMemo(() => [
-    columnHelper.accessor('date', { header: 'Date', cell: info => info.getValue(), enableSorting: true }),
-    columnHelper.accessor('muscleGroup', { header: 'Muscle Group', cell: info => info.getValue(), enableSorting: true }),
-    columnHelper.accessor('exercise', { header: 'Exercise', cell: info => info.getValue(), enableSorting: true }),
-    columnHelper.accessor('reps', { header: 'Reps', cell: info => typeof info.getValue() === 'number' ? info.getValue() : 'N/A', enableSorting: true }),
-    columnHelper.accessor('weight', { header: 'Weight', cell: info => typeof info.getValue() === 'number' ? info.getValue() : 'N/A', enableSorting: true }),
-    columnHelper.accessor('rating', { header: 'Rating', cell: info => typeof info.getValue() === 'number' ? info.getValue() : 'N/A', enableSorting: true }),
-    columnHelper.accessor('restTime', { header: 'Rest (s)', cell: info => info.getValue() ?? 'N/A', enableSorting: true }),
+    columnHelper.accessor('date', { 
+      header: 'Date', 
+      cell: info => info.getValue(),
+      enableSorting: true,
+      meta: { responsivePriority: 1 } as ColumnMeta
+    }),
+    columnHelper.accessor('muscleGroup', { 
+      header: 'Muscle Group', 
+      cell: info => info.getValue(), 
+      enableSorting: true,
+      meta: { responsivePriority: 3 } as ColumnMeta
+    }),
+    columnHelper.accessor('exercise', { 
+      header: 'Exercise', 
+      cell: info => info.getValue(), 
+      enableSorting: true,
+      meta: { responsivePriority: 1 } as ColumnMeta
+    }),
+    columnHelper.accessor('reps', { 
+      header: 'Reps', 
+      cell: info => typeof info.getValue() === 'number' ? info.getValue() : 'N/A', 
+      enableSorting: true,
+      meta: { responsivePriority: 2 } as ColumnMeta
+    }),
+    columnHelper.accessor('weight', { 
+      header: 'Weight', 
+      cell: info => typeof info.getValue() === 'number' ? info.getValue() : 'N/A', 
+      enableSorting: true,
+      meta: { responsivePriority: 2 } as ColumnMeta
+    }),
+    columnHelper.accessor('rating', { 
+      header: 'Rating', 
+      cell: info => typeof info.getValue() === 'number' ? info.getValue() : 'N/A', 
+      enableSorting: true,
+      meta: { responsivePriority: 3 } as ColumnMeta
+    }),
+    columnHelper.accessor('restTime', { 
+      header: 'Rest (s)', 
+      cell: info => info.getValue() ?? 'N/A', 
+      enableSorting: true,
+      meta: { responsivePriority: 4 } as ColumnMeta
+    }),
     columnHelper.display({
       id: 'actions',
       header: 'Actions',
+      meta: { responsivePriority: 1 } as ColumnMeta,
       cell: ({ row }) => (
         <div className="flex space-x-1">
           <Button variant="outline" size="icon" onClick={() => handleEditRow(row.original)}>
@@ -154,23 +198,34 @@ export const WorkoutLogTable: React.FC = () => {
             <TableHeader>
               {table.getHeaderGroups().map(headerGroup => (
                 <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map(header => (
-                    <TableHead key={header.id} className="p-1.5">
-                      {header.isPlaceholder ? null : (
-                        <div
-                          className={`${header.column.getCanSort() ? 'cursor-pointer select-none' : ''} flex items-center`}
-                          onClick={header.column.getToggleSortingHandler()}
-                          title={header.column.getCanSort() ? 'Sort' : undefined}
-                        >
-                          {flexRender(header.column.columnDef.header, header.getContext())}
-                          {{
-                            asc: <SortAsc className="ml-1 h-3 w-3" />,
-                            desc: <SortDesc className="ml-1 h-3 w-3" />,
-                          }[header.column.getIsSorted() as string] ?? null}
-                        </div>
-                      )}
-                    </TableHead>
-                  ))}
+                  {headerGroup.headers.map(header => {
+                    const meta = header.column.columnDef.meta as ColumnMeta | undefined;
+                    const priority = meta?.responsivePriority || 999;
+                    const classes = [
+                      "p-1.5",
+                      priority > 1 && "hidden sm:table-cell",
+                      priority > 2 && "hidden md:table-cell", 
+                      priority > 3 && "hidden lg:table-cell"
+                    ].filter(Boolean).join(" ");
+
+                    return (
+                      <TableHead key={header.id} className={classes}>
+                        {header.isPlaceholder ? null : (
+                          <div
+                            className={`${header.column.getCanSort() ? 'cursor-pointer select-none' : ''} flex items-center`}
+                            onClick={header.column.getToggleSortingHandler()}
+                            title={header.column.getCanSort() ? 'Sort' : undefined}
+                          >
+                            {flexRender(header.column.columnDef.header, header.getContext())}
+                            {{
+                              asc: <SortAsc className="ml-1 h-3 w-3" />,
+                              desc: <SortDesc className="ml-1 h-3 w-3" />,
+                            }[header.column.getIsSorted() as string] ?? null}
+                          </div>
+                        )}
+                      </TableHead>
+                    );
+                  })}
                 </TableRow>
               ))}
             </TableHeader>
@@ -178,11 +233,22 @@ export const WorkoutLogTable: React.FC = () => {
               {table.getRowModel().rows.length > 0 ? (
                 table.getRowModel().rows.map(row => (
                   <TableRow key={row.id} data-state={row.getIsSelected() && "selected"} className="hover:bg-muted/50">
-                    {row.getVisibleCells().map(cell => (
-                      <TableCell key={cell.id} className="p-1.5">
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </TableCell>
-                    ))}
+                    {row.getVisibleCells().map(cell => {
+                      const meta = cell.column.columnDef.meta as ColumnMeta | undefined;
+                      const priority = meta?.responsivePriority || 999;
+                      const classes = [
+                        "p-1.5",
+                        priority > 1 && "hidden sm:table-cell",
+                        priority > 2 && "hidden md:table-cell",
+                        priority > 3 && "hidden lg:table-cell"
+                      ].filter(Boolean).join(" ");
+
+                      return (
+                        <TableCell key={cell.id} className={classes}>
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </TableCell>
+                      );
+                    })}
                   </TableRow>
                 ))
               ) : (
@@ -195,14 +261,12 @@ export const WorkoutLogTable: React.FC = () => {
             </TableBody>
           </Table>
         </div>
-        <div className="flex items-center justify-between p-2 border-t">
-          <div className="text-xs text-muted-foreground">
+        <div className="flex flex-col sm:flex-row items-center justify-between p-2 border-t gap-2">
+          <div className="text-xs text-muted-foreground text-center sm:text-left">
             Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}{" "}
             ({table.getFilteredRowModel().rows.length} row(s))
-            {table.getFilteredSelectedRowModel().rows.length > 0 &&
-              ` (${table.getFilteredSelectedRowModel().rows.length} selected)`}
           </div>
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 w-full sm:w-auto justify-center">
             <Button
               variant="outline"
               size="sm"
@@ -210,12 +274,12 @@ export const WorkoutLogTable: React.FC = () => {
               disabled={!table.getCanPreviousPage()}
               className="h-8 px-2"
             >
-              <ChevronLeft className="h-3 w-3 mr-1" /> Previous
+              <ChevronLeft className="h-3 w-3 mr-1" /> <span className="hidden sm:inline">Previous</span>
             </Button>
             <span className="text-xs">
-              Page{" "}
+              <span className="hidden sm:inline">Page </span>
               <strong>
-                {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+                {table.getState().pagination.pageIndex + 1}/{table.getPageCount()}
               </strong>
             </span>
             <Button
@@ -225,7 +289,7 @@ export const WorkoutLogTable: React.FC = () => {
               disabled={!table.getCanNextPage()}
               className="h-8 px-2"
             >
-              Next <ChevronRight className="h-3 w-3 ml-1" />
+              <span className="hidden sm:inline">Next</span> <ChevronRight className="h-3 w-3 ml-1" />
             </Button>
           </div>
         </div>
