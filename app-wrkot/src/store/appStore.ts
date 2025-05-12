@@ -11,7 +11,7 @@ export interface User {
 }
 
 // Define View types
-export type ViewType = 'dashboard' | 'workouts' | 'exercises' | 'schedule' | 'stats' | 'profile' | 'settings' | 'login';
+export type ViewType = 'dashboard' | 'workouts' | 'exercises' | 'schedule' | 'stats' | 'profile' | 'settings' | 'login' | 'test';
 
 // Define GoogleAuth interfaces
 interface GoogleUser {
