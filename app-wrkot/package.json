@@ -38,6 +38,7 @@
     "date-fns": "^4.1.0",
     "framer-motion": "^12.10.5",
     "gapi-script": "^1.2.0",
+    "googleapis": "^148.0.0",
     "idb": "^8.0.3",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.509.0",
