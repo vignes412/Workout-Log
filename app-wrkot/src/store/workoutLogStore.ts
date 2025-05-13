@@ -273,13 +273,23 @@ export const useWorkoutLogStore = create<WorkoutLogState>()(
     {
       name: 'workout-log-storage',
       storage: createJSONStorage(() => localStorage),
-      onRehydrateStorage: (state) => {
-        return (state, error) => {
+      onRehydrateStorage: (_persistedState) => {
+        return (_rehydratedState, error) => {
           if (error) {
             console.error('Error rehydrating workout log store:', error);
           }
-          if (navigator.onLine) {
-            useWorkoutLogStore.getState().syncPendingLogs();
+          if (typeof navigator !== 'undefined' && navigator.onLine) {
+            setTimeout(() => {
+              if (
+                useWorkoutLogStore &&
+                typeof useWorkoutLogStore.getState === 'function' &&
+                typeof useWorkoutLogStore.getState().syncPendingLogs === 'function'
+              ) {
+                useWorkoutLogStore.getState().syncPendingLogs();
+              } else {
+                console.warn('Attempted to call syncPendingLogs on rehydration, but the store or method was not available at that moment.');
+              }
+            }, 0);
           }
         };
       },

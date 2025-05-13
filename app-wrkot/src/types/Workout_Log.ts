@@ -9,4 +9,5 @@ export interface WorkoutLogEntry {
   restTime?: number | null;
   rowIndex?: number; // Optional: For direct sheet manipulation if needed
   isSynced?: boolean; // Optional: To track if the log is synced with the backend
+  pendingAction?: 'add' | 'update' | 'delete' | null; // To track pending offline actions
 }
