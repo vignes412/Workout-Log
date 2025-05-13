@@ -1,8 +1,8 @@
 import React from 'react';
 import { StatCard } from './StatCard';
-import { WorkoutLogTable } from './WorkoutLogTable'; // Import the new table
+import { WorkoutLogTable } from './WorkoutLogTable';
 import { Button } from '@/components/ui/button';
-import { PlusCircle } from 'lucide-react';
+import { PlusCircle, Dumbbell } from 'lucide-react';
 
 export const DashboardOverview: React.FC = () => {
   // Mock data - in a real app, this would come from your state/store
@@ -50,17 +50,14 @@ export const DashboardOverview: React.FC = () => {
   ];
 
   return (
-    <div className="flex flex-col gap-6 p-4 md:p-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <div className="flex flex-col gap-6 p-4 md:p-6">      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h1 className="text-2xl font-semibold text-foreground">Dashboard</h1>
         <Button 
-          onClick={() => { 
-            alert('Add New Workout Log Modal to be implemented.');
-          }}
+          onClick={() => window.dispatchEvent(new CustomEvent('open-add-workout-modal'))}
           className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-md transition-all duration-300 ease-in-out hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50 rounded-lg px-4 py-2 flex items-center group"
         >
-          <PlusCircle className="h-5 w-5 mr-2 transition-transform duration-300 group-hover:rotate-90" />
-          New Workout Log
+          <Dumbbell className="h-5 w-5 mr-2 transition-transform duration-300 group-hover:scale-110" />
+          Add Workout
         </Button>
       </div>
 
@@ -76,9 +73,7 @@ export const DashboardOverview: React.FC = () => {
             trend={stat.trend}
           />
         ))}
-      </div>
-
-      {/* Workout Log Table Card */}
+      </div>      {/* Workout Log Table Card */}
       <div className="grid grid-cols-1 gap-6">
         <WorkoutLogTable />
       </div>

@@ -8,9 +8,10 @@ import './index.css';
 import { registerSW } from 'virtual:pwa-register';
 import { serviceWorkerOptions, pwaConfig } from './config/pwa.config';
 import { handleServiceWorkerDev } from './lib/pwa-utils';
+import { Toaster } from 'sonner';
 
-// Import framer-motion for animations
-import { AnimatePresence } from 'framer-motion';
+// Import framer-motion for animations (not used here directly)
+// import { AnimatePresence } from 'framer-motion';
 
 // Import App component
 import { App } from './App';
@@ -75,6 +76,7 @@ if (import.meta.env.PROD) {
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+      <Toaster position="top-center" richColors />
       <App />
     </ThemeProvider>
   </React.StrictMode>

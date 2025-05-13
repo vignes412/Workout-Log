@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { DashboardOverview } from '@/components/dashboard/DashboardOverview';
 import { RecentWorkouts } from '@/components/dashboard/RecentWorkouts';
 import { DashboardLayout } from '@/components/DashboardLayout';
@@ -7,8 +7,10 @@ import { GradientCard } from '@/components/ui/glass-card';
 import { PlusCircle, LineChart, TrendingUp, Activity } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAppStore } from '@/store/appStore';
+import { useExercisesStore } from '@/store/exercisesStore';
 import { WorkoutLogTable } from '@/components/dashboard/WorkoutLogTable';
 import { Card, CardContent } from '@/components/ui/card';
+import AddWorkoutLogModal from '@/components/dashboard/AddWorkoutLogModal';
 
 // This will render content based on currentView
 const ViewContent: React.FC = () => {
@@ -35,8 +37,23 @@ const ViewContent: React.FC = () => {
 
 // Original dashboard content moved to its own component
 const DashboardMainContent: React.FC = () => {
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+
+  useEffect(() => {
+    // Listen for custom event from other components that want to open the add workout modal
+    const handleOpenWorkoutModal = () => setIsAddModalOpen(true);
+    window.addEventListener('open-add-workout-modal', handleOpenWorkoutModal);
+    
+    return () => {
+      window.removeEventListener('open-add-workout-modal', handleOpenWorkoutModal);
+    };
+  }, []);
+
   return (
     <StaggerContainer className="flex flex-col gap-8">
+      {/* Modal shared across both workout buttons */}
+      <AddWorkoutLogModal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} />
+
       <StaggerItem>
         <div className="mb-6">
           <h2 className="text-3xl font-bold tracking-tight mb-2 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Dashboard</h2>
@@ -75,7 +92,10 @@ const DashboardMainContent: React.FC = () => {
         <h3 className="text-2xl font-semibold mb-4 mt-2">Quick Actions</h3>
         <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
           <SlideUp delay={0.3}>
-            <div className="bg-card/50 backdrop-blur-md rounded-lg border border-border/30 p-5 transition-all hover:shadow-md hover:translate-y-[-2px] duration-300 flex items-center gap-4">
+            <div 
+              className="bg-card/50 backdrop-blur-md rounded-lg border border-border/30 p-5 transition-all hover:shadow-md hover:translate-y-[-2px] duration-300 flex items-center gap-4 cursor-pointer"
+              onClick={() => setIsAddModalOpen(true)}
+            >
               <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
                 <PlusCircle className="h-5 w-5" />
               </div>
@@ -180,6 +200,12 @@ const SettingsContent: React.FC = () => (
 
 // The main DashboardPage component that wraps content in the layout
 const DashboardPage: React.FC = () => {
+  const { fetchExercises } = useExercisesStore();
+
+  useEffect(() => {
+    fetchExercises();
+  }, [fetchExercises]);
+
   return (
     <DashboardLayout>
       <ViewContent />

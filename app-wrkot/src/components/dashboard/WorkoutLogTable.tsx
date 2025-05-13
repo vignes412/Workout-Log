@@ -94,7 +94,7 @@ export const WorkoutLogTable: React.FC = () => {
       header: 'Muscle Group', 
       cell: info => info.getValue(), 
       enableSorting: true,
-      meta: { responsivePriority: 3 } as ColumnMeta
+      meta: { responsivePriority: 1 } as ColumnMeta
     }),
     columnHelper.accessor('exercise', { 
       header: 'Exercise', 
@@ -106,13 +106,13 @@ export const WorkoutLogTable: React.FC = () => {
       header: 'Reps', 
       cell: info => typeof info.getValue() === 'number' ? info.getValue() : 'N/A', 
       enableSorting: true,
-      meta: { responsivePriority: 2 } as ColumnMeta
+      meta: { responsivePriority: 1 } as ColumnMeta
     }),
     columnHelper.accessor('weight', { 
       header: 'Weight', 
       cell: info => typeof info.getValue() === 'number' ? info.getValue() : 'N/A', 
       enableSorting: true,
-      meta: { responsivePriority: 2 } as ColumnMeta
+      meta: { responsivePriority: 1 } as ColumnMeta
     }),
     columnHelper.accessor('rating', { 
       header: 'Rating', 
@@ -130,19 +130,24 @@ export const WorkoutLogTable: React.FC = () => {
       id: 'actions',
       header: 'Actions',
       meta: { responsivePriority: 1 } as ColumnMeta,
-      cell: ({ row }) => (
-        <div className="flex space-x-1">
-          <Button variant="outline" size="icon" onClick={() => handleEditRow(row.original)}>
-            <Edit2 className="h-3 w-3" />
+      cell: ({ row }) => (        <div className="flex space-x-2">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => handleEditRow(row.original)}
+            className="h-8 w-8 p-0"
+          >
+            <Edit2 className="h-4 w-4" />
           </Button>
           <Button 
             variant="destructive" 
-            size="icon" 
+            size="sm" 
             onClick={() => {
               handleDeleteRow(row.original.id, row.original.exercise, row.original.date);
             }}
+            className="h-8 w-8 p-0"
           >
-            <Trash2 className="h-3 w-3" />
+            <Trash2 className="h-4 w-4" />
           </Button>
         </div>
       ),
@@ -174,13 +179,13 @@ export const WorkoutLogTable: React.FC = () => {
   if (error) return <Card><CardContent className="pt-4 text-red-500">Error: {error}</CardContent></Card>;
 
   return (
-    <Card className="shadow-lg w-full max-w-full overflow-x-auto">
-      <CardHeader>
-        <CardTitle className="text-lg">Workout Logs</CardTitle>
+    <Card className="shadow-lg w-full max-w-full overflow-hidden">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-xl">Workout Logs</CardTitle>
       </CardHeader>
       <CardContent className="p-0">
-        <div className="p-2 space-y-2">
-          {/* Global filter input */}
+        {/* Search filter */}
+        <div className="p-3 space-y-2">
           <div className="flex flex-col space-y-1">
             <label htmlFor="globalFilterInput" className="text-xs font-medium">Filter Table</label>
             <DebouncedInput
@@ -189,94 +194,104 @@ export const WorkoutLogTable: React.FC = () => {
               value={globalFilter ?? ''}
               onChange={value => setGlobalFilter(String(value))}
               placeholder="Search across all fields..."
-              className="h-8 text-xs"
+              className="h-9 text-sm"
             />
           </div>
         </div>
-        <div className="overflow-x-auto">
-          <Table className="min-w-full text-xs whitespace-nowrap">
-            <TableHeader>
-              {table.getHeaderGroups().map(headerGroup => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map(header => {
-                    const meta = header.column.columnDef.meta as ColumnMeta | undefined;
-                    const priority = meta?.responsivePriority || 999;
-                    const classes = [
-                      "p-1.5",
-                      priority > 1 && "hidden sm:table-cell",
-                      priority > 2 && "hidden md:table-cell", 
-                      priority > 3 && "hidden lg:table-cell"
-                    ].filter(Boolean).join(" ");
-
-                    return (
-                      <TableHead key={header.id} className={classes}>
-                        {header.isPlaceholder ? null : (
-                          <div
-                            className={`${header.column.getCanSort() ? 'cursor-pointer select-none' : ''} flex items-center`}
-                            onClick={header.column.getToggleSortingHandler()}
-                            title={header.column.getCanSort() ? 'Sort' : undefined}
-                          >
-                            {flexRender(header.column.columnDef.header, header.getContext())}
-                            {{
-                              asc: <SortAsc className="ml-1 h-3 w-3" />,
-                              desc: <SortDesc className="ml-1 h-3 w-3" />,
-                            }[header.column.getIsSorted() as string] ?? null}
-                          </div>
-                        )}
-                      </TableHead>
-                    );
-                  })}
-                </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody>
-              {table.getRowModel().rows.length > 0 ? (
-                table.getRowModel().rows.map(row => (
-                  <TableRow key={row.id} data-state={row.getIsSelected() && "selected"} className="hover:bg-muted/50">
-                    {row.getVisibleCells().map(cell => {
-                      const meta = cell.column.columnDef.meta as ColumnMeta | undefined;
+        
+        {/* Table with horizontal scroll */}
+        <div className="overflow-x-auto" style={{ width: '100%' }}>
+          <div style={{ minWidth: '800px' }}>
+            <Table className="w-full text-sm whitespace-nowrap">
+              <TableHeader>
+                {table.getHeaderGroups().map(headerGroup => (
+                  <TableRow key={headerGroup.id}>
+                    {headerGroup.headers.map(header => {
+                      const meta = header.column.columnDef.meta as ColumnMeta | undefined;
                       const priority = meta?.responsivePriority || 999;
                       const classes = [
-                        "p-1.5",
+                        "px-3.5 py-3.5",
                         priority > 1 && "hidden sm:table-cell",
-                        priority > 2 && "hidden md:table-cell",
+                        priority > 2 && "hidden md:table-cell", 
                         priority > 3 && "hidden lg:table-cell"
                       ].filter(Boolean).join(" ");
 
                       return (
-                        <TableCell key={cell.id} className={classes}>
-                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                        </TableCell>
+                        <TableHead key={header.id} className={classes}>
+                          {header.isPlaceholder ? null : (
+                            <div
+                              className={`${header.column.getCanSort() ? 'cursor-pointer select-none' : ''} flex items-center`}
+                              onClick={header.column.getToggleSortingHandler()}
+                              title={header.column.getCanSort() ? 'Sort' : undefined}
+                            >
+                              {flexRender(header.column.columnDef.header, header.getContext())}
+                              {{
+                                asc: <SortAsc className="ml-1 h-4 w-4" />,
+                                desc: <SortDesc className="ml-1 h-4 w-4" />,
+                              }[header.column.getIsSorted() as string] ?? null}
+                            </div>
+                          )}
+                        </TableHead>
                       );
                     })}
                   </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={columns.length} className="h-24 text-center p-1.5">
-                    No results.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
+                ))}
+              </TableHeader>
+              <TableBody>
+                {table.getRowModel().rows.length > 0 ? (
+                  table.getRowModel().rows.map(row => (
+                    <TableRow 
+                      key={row.id} 
+                      data-state={row.getIsSelected() && "selected"} 
+                      className="hover:bg-muted/50 border-b"
+                    >
+                      {row.getVisibleCells().map(cell => {
+                        const meta = cell.column.columnDef.meta as ColumnMeta | undefined;
+                        const priority = meta?.responsivePriority || 999;
+                        const classes = [
+                          "px-1 py-1.5", // Increased padding for less compact rows
+                          priority > 1 && "hidden sm:table-cell",
+                          priority > 2 && "hidden md:table-cell",
+                          priority > 3 && "hidden lg:table-cell"
+                        ].filter(Boolean).join(" ");
+
+                        return (
+                          <TableCell key={cell.id} className={classes}>
+                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          </TableCell>
+                        );
+                      })}
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={columns.length} className="h-32 text-center px-3 py-4">
+                      No results.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
         </div>
-        <div className="flex flex-col sm:flex-row items-center justify-between p-2 border-t gap-2">
-          <div className="text-xs text-muted-foreground text-center sm:text-left">
+        
+        {/* Pagination */}
+        <div className="flex flex-col sm:flex-row items-center justify-between p-4 border-t gap-3">
+          <div className="text-sm text-muted-foreground text-center sm:text-left">
             Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}{" "}
             ({table.getFilteredRowModel().rows.length} row(s))
           </div>
-          <div className="flex items-center space-x-2 w-full sm:w-auto justify-center">
+          <div className="flex items-center space-x-3 w-full sm:w-auto justify-center">
             <Button
               variant="outline"
               size="sm"
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
-              className="h-8 px-2"
+              className="h-9 px-3"
             >
-              <ChevronLeft className="h-3 w-3 mr-1" /> <span className="hidden sm:inline">Previous</span>
+              <ChevronLeft className="h-4 w-4 mr-1" /> <span className="hidden sm:inline">Previous</span>
             </Button>
-            <span className="text-xs">
+            <span className="text-sm">
               <span className="hidden sm:inline">Page </span>
               <strong>
                 {table.getState().pagination.pageIndex + 1}/{table.getPageCount()}
@@ -287,9 +302,9 @@ export const WorkoutLogTable: React.FC = () => {
               size="sm"
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
-              className="h-8 px-2"
+              className="h-9 px-3"
             >
-              <span className="hidden sm:inline">Next</span> <ChevronRight className="h-3 w-3 ml-1" />
+              <span className="hidden sm:inline">Next</span> <ChevronRight className="h-4 w-4 ml-1" />
             </Button>
           </div>
         </div>
