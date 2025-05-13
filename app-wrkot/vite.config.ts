@@ -5,7 +5,16 @@ import { visualizer } from 'rollup-plugin-visualizer'
 import deadFile from 'vite-plugin-deadfile';
 import { fileURLToPath, URL } from 'node:url';
 import tailwindcss from '@tailwindcss/vite'
+
+// Get repository name from GitHub Pages URL
+const getRepoName = () => {
+  // For GitHub Pages: https://username.github.io/repo-name/
+  // Extract repo-name from package.json or env var if available
+  return 'app-wrkot'; // Replace this with your actual repo name if different
+}
+
 export default defineConfig({
+  base: process.env.NODE_ENV === 'production' ? `/${getRepoName()}/` : '/',
   plugins: [
     react(),
     tailwindcss(),

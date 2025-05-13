@@ -13,9 +13,12 @@ import { useWorkoutLogStore } from '@/store/workoutLogStore';
 import type { WorkoutLogEntry } from '@/types/Workout_Log';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TableResponsiveContainer } from '@/components/ui/table';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Edit2, Trash2, ChevronLeft, ChevronRight, SortAsc, SortDesc } from 'lucide-react';
+import { useBreakpoint } from '@/hooks/useBreakpoint';
+import { useTableResponsive } from '@/hooks/useTableResponsive';
+import { cn } from '@/lib/utils';
 
 // Add custom meta type for columns to include responsivePriority
 interface ColumnMeta {
@@ -60,6 +63,8 @@ export const WorkoutLogTable: React.FC = () => {
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useState('');
+  const isSmallScreen = !useBreakpoint('sm');
+  const { tableRef, hasScrolled, isScrollable, handleScroll } = useTableResponsive();
   
   useEffect(() => {
     if (!isDataFetched) {
@@ -98,43 +103,45 @@ export const WorkoutLogTable: React.FC = () => {
     }),
     columnHelper.accessor('exercise', { 
       header: 'Exercise', 
-      cell: info => info.getValue(), 
+      cell: info => info.getValue(),
       enableSorting: true,
       meta: { responsivePriority: 1 } as ColumnMeta
     }),
-    columnHelper.accessor('reps', { 
-      header: 'Reps', 
-      cell: info => typeof info.getValue() === 'number' ? info.getValue() : 'N/A', 
+    columnHelper.accessor('weight', {
+      header: 'Weight (kg)',
+      cell: info => info.getValue(),
       enableSorting: true,
-      meta: { responsivePriority: 1 } as ColumnMeta
+      meta: { responsivePriority: 2 } as ColumnMeta
     }),
-    columnHelper.accessor('weight', { 
-      header: 'Weight', 
-      cell: info => typeof info.getValue() === 'number' ? info.getValue() : 'N/A', 
+    columnHelper.accessor('reps', {
+      header: 'Reps',
+      cell: info => info.getValue(),
       enableSorting: true,
-      meta: { responsivePriority: 1 } as ColumnMeta
+      meta: { responsivePriority: 2 } as ColumnMeta
     }),
-    columnHelper.accessor('rating', { 
-      header: 'Rating', 
-      cell: info => typeof info.getValue() === 'number' ? info.getValue() : 'N/A', 
+    columnHelper.accessor('rating', {
+      header: 'Rating',
+      cell: info => info.getValue(),
       enableSorting: true,
       meta: { responsivePriority: 3 } as ColumnMeta
     }),
-    columnHelper.accessor('restTime', { 
-      header: 'Rest (s)', 
-      cell: info => info.getValue() ?? 'N/A', 
+    columnHelper.accessor('restTime', {
+      header: 'Rest Time',
+      cell: info => info.getValue() ? `${info.getValue()}s` : '-',
       enableSorting: true,
-      meta: { responsivePriority: 4 } as ColumnMeta
+      meta: { responsivePriority: 3 } as ColumnMeta
     }),
     columnHelper.display({
       id: 'actions',
       header: 'Actions',
-      meta: { responsivePriority: 1 } as ColumnMeta,
-      cell: ({ row }) => (        <div className="flex space-x-2">
+      cell: ({ row }) => (
+        <div className="flex space-x-2">
           <Button 
             variant="outline" 
             size="sm" 
-            onClick={() => handleEditRow(row.original)}
+            onClick={() => {
+              handleEditRow(row.original);
+            }}
             className="h-8 w-8 p-0"
           >
             <Edit2 className="h-4 w-4" />
@@ -151,6 +158,7 @@ export const WorkoutLogTable: React.FC = () => {
           </Button>
         </div>
       ),
+      meta: { responsivePriority: 1 } as ColumnMeta
     }),
   ], [handleDeleteRow, handleEditRow]);
 
@@ -199,22 +207,32 @@ export const WorkoutLogTable: React.FC = () => {
           </div>
         </div>
         
-        {/* Table with horizontal scroll */}
-        <div className="overflow-x-auto" style={{ width: '100%' }}>
-          <div style={{ minWidth: '800px' }}>
-            <Table className="w-full text-sm whitespace-nowrap">
+        {/* Table with horizontal scroll - mobile optimized */}
+        <div 
+          className={cn(
+            "relative mobile-optimized table-scroll-container",
+            hasScrolled && "scrolled-right"
+          )}
+        >
+          {isSmallScreen && isScrollable && !hasScrolled && <div className="scroll-indicator" />}
+          <TableResponsiveContainer 
+            ref={tableRef} 
+            onScroll={handleScroll}
+            className="scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary/20 hover:scrollbar-thumb-primary/30"
+          >
+            <Table className="w-full text-sm">
               <TableHeader>
                 {table.getHeaderGroups().map(headerGroup => (
                   <TableRow key={headerGroup.id}>
                     {headerGroup.headers.map(header => {
                       const meta = header.column.columnDef.meta as ColumnMeta | undefined;
                       const priority = meta?.responsivePriority || 999;
-                      const classes = [
-                        "px-3.5 py-3.5",
+                      const classes = cn(
+                        "px-3 py-3",
                         priority > 1 && "hidden sm:table-cell",
                         priority > 2 && "hidden md:table-cell", 
                         priority > 3 && "hidden lg:table-cell"
-                      ].filter(Boolean).join(" ");
+                      );
 
                       return (
                         <TableHead key={header.id} className={classes}>
@@ -248,12 +266,12 @@ export const WorkoutLogTable: React.FC = () => {
                       {row.getVisibleCells().map(cell => {
                         const meta = cell.column.columnDef.meta as ColumnMeta | undefined;
                         const priority = meta?.responsivePriority || 999;
-                        const classes = [
-                          "px-1 py-1.5", // Increased padding for less compact rows
+                        const classes = cn(
+                          "px-3 py-2", // Increased padding for better touch targets
                           priority > 1 && "hidden sm:table-cell",
                           priority > 2 && "hidden md:table-cell",
                           priority > 3 && "hidden lg:table-cell"
-                        ].filter(Boolean).join(" ");
+                        );
 
                         return (
                           <TableCell key={cell.id} className={classes}>
@@ -265,17 +283,17 @@ export const WorkoutLogTable: React.FC = () => {
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={columns.length} className="h-32 text-center px-3 py-4">
+                    <TableCell colSpan={columns.length} className="h-24 text-center">
                       No results.
                     </TableCell>
                   </TableRow>
                 )}
               </TableBody>
             </Table>
-          </div>
+          </TableResponsiveContainer>
         </div>
         
-        {/* Pagination */}
+        {/* Pagination - mobile responsive */}
         <div className="flex flex-col sm:flex-row items-center justify-between p-4 border-t gap-3">
           <div className="text-sm text-muted-foreground text-center sm:text-left">
             Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}{" "}
@@ -289,14 +307,9 @@ export const WorkoutLogTable: React.FC = () => {
               disabled={!table.getCanPreviousPage()}
               className="h-9 px-3"
             >
-              <ChevronLeft className="h-4 w-4 mr-1" /> <span className="hidden sm:inline">Previous</span>
+              <ChevronLeft className="h-4 w-4 mr-1" />
+              <span className="hidden sm:inline">Previous</span>
             </Button>
-            <span className="text-sm">
-              <span className="hidden sm:inline">Page </span>
-              <strong>
-                {table.getState().pagination.pageIndex + 1}/{table.getPageCount()}
-              </strong>
-            </span>
             <Button
               variant="outline"
               size="sm"
@@ -304,7 +317,8 @@ export const WorkoutLogTable: React.FC = () => {
               disabled={!table.getCanNextPage()}
               className="h-9 px-3"
             >
-              <span className="hidden sm:inline">Next</span> <ChevronRight className="h-4 w-4 ml-1" />
+              <span className="hidden sm:inline">Next</span>
+              <ChevronRight className="h-4 w-4 ml-1" />
             </Button>
           </div>
         </div>

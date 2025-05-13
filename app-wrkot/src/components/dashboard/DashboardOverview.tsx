@@ -50,19 +50,20 @@ export const DashboardOverview: React.FC = () => {
   ];
 
   return (
-    <div className="flex flex-col gap-6 p-4 md:p-6">      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h1 className="text-2xl font-semibold text-foreground">Dashboard</h1>
+    <div className="flex flex-col gap-4 sm:gap-6 p-2 sm:p-4 md:p-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4">
+        <h1 className="text-xl sm:text-2xl font-semibold text-foreground">Dashboard</h1>
         <Button 
           onClick={() => window.dispatchEvent(new CustomEvent('open-add-workout-modal'))}
-          className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-md transition-all duration-300 ease-in-out hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50 rounded-lg px-4 py-2 flex items-center group"
+          className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground shadow-md transition-all duration-300 ease-in-out hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50 rounded-lg px-4 py-2 flex items-center justify-center sm:justify-start group"
         >
           <Dumbbell className="h-5 w-5 mr-2 transition-transform duration-300 group-hover:scale-110" />
           Add Workout
         </Button>
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {/* Stats Grid - Responsive with different column counts for different screen sizes */}
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4">
         {stats.map((stat) => (
           <StatCard
             key={stat.title}
@@ -73,8 +74,10 @@ export const DashboardOverview: React.FC = () => {
             trend={stat.trend}
           />
         ))}
-      </div>      {/* Workout Log Table Card */}
-      <div className="grid grid-cols-1 gap-6">
+      </div>
+      
+      {/* Workout Log Table Card */}
+      <div className="grid grid-cols-1 gap-4 sm:gap-6">
         <WorkoutLogTable />
       </div>
     </div>

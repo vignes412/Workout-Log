@@ -1,14 +1,13 @@
 {
   "name": "Personal Thing Tracker",
-  "short_name": "Thing Tracker",
-  "description": "Track your fitness journey with detailed workout logs and progress visualization",
+  "short_name": "Thing Tracker",  "description": "Track your fitness journey with detailed workout logs and progress visualization",
   "theme_color": "#171717",
   "background_color": "#f5f5f5",
   "display": "standalone",
   "orientation": "portrait",
-  "start_url": "/",
-  "id": "/",
-  "scope": "/",
+  "start_url": "./",
+  "id": "./",
+  "scope": "./",
   "prefer_related_applications": false,
   "categories": ["fitness", "health", "lifestyle"],
   "screenshots": [

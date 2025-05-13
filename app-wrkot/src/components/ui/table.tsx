@@ -2,6 +2,22 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
+// Add a responsive wrapper that can be used for tables
+const TableResponsiveContainer = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn(
+      "relative w-full overflow-auto md:overflow-visible",
+      className
+    )}
+    {...props}
+  />
+))
+TableResponsiveContainer.displayName = "TableResponsiveContainer"
+
 function Table({ className, ...props }: React.ComponentProps<"table">) {
   return (
     <div
@@ -111,4 +127,5 @@ export {
   TableRow,
   TableCell,
   TableCaption,
+  TableResponsiveContainer,
 }

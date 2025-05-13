@@ -15,6 +15,8 @@ interface DashboardLayoutProps {
 export const DashboardLayout = ({ children }: DashboardLayoutProps): React.ReactElement => {
   const { logout, isSidebarCollapsed, toggleSidebar, setIsSidebarCollapsed, currentView } = useAppStore();
   const [isMobileView, setIsMobileView] = useState(window.innerWidth < 768);
+  const [lastScrollTop, setLastScrollTop] = useState(0);
+  const [isHeaderHidden, setIsHeaderHidden] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -25,11 +27,31 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps): React.React
       }
     };
 
+    // Scroll handling for hiding/showing header on mobile
+    const handleScroll = () => {
+      if (!isMobileView) return;
+      
+      const st = window.scrollY || document.documentElement.scrollTop;
+      if (st > lastScrollTop && st > 60) {
+        // Scrolling down past a threshold
+        setIsHeaderHidden(true);
+      } else if (st < lastScrollTop || st < 10) {
+        // Scrolling up or at the top
+        setIsHeaderHidden(false);
+      }
+      setLastScrollTop(st);
+    };
+
     window.addEventListener('resize', handleResize);
+    window.addEventListener('scroll', handleScroll);
     handleResize();
 
-    return () => window.removeEventListener('resize', handleResize);
-  }, [setIsSidebarCollapsed]);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [setIsSidebarCollapsed, isMobileView, lastScrollTop]);
+
   // Function to handle opening the workout modal
   const handleOpenAddWorkoutModal = () => {
     // Create and dispatch a custom event that the DashboardPage component will listen for
@@ -46,9 +68,10 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps): React.React
         <FloatingActionButton 
           icon={<Plus className="h-6 w-6" />}
           onClick={handleOpenAddWorkoutModal}
-          variant="primary"
           tooltip="Add Workout"
           aria-label="Add new workout"
+          position={isMobileView ? "bottom-center" : "bottom-right"}
+          className="bg-primary text-primary-foreground hover:bg-primary/90"
         />
       )}
       
@@ -67,7 +90,9 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps): React.React
         <div className={`flex flex-1 flex-col transition-all duration-300 ease-in-out ${
         !isMobileView && (isSidebarCollapsed ? 'ml-[var(--sidebar-collapsed-width,80px)]' : 'ml-[var(--sidebar-width,280px)]')
       }`}>
-        <header className="sticky top-0 z-10 flex h-[var(--header-height,64px)] items-center gap-4 border-b bg-background/70 backdrop-blur-md supports-[backdrop-filter]:bg-background/60 px-4 shadow-sm sm:px-6">
+        <header className={`sticky top-0 z-10 flex h-[var(--header-height,64px)] items-center gap-4 border-b bg-background/70 backdrop-blur-md supports-[backdrop-filter]:bg-background/60 px-4 shadow-sm sm:px-6 transition-transform duration-300 ${
+          isHeaderHidden && isMobileView ? '-translate-y-full' : 'translate-y-0'
+        }`}>
           {isMobileView && (
             <Sheet>
               <SheetTrigger asChild>
@@ -98,7 +123,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps): React.React
               <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-accent animate-pulse-soft"></span>
               <span className="sr-only">Notifications</span>
             </Button>
-            
+
             <div className="hidden md:flex border-l h-6 mx-1.5 border-border/50"></div>
             
             <div className="hidden md:flex items-center gap-3">
@@ -121,8 +146,9 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps): React.React
               <span className="sr-only">Logout</span>
             </Button>
           </div>
-        </header>        <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 pb-20 md:pb-8">
-          <div className="mx-auto max-w-full">
+        </header>
+        <main className="flex-1 overflow-y-auto overflow-x-hidden p-2 sm:p-4 md:p-6 lg:p-8 pb-20 md:pb-8">
+          <div className="mx-auto max-w-full w-full overflow-x-hidden contain-layout">
             {children}
           </div>
         </main>

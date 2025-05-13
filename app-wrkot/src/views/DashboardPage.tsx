@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { useAppStore } from '@/store/appStore';
 import { useExercisesStore } from '@/store/exercisesStore';
 import { WorkoutLogTable } from '@/components/dashboard/WorkoutLogTable';
+import { WorkoutSummaryTable } from '@/components/dashboard/WorkoutSummaryTable';
 import { Card, CardContent } from '@/components/ui/card';
 import AddWorkoutLogModal from '@/components/dashboard/AddWorkoutLogModal';
 
@@ -49,8 +50,7 @@ const DashboardMainContent: React.FC = () => {
     };
   }, []);
 
-  return (
-    <StaggerContainer className="flex flex-col gap-8">
+  return (    <StaggerContainer className="flex flex-col gap-6 md:gap-8">
       {/* Modal shared across both workout buttons */}
       <AddWorkoutLogModal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} />
 
@@ -131,6 +131,15 @@ const DashboardMainContent: React.FC = () => {
           </SlideUp>
         </div>
       </StaggerItem>
+        <StaggerItem>
+        <h3 className="text-2xl font-semibold mb-4 mt-2">Workout Summary</h3>
+        <div className="w-full max-w-full overflow-hidden stats-container">
+          {/* Adding mobile-optimized container */}
+          <div className="mobile-optimized rounded-lg">
+            <WorkoutSummaryTable />
+          </div>
+        </div>
+      </StaggerItem>
     </StaggerContainer>
   );
 };
@@ -179,7 +188,7 @@ const StatsContent: React.FC = () => (
     <p className="text-muted-foreground">View detailed analytics of your progress</p>
     <Card>
       <CardContent className="p-6">
-        <p>Statistics feature coming soon...</p>
+        <p>Detailed statistics view coming soon...</p>
       </CardContent>
     </Card>
   </div>
