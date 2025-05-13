@@ -2,16 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { SidebarNav } from './SidebarNav';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, Bell, LogOut } from 'lucide-react';
+import { Menu, Bell, LogOut, Plus } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
 import { useAppStore } from '@/store/appStore';
+import { FloatingActionButton } from '@/components/ui/floating-action-button';
+import { BottomNav } from './BottomNav';
 
 interface DashboardLayoutProps {
   children?: React.ReactNode;
 }
 
 export const DashboardLayout = ({ children }: DashboardLayoutProps): React.ReactElement => {
-  const { logout, isSidebarCollapsed, toggleSidebar, setIsSidebarCollapsed } = useAppStore();
+  const { logout, isSidebarCollapsed, toggleSidebar, setIsSidebarCollapsed, currentView } = useAppStore();
   const [isMobileView, setIsMobileView] = useState(window.innerWidth < 768);
 
   useEffect(() => {
@@ -28,9 +30,31 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps): React.React
 
     return () => window.removeEventListener('resize', handleResize);
   }, [setIsSidebarCollapsed]);
+  // Function to handle opening the workout modal
+  const handleOpenAddWorkoutModal = () => {
+    // Create and dispatch a custom event that the DashboardPage component will listen for
+    const event = new CustomEvent('open-add-workout-modal');
+    window.dispatchEvent(event);
+  };
+  // Only show FAB in relevant views
+  const shouldShowFAB = ['dashboard', 'workouts'].includes(currentView);
 
   return (
     <div className="flex min-h-screen w-full bg-background text-foreground">
+      {/* Floating Action Button for Add Workout - only in relevant views */}
+      {shouldShowFAB && (
+        <FloatingActionButton 
+          icon={<Plus className="h-6 w-6" />}
+          onClick={handleOpenAddWorkoutModal}
+          variant="primary"
+          tooltip="Add Workout"
+          aria-label="Add new workout"
+        />
+      )}
+      
+      {/* Bottom Navigation for Mobile */}
+      <BottomNav />
+      
       {!isMobileView && (
         <div
           className={`fixed top-0 left-0 h-full z-20 transition-all duration-300 ease-in-out ${
@@ -40,8 +64,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps): React.React
           <SidebarNav isCollapsed={isSidebarCollapsed} toggleSidebar={toggleSidebar} />
         </div>
       )}
-      
-      <div className={`flex flex-1 flex-col transition-all duration-300 ease-in-out ${
+        <div className={`flex flex-1 flex-col transition-all duration-300 ease-in-out ${
         !isMobileView && (isSidebarCollapsed ? 'ml-[var(--sidebar-collapsed-width,80px)]' : 'ml-[var(--sidebar-width,280px)]')
       }`}>
         <header className="sticky top-0 z-10 flex h-[var(--header-height,64px)] items-center gap-4 border-b bg-background/70 backdrop-blur-md supports-[backdrop-filter]:bg-background/60 px-4 shadow-sm sm:px-6">
@@ -98,9 +121,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps): React.React
               <span className="sr-only">Logout</span>
             </Button>
           </div>
-        </header>
-
-        <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
+        </header>        <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 pb-20 md:pb-8">
           <div className="mx-auto max-w-full">
             {children}
           </div>

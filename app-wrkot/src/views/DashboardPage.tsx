@@ -137,10 +137,23 @@ const DashboardMainContent: React.FC = () => {
 
 // Workouts view
 const WorkoutsContent: React.FC = () => {
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+
+  useEffect(() => {
+    // Listen for custom event from other components that want to open the add workout modal
+    const handleOpenWorkoutModal = () => setIsAddModalOpen(true);
+    window.addEventListener('open-add-workout-modal', handleOpenWorkoutModal);
+    
+    return () => {
+      window.removeEventListener('open-add-workout-modal', handleOpenWorkoutModal);
+    };
+  }, []);
+
   return (
     <div className="space-y-6">
       <h2 className="text-3xl font-bold tracking-tight mb-2 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Workouts</h2>
       <p className="text-muted-foreground">Track and manage your workout history</p>
+      <AddWorkoutLogModal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} />
       <WorkoutLogTable />
     </div>
   );
