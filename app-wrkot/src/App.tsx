@@ -3,6 +3,7 @@ import { useAppStore } from './store/appStore';
 import { LoginPage } from './components/LoginPage';
 import { OfflineIndicator } from './components/OfflineIndicator';
 import { PWAHandler } from './components/PWAHandler';
+import { PWAInstallPrompt } from './components/PWAInstallPrompt';
 import DashboardPage from './views/DashboardPage';
 import SettingsPage from './views/SettingsPage';
 
@@ -31,6 +32,7 @@ export const App: React.FC = () => {
     <>
       <OfflineIndicator />
       <PWAHandler />
+      <PWAInstallPrompt />
       {isAuthenticated ? (
       // Use switch case to determine which view to render based on currentView
       (() => {

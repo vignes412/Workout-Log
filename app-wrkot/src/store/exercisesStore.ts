@@ -17,6 +17,7 @@ interface ExercisesState {
   fetchExercises: () => Promise<void>;
   getExercisesByMuscleGroup: (muscleGroup: string) => string[];
   getMuscleGroupsByExercise: (exercise: string) => string[];
+  getAllUniqueExerciseNames: () => string[]; // Added
 }
 
 export const useExercisesStore = create<ExercisesState>()(
@@ -123,6 +124,12 @@ export const useExercisesStore = create<ExercisesState>()(
           }
         });
         return Array.from(muscleGroups);
+      },
+
+      getAllUniqueExerciseNames: () => { // Added
+        const names = new Set<string>();
+        get().exercises.forEach(e => names.add(e.exercise));
+        return Array.from(names);
       }
     }),
     {

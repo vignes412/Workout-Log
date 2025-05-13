@@ -6,6 +6,7 @@ export interface WorkoutLogEntry {
   reps: number;
   weight: number;
   rating: number;
-  restTime: number | null;
+  restTime?: number | null;
   rowIndex?: number; // Optional: For direct sheet manipulation if needed
+  isSynced?: boolean; // Optional: To track if the log is synced with the backend
 }

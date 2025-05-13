@@ -21,22 +21,23 @@ const BottomNavItem: React.FC<BottomNavItemProps> = ({
   return (
     <button 
       className={cn(
-        "flex flex-col items-center justify-center flex-1 px-2 py-1 focus:outline-none transition-colors",
+        "flex flex-col items-center justify-center flex-1 px-1 py-1.5 sm:px-2 focus:outline-none transition-all duration-200 ease-in-out transform active:scale-95",
         isActive 
           ? "text-primary" 
           : "text-muted-foreground hover:text-foreground"
       )}
       onClick={onClick}
+      aria-label={label}
     >
       <div className={cn(
-        "p-1.5 rounded-full transition-all",
-        isActive ? "bg-primary/10 scale-110" : "hover:bg-background/60"
+        "p-1.5 rounded-full transition-all duration-200 ease-in-out",
+        isActive ? "bg-primary/10 scale-110" : "hover:bg-muted/50"
       )}>
         {icon}
       </div>
       <span className={cn(
-        "text-xs mt-1 font-medium transition-all",
-        isActive && "scale-105"
+        "text-[0.6rem] sm:text-xs mt-0.5 font-medium transition-all duration-200 ease-in-out truncate max-w-[4em] sm:max-w-none",
+        isActive ? "scale-105 text-primary" : "text-muted-foreground"
       )}>{label}</span>
     </button>
   );
@@ -45,18 +46,19 @@ const BottomNavItem: React.FC<BottomNavItemProps> = ({
 export const BottomNav: React.FC = () => {
   const { currentView, setCurrentView } = useAppStore();
   
-  // Only show bottom nav in the browser, not during SSR
   if (typeof window === 'undefined') return null;
-  // Most important views for mobile users
+
   const navItems = [
-    { view: 'dashboard' as ViewType, label: 'Home', icon: <Home className="h-5 w-5" /> },
-    { view: 'workouts' as ViewType, label: 'Workouts', icon: <Dumbbell className="h-5 w-5" /> },
-    { view: 'schedule' as ViewType, label: 'Schedule', icon: <CalendarClock className="h-5 w-5" /> },
-    { view: 'stats' as ViewType, label: 'Stats', icon: <BarChart3 className="h-5 w-5" /> },
-    { view: 'settings' as ViewType, label: 'Settings', icon: <Settings className="h-5 w-5" /> },
+    { view: 'dashboard' as ViewType, label: 'Home', icon: <Home className="h-5 w-5 sm:h-6 sm:w-6" /> },
+    { view: 'workouts' as ViewType, label: 'Workouts', icon: <Dumbbell className="h-5 w-5 sm:h-6 sm:w-6" /> },
+    { view: 'schedule' as ViewType, label: 'Schedule', icon: <CalendarClock className="h-5 w-5 sm:h-6 sm:w-6" /> },
+    { view: 'stats' as ViewType, label: 'Stats', icon: <BarChart3 className="h-5 w-5 sm:h-6 sm:w-6" /> },
+    { view: 'settings' as ViewType, label: 'Settings', icon: <Settings className="h-5 w-5 sm:h-6 sm:w-6" /> },
   ];
   return (
-    <div className="md:hidden fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur-md border-t border-border z-40 flex justify-around py-1.5 shadow-[0_-4px_10px_rgba(0,0,0,0.05)] bottom-nav-container">
+    <div className="md:hidden fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur-lg border-t border-border/60 z-40 flex justify-around items-center h-[var(--bottom-nav-height,60px)] shadow-top transition-transform duration-300 ease-in-out"
+         style={{ contain: 'layout style paint' }} 
+    >
       {navItems.map((item) => (
         <BottomNavItem
           key={item.view}

@@ -7,6 +7,7 @@ import { ThemeToggle } from './ThemeToggle';
 import { useAppStore } from '@/store/appStore';
 import { FloatingActionButton } from '@/components/ui/floating-action-button';
 import { BottomNav } from './BottomNav';
+import { cn } from '@/lib/utils';
 
 interface DashboardLayoutProps {
   children?: React.ReactNode;
@@ -27,16 +28,13 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps): React.React
       }
     };
 
-    // Scroll handling for hiding/showing header on mobile
     const handleScroll = () => {
       if (!isMobileView) return;
       
       const st = window.scrollY || document.documentElement.scrollTop;
       if (st > lastScrollTop && st > 60) {
-        // Scrolling down past a threshold
         setIsHeaderHidden(true);
       } else if (st < lastScrollTop || st < 10) {
-        // Scrolling up or at the top
         setIsHeaderHidden(false);
       }
       setLastScrollTop(st);
@@ -52,18 +50,14 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps): React.React
     };
   }, [setIsSidebarCollapsed, isMobileView, lastScrollTop]);
 
-  // Function to handle opening the workout modal
   const handleOpenAddWorkoutModal = () => {
-    // Create and dispatch a custom event that the DashboardPage component will listen for
     const event = new CustomEvent('open-add-workout-modal');
     window.dispatchEvent(event);
   };
-  // Only show FAB in relevant views
   const shouldShowFAB = ['dashboard', 'workouts'].includes(currentView);
 
   return (
-    <div className="flex min-h-screen w-full bg-background text-foreground">
-      {/* Floating Action Button for Add Workout - only in relevant views */}
+    <div className="flex flex-col md:flex-row min-h-screen w-full bg-background text-foreground">
       {shouldShowFAB && (
         <FloatingActionButton 
           icon={<Plus className="h-6 w-6" />}
@@ -71,28 +65,30 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps): React.React
           tooltip="Add Workout"
           aria-label="Add new workout"
           position={isMobileView ? "bottom-center" : "bottom-right"}
-          className="bg-primary text-primary-foreground hover:bg-primary/90"
+          className="bg-primary text-primary-foreground hover:bg-primary/90 z-50"
         />
       )}
       
-      {/* Bottom Navigation for Mobile */}
       <BottomNav />
       
-      {!isMobileView && (
-        <div
-          className={`fixed top-0 left-0 h-full z-20 transition-all duration-300 ease-in-out ${
-            isSidebarCollapsed ? 'w-[var(--sidebar-collapsed-width,80px)]' : 'w-[var(--sidebar-width,280px)]'
-          }`}
-        >
-          <SidebarNav isCollapsed={isSidebarCollapsed} toggleSidebar={toggleSidebar} />
-        </div>
-      )}
-        <div className={`flex flex-1 flex-col transition-all duration-300 ease-in-out ${
-        !isMobileView && (isSidebarCollapsed ? 'ml-[var(--sidebar-collapsed-width,80px)]' : 'ml-[var(--sidebar-width,280px)]')
-      }`}>
-        <header className={`sticky top-0 z-10 flex h-[var(--header-height,64px)] items-center gap-4 border-b bg-background/70 backdrop-blur-md supports-[backdrop-filter]:bg-background/60 px-4 shadow-sm sm:px-6 transition-transform duration-300 ${
+      <div
+        className={cn(
+          "fixed top-0 left-0 h-full z-40 transition-all duration-300 ease-in-out hidden md:block",
+          isSidebarCollapsed ? 'w-[var(--sidebar-collapsed-width,80px)]' : 'w-[var(--sidebar-width,280px)]'
+        )}
+      >
+        <SidebarNav isCollapsed={isSidebarCollapsed} toggleSidebar={toggleSidebar} />
+      </div>
+      
+      <div className={cn(
+        "flex flex-1 flex-col transition-all duration-300 ease-in-out",
+        "md:ml-[var(--sidebar-width,280px)]",
+        isSidebarCollapsed && "md:ml-[var(--sidebar-collapsed-width,80px)]"
+      )}>
+        <header className={cn(
+          "sticky top-0 z-30 flex h-[var(--header-height,64px)] items-center gap-4 border-b bg-background/70 backdrop-blur-md supports-[backdrop-filter]:bg-background/60 px-4 shadow-sm sm:px-6 transition-transform duration-300",
           isHeaderHidden && isMobileView ? '-translate-y-full' : 'translate-y-0'
-        }`}>
+        )}>
           {isMobileView && (
             <Sheet>
               <SheetTrigger asChild>
@@ -101,21 +97,24 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps): React.React
                   <span className="sr-only">Toggle navigation menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="p-0 border-r-primary/10 w-[var(--sidebar-width,280px)]">
+              <SheetContent side="left" className="p-0 border-r-primary/10 w-[var(--sidebar-width,280px)] md:hidden">
                 <SidebarNav isCollapsed={false} toggleSidebar={toggleSidebar} /> 
               </SheetContent>
             </Sheet>
           )}
           
           {!isMobileView && (
-             <div className={`overflow-hidden transition-all duration-base ease-in-out flex items-center ${isSidebarCollapsed ? "max-w-0 opacity-0" : "max-w-[220px] opacity-100"}`}>
+             <div className={cn(
+                "overflow-hidden transition-all duration-base ease-in-out flex items-center",
+                isSidebarCollapsed ? "max-w-0 opacity-0" : "max-w-[220px] opacity-100"
+             )}>
                <h1 className="text-xl font-semibold tracking-tight whitespace-nowrap bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                  Workout Log
                </h1>
              </div>
           )}
           
-          <div className="ml-auto flex items-center gap-3">
+          <div className="ml-auto flex items-center gap-2 sm:gap-3">
             <ThemeToggle variant="ghost" />
             
             <Button variant="ghost" size="icon" className="rounded-full relative hover:bg-primary/10 hover:text-primary transition-button duration-base">
@@ -124,9 +123,9 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps): React.React
               <span className="sr-only">Notifications</span>
             </Button>
 
-            <div className="hidden md:flex border-l h-6 mx-1.5 border-border/50"></div>
+            <div className="hidden sm:flex border-l h-6 mx-1.5 border-border/50"></div>
             
-            <div className="hidden md:flex items-center gap-3">
+            <div className="hidden sm:flex items-center gap-3">
               <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-primary to-accent text-white shadow-sm">
                 <span className="text-xs font-medium">JD</span>
               </div>
@@ -147,8 +146,8 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps): React.React
             </Button>
           </div>
         </header>
-        <main className="flex-1 overflow-y-auto overflow-x-hidden p-2 sm:p-4 md:p-6 lg:p-8 pb-20 md:pb-8">
-          <div className="mx-auto max-w-full w-full overflow-x-hidden contain-layout">
+        <main className="flex-1 overflow-y-auto overflow-x-hidden p-2 sm:p-4 md:p-6 lg:p-8 pb-[calc(var(--bottom-nav-height,64px)+1rem)] md:pb-8">
+          <div className="mx-auto max-w-full w-full overflow-x-hidden">
             {children}
           </div>
         </main>
@@ -156,3 +155,13 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps): React.React
     </div>
   );
 };
+
+// Helper function cn - assuming it's defined elsewhere, e.g., in lib/utils
+// If not, you'll need to define it:
+// export function cn(...inputs: ClassValue[]) {
+//  return twMerge(clsx(inputs))
+// }
+// Make sure to install clsx and tailwind-merge if you haven't:
+// npm install clsx tailwind-merge
+// yarn add clsx tailwind-merge
+// pnpm add clsx tailwind-merge

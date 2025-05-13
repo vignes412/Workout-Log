@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { 
   Dialog, 
   DialogContent, 
@@ -73,7 +73,8 @@ export const AddWorkoutLogModal: React.FC<AddWorkoutLogModalProps> = ({ isOpen, 
     fetchExercises, 
     isLoading: isLoadingExercises,
     isDataFetched,
-    getExercisesByMuscleGroup
+    getExercisesByMuscleGroup,
+    getAllUniqueExerciseNames
   } = useExercisesStore();
   
   // Using toast directly from sonner
@@ -102,17 +103,23 @@ export const AddWorkoutLogModal: React.FC<AddWorkoutLogModalProps> = ({ isOpen, 
   }, [isOpen, isDataFetched, fetchExercises]);
   
   // Get filtered list of muscle groups for the selected exercise
-  const filteredMuscleGroups = exercise 
-    ? exercises
+  const filteredMuscleGroups = useMemo(() => {
+    if (exercise) {
+      return exercises
         .filter(e => e.exercise.toLowerCase() === exercise.toLowerCase())
         .map(e => e.muscleGroup)
-        .filter((v, i, a) => a.indexOf(v) === i) // Unique values
-    : exerciseGroups.map(g => g.muscleGroup);
+        .filter((v, i, a) => a.indexOf(v) === i); // Unique values
+    }
+    return exerciseGroups.map(g => g.muscleGroup);
+  }, [exercise, exercises, exerciseGroups]);
   
   // Get filtered list of exercises for the selected muscle group
-  const filteredExercises = muscleGroup 
-    ? getExercisesByMuscleGroup(muscleGroup) 
-    : exercises.map(e => e.exercise).filter((v, i, a) => a.indexOf(v) === i); // Unique values
+  const filteredExercises = useMemo(() => {
+    if (muscleGroup) {
+      return getExercisesByMuscleGroup(muscleGroup);
+    }
+    return getAllUniqueExerciseNames();
+  }, [muscleGroup, getExercisesByMuscleGroup, getAllUniqueExerciseNames]);
   
   const handleSubmit = async (data: FormValues) => {
     try {
@@ -125,7 +132,7 @@ export const AddWorkoutLogModal: React.FC<AddWorkoutLogModalProps> = ({ isOpen, 
         rating: data.rating,
         restTime: data.restTime
       });
-        if (result) {
+      if (result) {
         toast.success('Workout log has been added.');
         form.reset({
           date: format(new Date(), 'yyyy-MM-dd'),
@@ -136,9 +143,10 @@ export const AddWorkoutLogModal: React.FC<AddWorkoutLogModalProps> = ({ isOpen, 
           rating: 7,
           restTime: 60
         });
-        
         onClose();
-      }    } catch {
+      }
+    } catch (error) {
+      console.error('Failed to add workout log:', error);
       toast.error('Failed to add workout log. Please try again.');
     }
   };
