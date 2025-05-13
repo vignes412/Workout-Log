@@ -1,50 +1,65 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { StatCard } from './StatCard';
 import { WorkoutLogTable } from './WorkoutLogTable';
 import { Button } from '@/components/ui/button';
-import { PlusCircle, Dumbbell } from 'lucide-react';
+import { PlusCircle, Dumbbell, TrendingUp, BarChart2, Award } from 'lucide-react';
+import { useWorkoutLogStore } from '@/store/workoutLogStore';
+import {
+  getTotalWorkouts,
+  getWeeklyAverageWorkouts,
+  getTotalWeightLifted,
+  getPersonalRecordsCount,
+  getNewPRsThisMonth
+} from '@/utils/computeDailyMetrics';
 
 export const DashboardOverview: React.FC = () => {
-  // Mock data - in a real app, this would come from your state/store
+  const { workoutLogs } = useWorkoutLogStore();
+
+  const totalWorkouts = useMemo(() => getTotalWorkouts(workoutLogs), [workoutLogs]);
+  const weeklyAverage = useMemo(() => getWeeklyAverageWorkouts(workoutLogs), [workoutLogs]);
+  const totalWeightThisMonth = useMemo(() => getTotalWeightLifted(workoutLogs, 'month'), [workoutLogs]);
+  const personalRecords = useMemo(() => getPersonalRecordsCount(workoutLogs), [workoutLogs]);
+  const newPRsThisMonth = useMemo(() => getNewPRsThisMonth(workoutLogs), [workoutLogs]);
+
   const stats = [
     {
       title: 'Total Workouts',
-      value: 32,
+      value: totalWorkouts,
       description: 'Since you started',
-      icon: <PlusCircle className="w-4 h-4" />,
+      icon: <BarChart2 className="w-4 h-4 text-blue-500" />,
       trend: {
-        value: 12,
+        value: 0,
         isPositive: true
       }
     },
     {
       title: 'Weekly Average',
-      value: '3.2',
+      value: weeklyAverage.toString(),
       description: 'Sessions per week',
-      icon: <PlusCircle className="w-4 h-4" />,
+      icon: <TrendingUp className="w-4 h-4 text-green-500" />,
       trend: {
-        value: 8,
+        value: 0,
         isPositive: true
       }
     },
     {
       title: 'Weight Lifted',
-      value: '1,280 kg',
+      value: `${totalWeightThisMonth.toLocaleString()} kg`,
       description: 'Total this month',
-      icon: <PlusCircle className="w-4 h-4" />,
+      icon: <Dumbbell className="w-4 h-4 text-red-500" />,
       trend: {
-        value: 5,
+        value: 0,
         isPositive: true
       }
     },
     {
       title: 'Personal Records',
-      value: 12,
-      description: '3 new this month',
-      icon: <PlusCircle className="w-4 h-4" />,
+      value: personalRecords,
+      description: `${newPRsThisMonth} new this month`,
+      icon: <Award className="w-4 h-4 text-yellow-500" />,
       trend: {
-        value: 15,
-        isPositive: true
+        value: newPRsThisMonth > 0 ? newPRsThisMonth : 0,
+        isPositive: newPRsThisMonth > 0
       }
     }
   ];
@@ -57,7 +72,7 @@ export const DashboardOverview: React.FC = () => {
           onClick={() => window.dispatchEvent(new CustomEvent('open-add-workout-modal'))}
           className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground shadow-md transition-all duration-300 ease-in-out hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50 rounded-lg px-4 py-2 flex items-center justify-center sm:justify-start group"
         >
-          <Dumbbell className="h-5 w-5 mr-2 transition-transform duration-300 group-hover:scale-110" />
+          <PlusCircle className="h-5 w-5 mr-2 transition-transform duration-300 group-hover:scale-110" />
           Add Workout
         </Button>
       </div>
@@ -68,7 +83,7 @@ export const DashboardOverview: React.FC = () => {
           <StatCard
             key={stat.title}
             title={stat.title}
-            value={stat.value}
+            value={stat.value.toString()}
             description={stat.description}
             icon={stat.icon}
             trend={stat.trend}
