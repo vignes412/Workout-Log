@@ -1,0 +1,279 @@
+/* @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap'); */
+
+:root {
+  /* Typography */
+  --font-family: 'Inter', sans-serif;
+  
+  /* Font sizes - slightly adjusted for better readability */
+  --font-size-page-title: 2.25rem;   /* 36px */
+  --font-size-section-header: 1.5rem; /* 24px */
+  --font-size-body: 1rem;            /* 16px */
+  --font-size-button: 0.9375rem;     /* 15px */
+  --font-size-caption: 0.875rem;     /* 14px */
+  
+  /* Font weights - using Inter's weight system */
+  --font-weight-light: 300;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  
+  /* Line heights */
+  --line-height-header: 1.2;
+  --line-height-body: 1.6;
+  --line-height-button: 1.5;
+  
+  /* Spacing system */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-xxl: 48px;
+  
+  /* Component styling */
+  --border-radius-xs: 4px;
+  --border-radius-sm: 8px;
+  --border-radius-md: 12px;
+  --border-radius-lg: 16px;
+  --border-radius-xl: 24px;
+  --border-radius-full: 9999px;
+  
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.15);
+  
+  /* Animation */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 400ms ease;
+  
+  /* Glass effect */
+  --glass-background: rgba(255, 255, 255, 0.7);
+  --glass-background-dark: rgba(23, 23, 23, 0.8);
+  --glass-border: rgba(255, 255, 255, 0.2);
+  --glass-border-dark: rgba(255, 255, 255, 0.1);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  --glass-blur: 12px;
+  
+  /* Page-specific */
+  --header-height: 64px;
+  --sidebar-width: 280px;
+  --sidebar-collapsed-width: 80px;
+  
+  /* Modern color system - Light mode */
+  --primary-hue: 250;
+  --accent-hue: 330;
+  
+  --background: 0 0% 100%;
+  --foreground: 240 10% 3.9%;
+  
+  --primary: var(--primary-hue) 95% 50%;
+  --primary-foreground: 0 0% 98%;
+  
+  --accent: var(--accent-hue) 80% 50%;
+  --accent-light: var(--accent-hue) 95% 94%;
+  
+  --secondary: 240 4.8% 95.9%;
+  --secondary-foreground: 240 5.9% 10%;
+  
+  --card: 0 0% 100%;
+  --card-foreground: 240 10% 3.9%;
+  
+  --muted: 240 4.8% 95.9%;
+  --muted-foreground: 240 3.8% 46.1%;
+  
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 0 0% 98%;
+  
+  --border: 240 5.9% 90%;
+  --input: 240 5.9% 90%;
+  --ring: var(--primary-hue) 95% 50%;
+  
+  --success: 142 76% 36%;
+  --success-foreground: 0 0% 98%;
+  
+  --warning: 38 92% 50%;
+  --warning-foreground: 0 0% 98%;
+  
+  --info: 200 98% 39%;
+  --info-foreground: 0 0% 98%;
+}
+
+.dark {
+  /* Modern color system - Dark mode */
+  --background: 240 10% 3.9%;
+  --foreground: 0 0% 98%;
+  
+  --primary: var(--primary-hue) 90% 65%;
+  --primary-foreground: 0 0% 98%;
+  
+  --accent: var(--accent-hue) 70% 60%;
+  --accent-light: var(--accent-hue) 30% 15%;
+  
+  --secondary: 240 3.7% 15.9%;
+  --secondary-foreground: 0 0% 98%;
+  
+  --card: 240 10% 7%;
+  --card-foreground: 0 0% 98%;
+  
+  --muted: 240 3.7% 15.9%;
+  --muted-foreground: 240 5% 64.9%;
+  
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+  
+  --border: 240 3.7% 15.9%;
+  --input: 240 3.7% 15.9%;
+  --ring: var(--primary-hue) 80% 60%;
+  
+  --success: 142 70% 29%;
+  --success-foreground: 0 0% 98%;
+  
+  --warning: 38 92% 50%;
+  --warning-foreground: 240 5.9% 10%;
+  
+  --info: 200 98% 39%;
+  --info-foreground: 0 0% 98%;
+}
+
+/* Base typography using Inter font */
+html {
+  font-family: var(--font-family);
+  scroll-behavior: smooth;
+}
+
+body {
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+  font-weight: var(--font-weight-regular);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-header);
+}
+
+h1 {
+  font-size: var(--font-size-page-title);
+  letter-spacing: -0.02em;
+}
+
+h2, h3 {
+  font-size: var(--font-size-section-header);
+  letter-spacing: -0.01em;
+}
+
+/* Modern Button Styles */
+.btn-gradient {
+  background: linear-gradient(45deg, hsl(var(--primary)), hsl(var(--accent)));
+  color: white;
+  border: none;
+  box-shadow: 0 4px 14px 0 rgba(var(--primary-hue), 95%, 50%, 0.39);
+  transition: all 0.3s ease;
+}
+
+.btn-gradient:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px 0 rgba(var(--primary-hue), 95%, 50%, 0.39);
+}
+
+/* Glass Card Effect */
+.glass-card {
+  background: var(--glass-background);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: var(--border-radius-md);
+}
+
+.dark .glass-card {
+  background: var(--glass-background-dark);
+  border: 1px solid var(--glass-border-dark);
+}
+
+/* Animation Utilities */
+.animate-in {
+  animation: animateIn 0.3s ease forwards;
+}
+
+.animate-out {
+  animation: animateOut 0.3s ease forwards;
+}
+
+.scale-in {
+  animation: scaleIn 0.2s ease forwards;
+}
+
+@keyframes animateIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes animateOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Gradient backgrounds */
+.bg-gradient-primary {
+  background: linear-gradient(135deg, hsl(var(--primary)), hsl(calc(var(--primary-hue) + 20), 95%, 55%));
+}
+
+.bg-gradient-accent {
+  background: linear-gradient(135deg, hsl(var(--accent)), hsl(calc(var(--accent-hue) + 20), 80%, 55%));
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted));
+  border-radius: 50px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground));
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  :root {
+    --font-size-page-title: 1.875rem; /* 30px */
+    --font-size-section-header: 1.25rem; /* 20px */
+  }
+}
