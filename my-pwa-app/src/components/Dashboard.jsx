@@ -48,6 +48,7 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
         status: true,
         train: true,
         rest: true,
+        "workout-features": true,
         "workout-logs": true,
         "muscle-distribution": true,
         "workout-count": true,
@@ -460,6 +461,32 @@ const Dashboard = ({ onNavigate, toggleTheme, themeMode }) => {
           exercises={exercises}
           isOffline={isOffline}
           editLog={modalEditLog}
+          onSave={async (row, originalIndex) => {
+            try {
+              // Handle successful save
+              showToast("Workout logged successfully!", "success");
+              
+              // Reload the workout logs to show the latest data
+              try {
+                await syncData("Workout_Logs!A2:G", "/api/workout", (data) =>
+                  dispatch({ type: "SET_LOGS", payload: data })
+                );
+              } catch (reloadError) {
+                console.error("Error reloading workout logs:", reloadError);
+                // Non-critical error, don't show toast for this
+              }
+              
+              // Close the modal
+              setOpenModal(false);
+              setModalEditLog(null);
+              
+              return true; // Return success to the modal
+            } catch (error) {
+              console.error("Error in WorkoutLogModal onSave callback:", error);
+              showToast("Failed to process workout log", "error");
+              return true; // Still return true to let the modal handle its own state
+            }
+          }}
         />
         <SettingsModal
           open={settingsOpen}

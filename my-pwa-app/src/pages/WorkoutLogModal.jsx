@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import PropTypes from "prop-types";
 import { appendData, cacheData, loadCachedData } from "../utils/sheetsApi";
 import {
@@ -38,60 +38,132 @@ const WorkoutLogModal = ({
     reps: "",
     weight: "",
     rating: "",
+    restTime: "" // Added rest time field
   });
   const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
+  // Use useMemo to prevent recalculation on every render
+  const muscleGroups = useMemo(() => {
+    try {
+      return [...new Set((exercises || []).map((e) => e.muscleGroup))];
+    } catch (err) {
+      console.error("Error processing muscle groups:", err);
+      return [];
+    }
+  }, [exercises]);
+  
+  const allExercises = useMemo(() => {
+    try {
+      return [...new Set((exercises || []).map((e) => e.exercise))];
+    } catch (err) {
+      console.error("Error processing exercises:", err);
+      return [];
+    }
+  }, [exercises]);
+
+  // This effect runs when the modal opens/closes or editLog changes
   useEffect(() => {
-    const today = getTodayDate();
-    if (editLog) {
-      let initialDate = today;
-      if (editLog.originalIndex !== undefined && editLog.date) {
-        const [day, month, year] = editLog.date.split("/");
-        initialDate = `${year}-${month}-${day}`;
+    if (open) {
+      // Reset states when opening the modal
+      setSubmitted(false);
+      setLoading(false);
+      setMessage(null);
+      
+      const today = getTodayDate();
+      
+      // Only update form if editLog is provided
+      if (editLog) {
+        console.log("Received edit log data:", editLog);
+        
+        // Parse date with proper fallback
+        let initialDate = today;
+        try {
+          if (editLog.date) {
+            if (typeof editLog.date === 'string') {
+              if (editLog.date.includes('/')) {
+                // Handle mm/dd/yyyy format
+                const dateParts = editLog.date.split('/');
+                if (dateParts.length === 3) {
+                  const [month, day, year] = dateParts;
+                  initialDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+                }
+              } else if (editLog.date.includes('-')) {
+                // Already in YYYY-MM-DD format
+                initialDate = editLog.date;
+              }
+            } else if (editLog.date instanceof Date) {
+              initialDate = editLog.date.toISOString().split('T')[0];
+            }
+          }
+        } catch (error) {
+          console.error("Error parsing date:", error);
+          initialDate = today;
+        }
+        
+        // Important: Convert all values to strings to avoid type mismatches
+        const updatedLog = {
+          date: initialDate,
+          muscleGroup: editLog.muscleGroup || "",
+          exercise: editLog.exercise || "",
+          reps: editLog.reps?.toString() || "",
+          weight: editLog.weight?.toString() || "0",
+          rating: editLog.rating?.toString() || "5",
+          restTime: editLog.restTime?.toString() || "0",
+          exerciseIndex: editLog.exerciseIndex !== undefined ? editLog.exerciseIndex : undefined,
+          setIndex: editLog.setIndex !== undefined ? editLog.setIndex : undefined
+        };
+        
+        console.log("Setting form with updated values:", updatedLog);
+        
+        // Set all values at once to prevent partial updates
+        setLog(updatedLog);
+      } else {
+        // Reset to default values when opening without editLog
+        setLog({
+          date: today,
+          muscleGroup: "",
+          exercise: "",
+          reps: "",
+          weight: "",
+          rating: "5", // Default rating
+          restTime: "0"
+        });
       }
-      setLog({
-        date: initialDate,
-        muscleGroup: editLog.muscleGroup || "",
-        exercise: editLog.exercise || "",
-        reps: editLog.reps.toString() || "",
-        weight: editLog.weight.toString() || "",
-        rating: editLog.rating?.toString() || "",
-      });
-    } else {
-      setLog({
-        date: today,
-        muscleGroup: editLog?.muscleGroup || "",
-        exercise: editLog?.exercise || "",
-        reps: editLog?.reps?.toString() || "",
-        weight: editLog?.weight?.toString() || "",
-        rating: editLog?.rating?.toString() || "",
-      });
     }
   }, [editLog, open]);
 
-  const muscleGroups = [...new Set(exercises.map((e) => e.muscleGroup))];
-  const allExercises = [...new Set(exercises.map((e) => e.exercise))];
+  // Use useMemo for filtered lists
+  const filteredMuscleGroups = useMemo(() => {
+    try {
+      return log.exercise
+        ? [...new Set(
+            (exercises || [])
+              .filter((e) => e.exercise === log.exercise)
+              .map((e) => e.muscleGroup)
+          )]
+        : muscleGroups;
+    } catch (err) {
+      console.error("Error filtering muscle groups:", err);
+      return muscleGroups;
+    }
+  }, [log.exercise, exercises, muscleGroups]);
 
-  const filteredMuscleGroups = log.exercise
-    ? [
-        ...new Set(
-          exercises
-            .filter((e) => e.exercise === log.exercise)
-            .map((e) => e.muscleGroup)
-        ),
-      ]
-    : muscleGroups;
-
-  const filteredExercises = log.muscleGroup
-    ? [
-        ...new Set(
-          exercises
-            .filter((e) => e.muscleGroup === log.muscleGroup)
-            .map((e) => e.exercise)
-        ),
-      ]
-    : allExercises;
+  const filteredExercises = useMemo(() => {
+    try {
+      return log.muscleGroup
+        ? [...new Set(
+            (exercises || [])
+              .filter((e) => e.muscleGroup === log.muscleGroup)
+              .map((e) => e.exercise)
+          )]
+        : allExercises;
+    } catch (err) {
+      console.error("Error filtering exercises:", err);
+      return allExercises;
+    }
+  }, [log.muscleGroup, exercises, allExercises]);
 
   const validateInputs = () => {
     if (
@@ -100,7 +172,8 @@ const WorkoutLogModal = ({
       !log.exercise ||
       !log.reps ||
       !log.weight ||
-      !log.rating
+      !log.rating ||
+      !log.restTime
     ) {
       return "All fields are required";
     }
@@ -118,27 +191,34 @@ const WorkoutLogModal = ({
     ) {
       return "Weight must be a number between 0 and 1000 kg";
     }
-    // if (
-    //   !/^[a-zA-Z\s]+$/.test(log.muscleGroup) ||
-    //   !/^[a-zA-Z\s]+$/.test(log.exercise)
-    // ) {
-    //   return "Muscle Group and Exercise must contain only letters and spaces";
-    // }
+    if (
+      isNaN(log.restTime) ||
+      parseInt(log.restTime) < 0 ||
+      parseInt(log.restTime) > 300
+    ) {
+      return "Rest time must be a number between 0 and 300 seconds";
+    }
     return null;
   };
 
   const handleSubmit = async () => {
+    setSubmitted(true);
+    
     const validationError = validateInputs();
     if (validationError) {
       setMessage({ type: "error", text: validationError });
+      setSubmitted(false);
       return;
     }
     if (isOffline) {
       setMessage({ type: "error", text: "Cannot save workout offline" });
+      setSubmitted(false);
       return;
     }
 
     setLoading(true);
+    
+    // Create a copy of the log for the API
     const row = [
       log.date,
       log.muscleGroup,
@@ -146,58 +226,123 @@ const WorkoutLogModal = ({
       log.reps,
       log.weight,
       log.rating,
+      log.restTime
     ];
 
     try {
       if (editLog && onSave && editLog.originalIndex !== undefined) {
-        await onSave(row, editLog.originalIndex);
-        setMessage({ type: "success", text: "Workout updated successfully" });
+        try {
+          await onSave(row, editLog.originalIndex);
+          setMessage({ type: "success", text: "Workout updated successfully" });
+        } catch (innerError) {
+          console.error("Error in onSave callback:", innerError);
+          throw new Error(`Failed to save workout: ${innerError.message || 'Unknown error'}`);
+        }
       } else {
-        await appendData("Workout_Logs!A:F", row);
-        const cachedData = (await loadCachedData("/api/workout")) || [];
-        await cacheData("/api/workout", [...cachedData, row]);
-        setMessage({ type: "success", text: "Workout logged successfully" });
+        try {
+          // First append the data to Google Sheets
+          await appendData("Workout_Logs!A:G", row);
+          
+          // Then update the local cache
+          try {
+            const cachedData = (await loadCachedData("/api/workout")) || [];
+            await cacheData("/api/workout", [...cachedData, row]);
+          } catch (cacheError) {
+            console.error("Error updating cache (non-critical):", cacheError);
+          }
+          
+          setMessage({ type: "success", text: "Workout logged successfully" });
+          
+          // Call onSave callback to notify TodaysWorkout that the set was completed
+          if (onSave) {
+            try {
+              // Pass along exerciseIndex if it exists
+              if (log.exerciseIndex !== undefined) {
+                await onSave(row, null, log.exerciseIndex, log.setIndex);
+              } else {
+                await onSave(row);
+              }
+            } catch (callbackError) {
+              console.error("Error in onSave callback:", callbackError);
+            }
+          }
+        } catch (dataError) {
+          console.error("Error appending data:", dataError);
+          throw new Error(`Failed to log workout: ${dataError.message || 'Unknown error'}`);
+        }
       }
 
-      if (
-        !muscleGroups.includes(log.muscleGroup) ||
-        !allExercises.includes(log.exercise)
-      ) {
-        await appendData("Exercises!A:B", [log.muscleGroup, log.exercise]);
-        const cachedExercises = (await loadCachedData("/api/exercises")) || [];
-        await cacheData("/api/exercises", [
-          ...cachedExercises,
-          { muscleGroup: log.muscleGroup, exercise: log.exercise },
-        ]);
+      // Handle adding new exercise if needed
+      try {
+        if (
+          !muscleGroups.includes(log.muscleGroup) ||
+          !allExercises.includes(log.exercise)
+        ) {
+          try {
+            await appendData("Exercises!A:B", [log.muscleGroup, log.exercise]);
+            const cachedExercises = (await loadCachedData("/api/exercises")) || [];
+            await cacheData("/api/exercises", [
+              ...cachedExercises,
+              { muscleGroup: log.muscleGroup, exercise: log.exercise },
+            ]);
+          } catch (exerciseError) {
+            console.error("Error saving new exercise:", exerciseError);
+          }
+        }
+      } catch (exerciseProcessError) {
+        console.error("Error processing new exercise:", exerciseProcessError);
       }
 
+      // Use a delay to let the user see the success message
       setTimeout(() => {
-        setLog({
-          date: getTodayDate(),
-          muscleGroup: "",
-          exercise: "",
-          reps: "",
-          weight: "",
-          rating: "",
-        });
-        setMessage(null);
-        setLoading(false);
-        onClose();
+        if (submitted) {
+          setLog({
+            date: getTodayDate(),
+            muscleGroup: "",
+            exercise: "",
+            reps: "",
+            weight: "",
+            rating: "",
+            restTime: ""
+          });
+          setMessage(null);
+          setLoading(false);
+          
+          if (open && onClose) {
+            onClose();
+          }
+        }
       }, 1000);
     } catch (error) {
-      setMessage({ type: "error", text: `Error: ${error.message}` });
+      console.error("Error in handleSubmit:", error);
+      setMessage({ type: "error", text: `Error: ${error.message || 'Unknown error occurred'}` });
       setLoading(false);
+      setSubmitted(false);
     }
   };
 
+  const handleClose = () => {
+    if (!loading && onClose) {
+      onClose();
+    }
+  };
+
+  if (!exercises || !Array.isArray(exercises)) {
+    console.error("Invalid exercises prop:", exercises);
+  }
+
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+    <Dialog 
+      open={open} 
+      onClose={loading ? undefined : handleClose} 
+      maxWidth="sm" 
+      fullWidth
+      disableEscapeKeyDown={loading}
+    >
       <DialogTitle>
-        <Typography variant="h6" color="primary">
-          {editLog && editLog.originalIndex !== undefined
-            ? "Edit Workout Log"
-            : "Add Workout Log"}
-        </Typography>
+        {editLog && editLog.originalIndex !== undefined
+          ? "Edit Workout Log"
+          : "Add Workout Log"}
       </DialogTitle>
       <DialogContent>
         {loading && (
@@ -223,10 +368,31 @@ const WorkoutLogModal = ({
         <Autocomplete
           options={filteredMuscleGroups}
           value={log.muscleGroup}
-          onChange={(e, newValue) =>
-            setLog({ ...log, muscleGroup: newValue || "" })
-          }
+          onChange={(e, newValue) => {
+            // When muscle group changes, update both muscle group and potentially reset exercise
+            const updatedLog = { ...log, muscleGroup: newValue || "" };
+            
+            // Check if current exercise belongs to the new muscle group
+            if (newValue && log.exercise) {
+              try {
+                const isExerciseValid = (exercises || []).some(
+                  e => e.muscleGroup === newValue && e.exercise === log.exercise
+                );
+                
+                if (!isExerciseValid) {
+                  // Exercise doesn't belong to this muscle group, reset it
+                  updatedLog.exercise = "";
+                }
+              } catch (err) {
+                console.error("Error checking exercise validity:", err);
+              }
+            }
+            
+            setLog(updatedLog);
+          }}
           freeSolo
+          getOptionLabel={(option) => option || ""}
+          isOptionEqualToValue={(option, value) => option === value}
           renderInput={(params) => (
             <TextField
               {...params}
@@ -240,10 +406,33 @@ const WorkoutLogModal = ({
         <Autocomplete
           options={filteredExercises}
           value={log.exercise}
-          onChange={(e, newValue) =>
-            setLog({ ...log, exercise: newValue || "" })
-          }
+          onChange={(e, newValue) => {
+            // When exercise changes, update both exercise and potentially update muscle group
+            const updatedLog = { ...log, exercise: newValue || "" };
+            
+            // If muscle group is not set but exercise is, try to set the muscle group
+            if (newValue && !log.muscleGroup) {
+              try {
+                const matchingGroups = [...new Set(
+                  (exercises || [])
+                    .filter(e => e.exercise === newValue)
+                    .map(e => e.muscleGroup)
+                )];
+                
+                // If there's exactly one muscle group for this exercise, set it
+                if (matchingGroups.length === 1) {
+                  updatedLog.muscleGroup = matchingGroups[0];
+                }
+              } catch (err) {
+                console.error("Error finding matching muscle groups:", err);
+              }
+            }
+            
+            setLog(updatedLog);
+          }}
           freeSolo
+          getOptionLabel={(option) => option || ""}
+          isOptionEqualToValue={(option, value) => option === value}
           renderInput={(params) => (
             <TextField
               {...params}
@@ -272,6 +461,15 @@ const WorkoutLogModal = ({
           margin="normal"
           inputProps={{ min: 0, max: 1000 }}
         />
+        <TextField
+          label="Rest Time (seconds)"
+          type="number"
+          value={log.restTime}
+          onChange={(e) => setLog({ ...log, restTime: e.target.value })}
+          fullWidth
+          margin="normal"
+          inputProps={{ min: 0, max: 300 }}
+        />
         <FormControl fullWidth margin="normal">
           <InputLabel>Rating (1-10)</InputLabel>
           <Select
@@ -289,7 +487,7 @@ const WorkoutLogModal = ({
         </FormControl>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} color="secondary" disabled={loading}>
+        <Button onClick={handleClose} color="secondary" disabled={loading}>
           Close
         </Button>
         <Button
@@ -324,12 +522,15 @@ WorkoutLogModal.propTypes = {
   ).isRequired,
   isOffline: PropTypes.bool.isRequired,
   editLog: PropTypes.shape({
-    date: PropTypes.string,
+    date: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)]),
     muscleGroup: PropTypes.string,
     exercise: PropTypes.string,
     reps: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     weight: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     rating: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    restTime: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    exerciseIndex: PropTypes.number,
+    setIndex: PropTypes.number,
     originalIndex: PropTypes.number,
   }),
   onSave: PropTypes.func,

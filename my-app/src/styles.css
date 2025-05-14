@@ -1,0 +1,564 @@
+/* Reset and Standardization */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f5f7fa;
+    line-height: 1.6;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    overflow-x: hidden;
+}
+
+/* Sidebar - Improved fixed positioning */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 80px;
+    height: 100vh;
+    background-color: #2c3e50;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 0;
+    z-index: 1000;
+    transition: width 0.3s ease;
+}
+
+.sidebar.expanded {
+    width: 200px;
+}
+
+.sidebar-item {
+    width: 100%;
+    padding: 15px;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar-item:hover {
+    background-color: #34495e;
+}
+
+.sidebar-item span {
+    opacity: 0;
+    width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    transition: opacity 0.2s ease, width 0.3s ease;
+}
+
+.sidebar.expanded .sidebar-item span {
+    opacity: 1;
+    width: auto;
+    display: inline;
+}
+
+/* Main Layout - Improved content positioning */
+.main-container {
+    padding: 16px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-left: 80px; /* Match collapsed sidebar width */
+    width: calc(100% - 80px);
+    transition: margin-left 0.3s ease, width 0.3s ease;
+}
+
+.main-container.sidebar-expanded {
+    margin-left: 200px; /* Match expanded sidebar width */
+    width: calc(100% - 200px);
+}
+
+/* Header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Customize Button */
+.customize-button {
+    transition: transform 0.3s ease;
+}
+
+.customize-button:hover {
+    transform: scale(1.05);
+}
+
+.header-greeting {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.header-search {
+    flex-grow: 1;
+    margin: 0 20px;
+}
+
+.header-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Settings Button in Header */
+.settings-button {
+    transition: transform 0.3s ease;
+}
+
+.settings-button:hover {
+    transform: scale(1.1);
+}
+
+.highLightLBL {
+    font-size: 2.5rem;
+    margin-top: -12px;
+    line-height: 1.2;
+}
+
+.hightLightBox {
+    font-size: 0.875rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 100%;
+}
+
+/* Muscle Icon Container for Train and Rest Cards */
+.muscle-icon-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    flex: 1;
+    align-content: flex-start;
+}
+
+.muscle-icon {
+    min-width: 32px;
+}
+
+/* Bottom Menu */
+.bottom-menu {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background-color: #2c3e50;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 1000;
+}
+
+.bottom-menu-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    color: #ffffff;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.bottom-menu-item span {
+    display: none;
+}
+
+.bottom-menu-item:hover {
+    color: #f1c40f;
+}
+
+/* Show bottom menu on mobile view */
+@media (max-width: 600px) {
+    .bottom-menu {
+        display: flex;
+    }
+
+    .bottom-menu-item span {
+        display: none;
+    }
+
+    .sidebar {
+        display: none;
+    }
+
+    .main-container {
+        margin-left: 0;
+        width: 100%;
+        margin-bottom: 60px;
+        padding: 8px;
+    }
+
+    .muscle-icon-container {
+        gap: 4px;
+    }
+
+    .muscle-icon {
+        min-width: 24px;
+    }
+
+    .header {
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .header-profile {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #1a202c;
+        color: #e2e8f0;
+    }
+
+    .sidebar {
+        background-color: #2d3748;
+    }
+
+    .sidebar-item {
+        color: #e2e8f0;
+    }
+
+    .sidebar-item:hover {
+        background-color: #4a5568;
+    }
+
+    .header {
+        background-color: #2d3748;
+        color: #e2e8f0;
+    }
+
+    .header-greeting {
+        color: #e2e8f0;
+    }
+
+    .bottom-menu {
+        background-color: #2d3748;
+    }
+
+    .bottom-menu-item {
+        color: #e2e8f0;
+    }
+
+    .bottom-menu-item:hover {
+        color: #f1c40f;
+    }
+
+    /* Dark Mode for TodoList */
+    .todo-container {
+        background-color: #2d3748;
+    }
+
+    .todo-input:focus {
+        border-color: #63b3ed;
+        outline: none;
+    }
+
+    .todo-add-button {
+        background-color: #63b3ed;
+        color: #ffffff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .todo-add-button:hover {
+        background-color: #4299e1;
+        transform: scale(1.05);
+    }
+
+    .todo-list,
+    .todo-completed-list {
+        color: #e2e8f0;
+        border-radius: 4px;
+        padding: 10px;
+        overflow-y: auto;
+    }
+
+    .todo-item {
+        display: flex;
+        align-items: center;
+        padding: 8px 0;
+        transition: background-color 0.3s ease;
+    }
+
+    .todo-item:last-child {
+        border-bottom: none;
+    }
+
+    .todo-item:hover {
+        background-color: #3b4252;
+    }
+
+    .todo-item.completed .todo-text {
+        text-decoration: line-through;
+    }
+
+    .todo-checkbox {
+        margin-right: 10px;
+        cursor: pointer;
+        transform: scale(1.2);
+        transition: transform 0.2s ease;
+    }
+
+    .todo-checkbox:hover {
+        transform: scale(1.3);
+    }
+
+    .todo-text {
+        font-size: 16px;
+        color: #e2e8f0;
+    }
+
+    .todo-toggle-completed-button {
+        padding: 10px 20px;
+        background-color: #627ef8;
+        color: #1a202c;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .todo-toggle-completed-button:hover {
+        background-color: #6562f3;
+        transform: scale(1.05);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 960px) {
+    .sidebar {
+        width: 60px;
+    }
+    
+    .sidebar.expanded {
+        width: 150px;
+    }
+
+    .main-container {
+        margin-left: 60px;
+        width: calc(100% - 60px);
+        padding: 12px;
+    }
+    
+    .main-container.sidebar-expanded {
+        margin-left: 150px;
+        width: calc(100% - 150px);
+    }
+
+    .header {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .header-search {
+        width: 100%;
+        margin: 0;
+    }
+
+    .highLightLBL {
+        font-size: 2rem;
+    }
+
+    .muscle-icon-container {
+        gap: 6px;
+    }
+
+    .muscle-icon {
+        min-width: 28px;
+    }
+}
+
+@media (max-width: 600px) {
+    .sidebar {
+        width: 100%;
+        height: 60px;
+        flex-direction: row;
+        justify-content: space-around;
+        bottom: 0;
+        top: auto;
+    }
+
+    .sidebar.expanded {
+        width: 100%;
+    }
+
+    .sidebar-item span {
+        display: none;
+    }
+
+    .sidebar.expanded .sidebar-item span {
+        display: none;
+    }
+
+    .main-container {
+        margin-left: 0;
+        margin-bottom: 60px;
+        padding: 8px;
+        width: 100%;
+    }
+    
+    .main-container.sidebar-expanded {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .header {
+        padding: 10px;
+    }
+
+    .header-greeting {
+        font-size: 1.2rem;
+    }
+
+    .bottom-menu {
+        height: 50px;
+    }
+
+    .highLightLBL {
+        font-size: 1.5rem;
+    }
+
+    .hightLightBox {
+        font-size: 0.75rem;
+    }
+}
+
+/* Utility Classes */
+.full-width {
+    width: 100%;
+}
+
+/* TodoList Component */
+.todo-container {
+    border-radius: 8px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.todo-input-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.todo-input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+    width: 100%;
+}
+
+.todo-input:focus {
+    border-color: #2c3e50;
+    outline: none;
+}
+
+.todo-add-button {
+    padding: 10px 20px;
+    background-color: #2c3e50;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.todo-add-button:hover {
+    background-color: #34495e;
+    transform: scale(1.05);
+}
+
+.todo-list,
+.todo-completed-list {
+    overflow-y: auto;
+    border-radius: 4px;
+    padding: 10px;
+    transition: background-color 0.3s ease;
+    flex: 1;
+}
+
+.todo-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+    transition: background-color 0.3s ease;
+}
+
+.todo-item:last-child {
+    border-bottom: none;
+}
+
+.todo-item.completed .todo-text {
+    text-decoration: line-through;
+}
+
+.todo-checkbox {
+    margin-right: 10px;
+    cursor: pointer;
+    transform: scale(1.2);
+    transition: transform 0.2s ease;
+}
+
+.todo-checkbox:hover {
+    transform: scale(1.3);
+}
+
+.todo-text {
+    font-size: 16px;
+}
+
+.todo-toggle-completed-button {
+    padding: 10px 20px;
+    background-color: #68cdec;
+    color: #000000;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.todo-toggle-completed-button:hover {
+    background-color: #6f95fc;
+    transform: scale(1.05);
+}
+
+.exercise-list-container {
+    min-height: 100vh;
+}
+
+.exercise-list-content {
+    transition: background-color 0.3s ease;
+}

@@ -1,0 +1,74 @@
+/* Font imports */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Typography */
+  --font-primary: 'Roboto', Helvetica, Arial, sans-serif;
+  
+  /* Font sizes based on style guidelines */
+  --font-h4: 2.125rem; /* 34px - Page titles */
+  --font-h5: 1.5rem;   /* 24px - Section headers */
+  --font-h6: 1.25rem;  /* 20px - Subsection headers */
+  --font-body: 1rem;   /* 16px - Body text */
+  --font-small: 0.875rem; /* 14px - Small text/captions */
+  --font-button: 0.9375rem; /* 15px - Button text */
+  --font-label: 0.875rem; /* 14px - Form labels */
+  
+  /* Line heights */
+  --line-height-heading: 1.2;
+  --line-height-body: 1.5;
+  --line-height-button: 1.75;
+  --line-height-form: 1.4;
+  
+  /* Spacing system */
+  --spacing-xs: 0.25rem;  /* 4px */
+  --spacing-sm: 0.5rem;   /* 8px */
+  --spacing-md: 1rem;     /* 16px */
+  --spacing-lg: 1.5rem;   /* 24px */
+  --spacing-xl: 2rem;     /* 32px */
+  --spacing-xxl: 3rem;    /* 48px */
+  
+  /* Other dimensions */
+  --max-content-width: 1200px;
+  --card-max-width: 400px;
+  --mobile-breakpoint: 600px;
+  --tablet-breakpoint: 960px;
+  
+  /* Component dimensions */
+  --button-height: 36px;
+  --border-radius: 12px;
+  --form-field-height: 56px;
+}
+
+/* Apply fonts to elements */
+body {
+  font-family: var(--font-primary);
+  font-size: var(--font-body);
+  line-height: var(--line-height-body);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-primary);
+  line-height: var(--line-height-heading);
+}
+
+h4 {
+  font-size: var(--font-h4);
+}
+
+h5 {
+  font-size: var(--font-h5);
+}
+
+h6 {
+  font-size: var(--font-h6);
+}
+
+button {
+  font-size: var(--font-button);
+  line-height: var(--line-height-button);
+}
+
+label {
+  font-size: var(--font-label);
+}

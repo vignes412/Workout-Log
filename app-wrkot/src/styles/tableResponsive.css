@@ -1,0 +1,245 @@
+@keyframes fadeInOut {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.8; }
+}
+
+.mobile-optimized .scroll-indicator {
+  position: absolute;
+  top: 50%;
+  right: 4px;
+  width: 4px;
+  height: 40px;
+  border-radius: 4px;
+  background-color: hsl(var(--primary));
+  opacity: 0.5;
+  animation: fadeInOut 2s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 10;
+  transform: translateY(-50%);
+}
+
+.mobile-optimized .table-scroll-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 24px;
+  background: linear-gradient(to right, transparent, hsl(var(--card)));
+  pointer-events: none;
+  opacity: 0.8;
+  z-index: 2;
+}
+
+.mobile-optimized .scroll-indicator,
+.mobile-optimized .table-scroll-container::after {
+  transition: opacity 0.3s ease-out;
+}
+
+.mobile-optimized .scrolled-right .scroll-indicator {
+  opacity: 0;
+}
+
+.mobile-optimized .table-scroll-container {
+  -webkit-overflow-scrolling: touch;
+  overflow-x: auto;
+  overflow-y: hidden;
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+}
+
+.stats-container {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+@media (max-width: 640px) {
+  button, 
+  [role="button"],
+  .clickable {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  input, select, textarea {
+    font-size: 16px;
+  }
+}
+
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.mobile-optimized {
+  contain: layout;
+  border-radius: 8px;
+  background-color: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.table-scroll-container {
+  isolation: isolate;
+  contain: content;
+  touch-action: pan-x;
+  position: relative;
+  margin: 0 !important;
+  padding: 0 !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 640px) {
+  .mobile-optimized {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+  }
+  
+  .mobile-optimized thead th,
+  .mobile-optimized tbody td {
+    padding: 4px !important;
+    font-size: 0.8125rem;
+    line-height: 1.2;
+  }
+    
+  .mobile-optimized th:first-child,
+  .mobile-optimized td:first-child {
+    padding-left: 8px !important;
+    position: sticky;
+    left: 0;
+    background-color: hsl(var(--card));
+    z-index: 2;
+    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+    max-width: 50px !important;
+  }
+  
+  .mobile-optimized .table-scroll-container {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+  }
+  
+  .mobile-optimized th:last-child,
+  .mobile-optimized td:last-child {
+    padding-right: 8px !important;
+  }
+
+  .mobile-optimized tbody tr {
+    height: 40px;
+  }
+  
+  .mobile-optimized button {
+    min-height: 36px;
+    min-width: 36px;
+  }
+
+  .mobile-optimized .card-header {
+    padding: 12px !important;
+  }
+  
+  .mobile-optimized td, 
+  .mobile-optimized th {
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .mobile-optimized .table-scroll-container {
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+  }
+  
+  .mobile-optimized .table-scroll-container::-webkit-scrollbar {
+    display: none;
+  }
+
+  .mobile-optimized .pagination {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px;
+  }
+  
+  .mobile-optimized input {
+    font-size: 16px;
+  }
+
+  .mobile-optimized th,
+  .mobile-optimized td {
+    max-width: 90px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .mobile-optimized th[data-priority="1"],
+  .mobile-optimized td[data-priority="1"] {
+    position: sticky;
+    left: 0;
+    background-color: hsl(var(--card));
+    z-index: 1;
+  }
+
+  .mobile-optimized td[data-priority="1"]:nth-child(2),
+  .mobile-optimized th[data-priority="1"]:nth-child(2) {
+    max-width: 50px;
+  }
+
+  .mobile-optimized td[data-priority="1"]:nth-child(3),
+  .mobile-optimized th[data-priority="1"]:nth-child(3) {
+    max-width: 100px;
+  }
+
+  .mobile-optimized .cursor-pointer {
+    min-height: 10px;
+    display: flex;
+    align-items: center;
+  }
+
+  .mobile-optimized tbody tr:nth-child(odd) {
+    background-color: hsl(var(--muted)/0.05);
+  }
+}
+
+.mobile-optimized .table-scroll-container.has-overflow::after {
+  display: block;
+}
+
+@media (max-width: 640px) {
+  .mobile-optimized {
+    margin-left: -8px;
+    margin-right: -8px;
+    width: calc(100% + 16px);
+  }
+
+  .mobile-optimized tbody tr {
+    height: 42px;
+  }
+  
+  .mobile-optimized thead {
+    background-color: hsl(var(--muted)/0.1);
+  }
+  
+  .mobile-optimized [data-priority="2"] {
+    min-width: 30px;
+  }
+  
+  .mobile-optimized .table-scroll-container {
+    scroll-snap-type: x proximity;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    padding-bottom: 10px;
+  }
+  
+  .mobile-optimized .table-scroll-container::-webkit-scrollbar {
+    display: none;
+  }
+}

@@ -31,6 +31,7 @@ const SettingsModal = ({ open, onClose, onUpdateLayout, onResetLayout, layout })
     status: "Status",
     train: "Train",
     rest: "Rest",
+    "workout-features": "Workout Features",
     "workout-logs": "Workout Logs",
     "muscle-distribution": "Muscle Distribution Chart",
     "workout-count": "Workout Count",

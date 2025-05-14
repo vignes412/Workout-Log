@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Offline - Workout Log</title>
+  <style>
+    body {
+      font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #e2e8f0;
+      background-color: #1a202c;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+    }
+    
+    .container {
+      max-width: 500px;
+      padding: 2rem;
+    }
+    
+    .logo {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #63b3ed;
+      margin-bottom: 1rem;
+    }
+    
+    .offline-icon {
+      font-size: 4rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    p {
+      margin-bottom: 1rem;
+      line-height: 1.5;
+      color: #a0aec0;
+    }
+    
+    .button {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background-color: #63b3ed;
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+      font-weight: bold;
+      margin-top: 1.5rem;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      border: none;
+      font-size: 1rem;
+    }
+    
+    .button:hover {
+      background-color: #4299e1;
+    }
+    
+    .tips {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      background-color: #2d3748;
+      border-radius: 8px;
+      text-align: left;
+    }
+    
+    .tips h2 {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+    
+    .tips ul {
+      padding-left: 1.2rem;
+    }
+    
+    .tips li {
+      margin-bottom: 0.5rem;
+    }
+    
+    .small-text {
+      font-size: 0.8rem;
+      margin-top: 2rem;
+      color: #718096;
+    }
+
+    /* Animated Wi-Fi icon with slash */
+    .wifi-icon {
+      position: relative;
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 1.5rem;
+    }
+    
+    .wifi-circle {
+      position: absolute;
+      border: 4px solid #a0aec0;
+      border-radius: 50%;
+      opacity: 0.2;
+    }
+    
+    .wifi-circle-1 {
+      width: 20px;
+      height: 20px;
+      bottom: 0;
+      left: 30px;
+    }
+    
+    .wifi-circle-2 {
+      width: 40px;
+      height: 40px;
+      bottom: -10px;
+      left: 20px;
+    }
+    
+    .wifi-circle-3 {
+      width: 60px;
+      height: 60px;
+      bottom: -20px;
+      left: 10px;
+    }
+    
+    .wifi-slash {
+      position: absolute;
+      width: 4px;
+      height: 100px;
+      background-color: #f56565;
+      transform: rotate(45deg);
+      left: 38px;
+      top: -10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">Workout Log</div>
+    
+    <div class="wifi-icon">
+      <div class="wifi-circle wifi-circle-1"></div>
+      <div class="wifi-circle wifi-circle-2"></div>
+      <div class="wifi-circle wifi-circle-3"></div>
+      <div class="wifi-slash"></div>
+    </div>
+    
+    <h1>You're Offline</h1>
+    
+    <p>
+      The Workout Log app requires an internet connection to sync your data with Google Sheets.
+    </p>
+    
+    <p>
+      Some features may still be available if you've used the app before. Any changes made while offline will be synced when you're back online.
+    </p>
+    
+    <button class="button" onclick="window.location.reload()">Try Again</button>
+    
+    <div class="tips">
+      <h2>While You're Offline:</h2>
+      <ul>
+        <li>You can view previously loaded workouts</li>
+        <li>The exercise library should be available</li>
+        <li>You can log new workouts (they'll sync later)</li>
+        <li>Some images and content may not display</li>
+      </ul>
+    </div>
+    
+    <p class="small-text">
+      Please check your internet connection and try again.
+    </p>
+  </div>
+  
+  <script>
+    // Check for online status periodically
+    function checkOnlineStatus() {
+      if (navigator.onLine) {
+        window.location.reload();
+      }
+    }
+    
+    // Listen for online event
+    window.addEventListener('online', () => {
+      window.location.reload();
+    });
+    
+    // Check every 5 seconds
+    setInterval(checkOnlineStatus, 5000);
+  </script>
+</body>
+</html>

@@ -137,6 +137,13 @@ const ExerciseList = ({ accessToken, onNavigate, toggleTheme, themeMode }) => {
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
             Exercise List
           </Typography>
+          <Button 
+            color="inherit" 
+            onClick={() => onNavigate("workoutTemplateBuilder")}
+            sx={{ mr: 1 }}
+          >
+            Create Workout
+          </Button>
           <Button color="inherit" onClick={() => onNavigate("dashboard")}>
             Back to Dashboard
           </Button>

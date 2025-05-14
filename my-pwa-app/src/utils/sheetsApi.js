@@ -10,6 +10,9 @@ const { DATA_CACHE_NAME } = config.cache;
 
 let isInitialized = false;
 
+// Cache for in-flight requests to prevent duplicate API calls
+const pendingRequests = new Map();
+
 const MAX_RETRIES = 3;
 const RETRY_BASE_DELAY = 1000; // 1 second initial delay
 
@@ -59,8 +62,14 @@ export const retryOperation = async (operation, retries = MAX_RETRIES) => {
   }
 };
 
+// Enhanced client initialization with more robust error handling
 export const initClient = async (accessToken) => {
-  return new Promise((resolve, reject) => {
+  // Use a cached promise to deduplicate initialization requests
+  if (pendingRequests.has('init')) {
+    return pendingRequests.get('init');
+  }
+  
+  const initPromise = new Promise((resolve, reject) => {
     if (isInitialized) {
       resolve();
       return;
@@ -86,7 +95,9 @@ export const initClient = async (accessToken) => {
             isInitialized = true;
             resolve();
           } else {
-            reject(new Error("No access token available"));
+            const error = new Error("No access token available");
+            console.error(error);
+            reject(error);
           }
         })
         .catch((error) => {
@@ -95,10 +106,31 @@ export const initClient = async (accessToken) => {
         });
     });
   });
+  
+  // Store the promise and clean it up once resolved/rejected
+  pendingRequests.set('init', initPromise);
+  initPromise.finally(() => {
+    pendingRequests.delete('init');
+  });
+  
+  return initPromise;
+};
+
+// Helper to create a request key for deduplication
+const createRequestKey = (operation, params) => {
+  return `${operation}_${JSON.stringify(params)}`;
 };
 
 export const fetchData = async (range, mapFn = (row) => row) => {
-  return retryOperation(async () => {
+  // Create a unique key for this request to deduplicate
+  const requestKey = createRequestKey('fetch', { range });
+  
+  // If this exact request is already in flight, return the existing promise
+  if (pendingRequests.has(requestKey)) {
+    return pendingRequests.get(requestKey);
+  }
+  
+  const fetchPromise = retryOperation(async () => {
     // Get a fresh token before making the request
     try {
       const token = await getAccessToken();
@@ -119,16 +151,43 @@ export const fetchData = async (range, mapFn = (row) => row) => {
       }
     }
     
-    const response = await gapi.client.sheets.spreadsheets.values.get({
-      spreadsheetId: SPREADSHEET_ID,
-      range,
-    });
-    
-    // Transform and return the data
-    const mappedData = (response.result.values || []).map(mapFn);
-    
-    return mappedData;
+    try {
+      const response = await gapi.client.sheets.spreadsheets.values.get({
+        spreadsheetId: SPREADSHEET_ID,
+        range,
+      });
+      
+      // Transform and return the data
+      const mappedData = (response.result.values || []).map(mapFn);
+      
+      // Cache the fetched data
+      await cacheData(cacheKey, mappedData);
+      
+      return mappedData;
+    } catch (error) {
+      // Try to load from cache if available when fetch fails
+      try {
+        const cachedData = await loadCachedData(cacheKey);
+        if (cachedData) {
+          console.log(`Loaded data for ${range} from cache after fetch failure`);
+          return cachedData;
+        }
+      } catch (cacheError) {
+        console.warn(`Cache fallback failed for ${range}:`, cacheError);
+      }
+      
+      // Re-throw the original error if cache isn't available
+      throw error;
+    }
   });
+  
+  // Store the promise and clean it up once resolved/rejected
+  pendingRequests.set(requestKey, fetchPromise);
+  fetchPromise.finally(() => {
+    pendingRequests.delete(requestKey);
+  });
+  
+  return fetchPromise;
 };
 
 export const appendData = async (range, values, accessToken = null) => {
@@ -188,6 +247,16 @@ export const appendData = async (range, values, accessToken = null) => {
     });
     
     console.log(`Appended data to ${range} successfully`);
+    
+    // Invalidate cache for this range
+    const cacheKey = `${SPREADSHEET_ID}_${range}`;
+    try {
+      const cache = await caches.open(DATA_CACHE_NAME);
+      await cache.delete(cacheKey);
+    } catch (e) {
+      console.warn(`Failed to invalidate cache for ${range}:`, e);
+    }
+    
     return response.result;
   });
 };
@@ -207,6 +276,16 @@ export const clearSheet = async (range) => {
       spreadsheetId: SPREADSHEET_ID,
       range,
     });
+    
+    // Invalidate cache for this range
+    const cacheKey = `${SPREADSHEET_ID}_${range}`;
+    try {
+      const cache = await caches.open(DATA_CACHE_NAME);
+      await cache.delete(cacheKey);
+    } catch (e) {
+      console.warn(`Failed to invalidate cache for ${range}:`, e);
+    }
+    
     console.log(`Cleared range ${range} successfully`);
   });
 };
@@ -264,6 +343,15 @@ export const updateData = async (range, values, accessToken = null) => {
       resource: { values },
     });
     
+    // Invalidate cache for this range
+    const cacheKey = `${SPREADSHEET_ID}_${range}`;
+    try {
+      const cache = await caches.open(DATA_CACHE_NAME);
+      await cache.delete(cacheKey);
+    } catch (e) {
+      console.warn(`Failed to invalidate cache for ${range}:`, e);
+    }
+    
     console.log(`Updated range ${range} successfully`);
     return response.result;
   });
@@ -300,20 +388,29 @@ export const cacheData = async (cacheKey, data) => {
 
 export const loadCachedData = async (cacheKey) => {
   try {
-    const cache = await caches.match(cacheKey);
-    return cache ? await cache.json() : null;
+    const cacheResponse = await caches.match(cacheKey);
+    if (cacheResponse) {
+      return await cacheResponse.json();
+    }
+    return null;
   } catch (error) {
     console.error(`Load Cache Error for ${cacheKey}:`, error);
     return null;
   }
 };
 
+// Memoized hook for online status to prevent multiple listeners
 export const useOnlineStatus = (setIsOffline) => {
   React.useEffect(() => {
+    // Initial status check
+    setIsOffline(!navigator.onLine);
+    
     const handleOnline = () => setIsOffline(false);
     const handleOffline = () => setIsOffline(true);
+    
     window.addEventListener("online", handleOnline);
     window.addEventListener("offline", handleOffline);
+    
     return () => {
       window.removeEventListener("online", handleOnline);
       window.removeEventListener("offline", handleOffline);
@@ -335,9 +432,13 @@ export const syncData = async (
     const data = await fetchData(range, mapFn);
     setData(data);
     await cacheData(cacheKey, data);
+    return { success: true, data };
   } catch (error) {
     const cached = await loadCachedData(cacheKey);
-    if (cached) setData(cached);
+    if (cached) {
+      setData(cached);
+      return { success: false, data: cached, fromCache: true };
+    }
     console.error(`Sync error for ${range}:`, error);
     throw error; // Re-throw for UI notification
   }
@@ -367,4 +468,251 @@ export const updateTodo = async (index, todo) => {
 
 export const deleteTodo = async (index) => {
   return clearSheet(`ToDO!A${index + 2}:B${index + 2}`);
+};
+
+// Check if a sheet exists in the spreadsheet
+export const checkSheetExists = async (sheetName) => {
+  return retryOperation(async () => {
+    try {
+      // Get a fresh token before making the request
+      const token = await getAccessToken();
+      gapi.client.setToken({ access_token: token });
+      
+      // Get the spreadsheet metadata which includes sheet information
+      const response = await gapi.client.sheets.spreadsheets.get({
+        spreadsheetId: SPREADSHEET_ID
+      });
+      
+      // Check if the requested sheet exists in the spreadsheet
+      const sheets = response.result.sheets || [];
+      const sheetExists = sheets.some(sheet => 
+        sheet.properties.title.toLowerCase() === sheetName.toLowerCase()
+      );
+      
+      console.log(`Sheet "${sheetName}" ${sheetExists ? 'exists' : 'does not exist'}`);
+      return sheetExists;
+    } catch (error) {
+      console.error(`Error checking if sheet "${sheetName}" exists:`, error);
+      throw error;
+    }
+  });
+};
+
+// Create a new sheet in the spreadsheet
+export const createSheet = async (sheetName, headers = []) => {
+  return retryOperation(async () => {
+    try {
+      // Get a fresh token before making the request
+      const token = await getAccessToken();
+      gapi.client.setToken({ access_token: token });
+      
+      // First, add the sheet
+      const addSheetResponse = await gapi.client.sheets.spreadsheets.batchUpdate({
+        spreadsheetId: SPREADSHEET_ID,
+        resource: {
+          requests: [
+            {
+              addSheet: {
+                properties: {
+                  title: sheetName
+                }
+              }
+            }
+          ]
+        }
+      });
+      
+      console.log(`Created new sheet "${sheetName}"`);
+      
+      // If headers are provided, add them to the first row
+      if (headers && headers.length > 0) {
+        await gapi.client.sheets.spreadsheets.values.update({
+          spreadsheetId: SPREADSHEET_ID,
+          range: `${sheetName}!A1:${String.fromCharCode(65 + headers.length - 1)}1`,
+          valueInputOption: "RAW",
+          resource: {
+            values: [headers]
+          }
+        });
+        
+        console.log(`Added headers to sheet "${sheetName}"`);
+      }
+      
+      return addSheetResponse.result;
+    } catch (error) {
+      console.error(`Error creating sheet "${sheetName}":`, error);
+      throw error;
+    }
+  });
+};
+
+// Check if a sheet exists and create it if it doesn't
+export const ensureSheetExists = async (sheetName, headers = []) => {
+  try {
+    const exists = await checkSheetExists(sheetName);
+    if (!exists) {
+      await createSheet(sheetName, headers);
+      return { created: true };
+    }
+    return { created: false };
+  } catch (error) {
+    console.error(`Error ensuring sheet "${sheetName}" exists:`, error);
+    throw error;
+  }
+};
+
+// WORKOUT TEMPLATES API FUNCTIONS
+
+// Fetch all workout templates
+export const fetchWorkoutTemplates = async () => {
+  // First ensure the WorkoutTemplates sheet exists with proper headers
+  await ensureSheetExists("WorkoutTemplates", ["Name", "Description", "Exercises", "CreatedAt", "LastUsed"]);
+  
+  return fetchData("WorkoutTemplates!A2:E", (row) => ({
+    name: row[0] || '',
+    description: row[1] || '',
+    exercises: row[2] ? JSON.parse(row[2]) : [],
+    createdAt: row[3] || new Date().toISOString(),
+    lastUsed: row[4] || '',
+    rowIndex: 0 // Will be set properly in the mapping function outside
+  }));
+};
+
+// Save a new workout template
+export const saveWorkoutTemplate = async (templateName, exercises, description = '') => {
+  await ensureSheetExists("WorkoutTemplates", ["Name", "Description", "Exercises", "CreatedAt", "LastUsed"]);
+  
+  // Format the template data for the sheet
+  const templateRow = [
+    templateName,
+    description,
+    JSON.stringify(exercises),
+    new Date().toISOString(),
+    '' // lastUsed is empty for new templates
+  ];
+  
+  return appendData("WorkoutTemplates", templateRow);
+};
+
+// Update an existing workout template
+export const updateWorkoutTemplate = async (index, template) => {
+  // Format the template data for the sheet
+  const templateRow = [
+    template.name,
+    template.description,
+    JSON.stringify(template.exercises),
+    template.createdAt || new Date().toISOString(),
+    template.lastUsed || new Date().toISOString()
+  ];
+  
+  return updateData(`WorkoutTemplates!A${index + 2}:E${index + 2}`, [templateRow]);
+};
+
+// Delete a workout template
+export const deleteWorkoutTemplate = async (index) => {
+  return clearSheet(`WorkoutTemplates!A${index + 2}:E${index + 2}`);
+};
+
+// TODAY'S WORKOUT API FUNCTIONS
+
+// Fetch today's workout 
+export const fetchTodaysWorkout = async () => {
+  await ensureSheetExists("TodaysWorkout", ["Date", "WorkoutData", "Completed", "Notes"]);
+  
+  // Get the current date in YYYY-MM-DD format
+  const today = new Date().toISOString().split('T')[0];
+  
+  // Fetch all workouts
+  const workouts = await fetchData("TodaysWorkout!A2:D", (row) => ({
+    date: row[0] || '',
+    workoutData: row[1] ? JSON.parse(row[1]) : {},
+    completed: row[2] === 'true',
+    notes: row[3] || '',
+    rowIndex: 0 // Will be set properly in the mapping function outside
+  }));
+  
+  // Find today's workout if it exists
+  return workouts.find(workout => workout.date === today);
+};
+
+// Save today's workout
+export const saveTodaysWorkout = async (workoutData) => {
+  await ensureSheetExists("TodaysWorkout", ["Date", "WorkoutData", "Completed", "Notes"]);
+  
+  // Get the current date in YYYY-MM-DD format
+  const today = new Date().toISOString().split('T')[0];
+  
+  // Check if a workout for today already exists
+  const todaysWorkout = await fetchTodaysWorkout();
+  
+  // Format workout data
+  const workoutRow = [
+    today,
+    JSON.stringify(workoutData),
+    'false',
+    ''
+  ];
+  
+  if (todaysWorkout) {
+    // If today's workout exists, update it
+    const allWorkouts = await fetchData("TodaysWorkout!A2:D");
+    const index = allWorkouts.findIndex(row => row[0] === today);
+    if (index !== -1) {
+      return updateData(`TodaysWorkout!A${index + 2}:D${index + 2}`, [workoutRow]);
+    }
+  }
+  
+  // If not found, create a new entry
+  return appendData("TodaysWorkout", workoutRow);
+};
+
+// Update today's workout (e.g., mark sets as completed or update progress)
+export const updateTodaysWorkout = async (workoutData, completed = false, notes = '') => {
+  await ensureSheetExists("TodaysWorkout", ["Date", "WorkoutData", "Completed", "Notes"]);
+  
+  // Get the current date in YYYY-MM-DD format
+  const today = new Date().toISOString().split('T')[0];
+  
+  // Fetch all workouts
+  const allWorkouts = await fetchData("TodaysWorkout!A2:D");
+  const index = allWorkouts.findIndex(row => row[0] === today);
+  
+  // Format the workout data
+  const workoutRow = [
+    today,
+    JSON.stringify(workoutData),
+    completed.toString(),
+    notes
+  ];
+  
+  if (index !== -1) {
+    // Update existing workout
+    return updateData(`TodaysWorkout!A${index + 2}:D${index + 2}`, [workoutRow]);
+  } else {
+    // Create a new workout if none exists for today
+    return appendData("TodaysWorkout", workoutRow);
+  }
+};
+
+// Mark a workout as completed
+export const completeWorkout = async (notes = '') => {
+  const todaysWorkout = await fetchTodaysWorkout();
+  
+  if (todaysWorkout) {
+    const allWorkouts = await fetchData("TodaysWorkout!A2:D");
+    const index = allWorkouts.findIndex(row => row[0] === new Date().toISOString().split('T')[0]);
+    
+    if (index !== -1) {
+      const updatedWorkout = [
+        todaysWorkout.date,
+        JSON.stringify(todaysWorkout.workoutData),
+        'true',
+        notes || todaysWorkout.notes
+      ];
+      
+      return updateData(`TodaysWorkout!A${index + 2}:D${index + 2}`, [updatedWorkout]);
+    }
+  }
+  
+  return null; // No workout found for today
 };
