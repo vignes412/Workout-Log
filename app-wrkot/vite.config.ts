@@ -10,7 +10,7 @@ import tailwindcss from '@tailwindcss/vite'
 const getRepoName = () => {
   // For GitHub Pages: https://username.github.io/repo-name/
   // Extract repo-name from package.json or env var if available
-  return 'app-wrkot'; // Replace this with your actual repo name if different
+  return 'PA'; // Replace this with your actual repo name if different
 }
 
 export default defineConfig({

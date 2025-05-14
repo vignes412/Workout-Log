@@ -14,7 +14,7 @@ interface ExercisesState {
   isLoading: boolean;
   error: string | null;
   isDataFetched: boolean;
-  fetchExercises: () => Promise<void>;
+  fetchExercises: (forceRefresh?: boolean) => Promise<void>; // Added forceRefresh
   getExercisesByMuscleGroup: (muscleGroup: string) => string[];
   getMuscleGroupsByExercise: (exercise: string) => string[];
   getAllUniqueExerciseNames: () => string[]; // Added
@@ -29,23 +29,29 @@ export const useExercisesStore = create<ExercisesState>()(
       error: null,
       isDataFetched: false,
       
-      fetchExercises: async () => {
-        // Skip if already fetched and we're online (to avoid unnecessary API calls)
-        if (get().isDataFetched && navigator.onLine) {
+      fetchExercises: async (forceRefresh = false) => { // Added forceRefresh
+        const isOnline = typeof navigator !== 'undefined' && navigator.onLine; // Changed to use navigator.onLine
+        if (!isOnline && !forceRefresh) {
+          console.log('Offline, using cached exercises data.');
+          set({ isLoading: false, error: null });
           return;
         }
 
-        // If offline, use cached data if available
-        if (!navigator.onLine) {
-          if (get().exercises.length > 0) {
-            console.log('Offline, using cached exercise data.');
-            return;
-          } else {
-            set({ error: 'Offline and no exercise data cached.', isLoading: false });
-            return;
+        if (forceRefresh) {
+          console.log('[ExercisesStore] Force refreshing data...');
+          // Clear API cache via service worker
+          if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+            navigator.serviceWorker.controller.postMessage({
+              type: 'CLEAR_API_CACHE',
+              cacheName: 'sheets-api-cache', // Make sure this matches the SW cache name
+            });
+            console.log('[ExercisesStore] Sent message to SW to clear sheets-api-cache.');
           }
+          // Clear workout-log-storage from localStorage
+          localStorage.removeItem('workout-log-storage');
+          console.log('[ExercisesStore] Cleared workout-log-storage from localStorage.');
         }
-        
+
         set({ isLoading: true, error: null });
         
         try {

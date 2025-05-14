@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react'; // Added useCallback
 import { SidebarNav } from './SidebarNav';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, Bell, LogOut, Plus } from 'lucide-react';
+import { Menu, Bell, LogOut, Plus, RefreshCw } from 'lucide-react'; // Added RefreshCw
 import { ThemeToggle } from './ThemeToggle';
 import { useAppStore } from '@/store/appStore';
+import { useExercisesStore } from '@/store/exercisesStore'; // Added useExercisesStore
 import { FloatingActionButton } from '@/components/ui/floating-action-button';
 import { BottomNav } from './BottomNav';
 import { cn } from '@/lib/utils';
@@ -15,9 +16,11 @@ interface DashboardLayoutProps {
 
 export const DashboardLayout = ({ children }: DashboardLayoutProps): React.ReactElement => {
   const { logout, isSidebarCollapsed, toggleSidebar, setIsSidebarCollapsed, currentView } = useAppStore();
+  const { fetchExercises } = useExercisesStore(); // Get fetchExercises action
   const [isMobileView, setIsMobileView] = useState(window.innerWidth < 768);
   const [lastScrollTop, setLastScrollTop] = useState(0);
   const [isHeaderHidden, setIsHeaderHidden] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -49,6 +52,20 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps): React.React
       window.removeEventListener('scroll', handleScroll);
     };
   }, [setIsSidebarCollapsed, isMobileView, lastScrollTop]);
+
+  const handleRefreshData = useCallback(async () => {
+    setIsRefreshing(true);
+    try {
+      // Add other store refresh calls here if needed
+      await fetchExercises(true); // Pass true to force refresh exercise data
+      // Optionally, show a success toast/notification
+      console.log('Data cache refreshed');
+    } catch (error) {
+      console.error('Error refreshing data cache:', error);
+      // Optionally, show an error toast/notification
+    }
+    setIsRefreshing(false);
+  }, [fetchExercises]);
 
   const handleOpenAddWorkoutModal = () => {
     const event = new CustomEvent('open-add-workout-modal');
@@ -116,6 +133,18 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps): React.React
           
           <div className="ml-auto flex items-center gap-2 sm:gap-3">
             <ThemeToggle variant="ghost" />
+
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleRefreshData}
+              disabled={isRefreshing}
+              className="rounded-full relative hover:bg-primary/10 hover:text-primary transition-button duration-base"
+              title="Reload App Data"
+            >
+              <RefreshCw className={cn("h-5 w-5", isRefreshing && "animate-spin")} />
+              <span className="sr-only">Reload App Data</span>
+            </Button>
             
             <Button variant="ghost" size="icon" className="rounded-full relative hover:bg-primary/10 hover:text-primary transition-button duration-base">
               <Bell className="h-5 w-5" />
