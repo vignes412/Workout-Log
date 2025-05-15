@@ -2,17 +2,17 @@
   "name": "app-wrkot",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
-  "scripts": {
+  "type": "module",  "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:prod": "vite build --mode prod",
     "lint": "eslint .",
     "preview": "vite preview",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "typecheck": "tsc --noEmit",
     "prune-unused": "node prune-unused.mjs",
-    "deploy": "vite build && gh-pages -d dist"
+    "deploy": "vite build --mode prod && gh-pages -d dist"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",

@@ -10,11 +10,11 @@ import tailwindcss from '@tailwindcss/vite'
 const getRepoName = () => {
   // For GitHub Pages: https://username.github.io/repo-name/
   // Extract repo-name from package.json or env var if available
-  return 'PA'; // Replace this with your actual repo name if different
+  return './'; // Replace this with your actual repo name if different
 }
 
 export default defineConfig({
-  base: process.env.NODE_ENV === 'production' ? `/${getRepoName()}/` : '/',
+  base:  './',
   plugins: [
     react(),
     tailwindcss(),

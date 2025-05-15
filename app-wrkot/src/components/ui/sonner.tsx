@@ -1,5 +1,5 @@
 import { useTheme } from "next-themes"
-import { Toaster as Sonner, ToasterProps } from "sonner"
+import { Toaster as Sonner, ToasterProps,Toast } from "sonner"
 
 const Toaster = ({ ...props }: ToasterProps) => {
   const { theme = "system" } = useTheme()
@@ -15,9 +15,10 @@ const Toaster = ({ ...props }: ToasterProps) => {
           "--normal-border": "var(--border)",
         } as React.CSSProperties
       }
+      
       {...props}
     />
   )
 }
 
-export { Toaster }
+export { Toaster,Toast }
