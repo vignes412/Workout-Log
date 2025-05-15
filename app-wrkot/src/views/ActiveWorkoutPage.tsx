@@ -41,8 +41,9 @@ const ActiveWorkoutPage: React.FC = () => {
   const [notesDialogOpen, setNotesDialogOpen] = useState(false);
   const [currentWeight, setCurrentWeight] = useState<number>(0);
   const [currentReps, setCurrentReps] = useState<number>(0);
-  const [currentRating, setCurrentRating] = useState<number>(3); // Default rating (1-5)
+  const [currentRating, setCurrentRating] = useState<number>(3); // Default rating (1-5)  
   const [isSaving, setIsSaving] = useState(false);
+  const [elapsedRestTime, setElapsedRestTime] = useState(0); // track elapsed rest time
   
   // Set up defaults
   const defaultRestBetweenSets = 60; // seconds
@@ -88,8 +89,7 @@ const ActiveWorkoutPage: React.FC = () => {
     
     return `${hours > 0 ? `${hours}h ` : ''}${mins < 10 ? '0' : ''}${mins}m`;
   };
-  
-  // Format rest timer
+    // Format rest timer
   const formatRestTime = () => {
     if (!restTimerActive || !restStartTime) return "00:00";
     
@@ -101,7 +101,8 @@ const ActiveWorkoutPage: React.FC = () => {
     
     return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
   };
-    // Start rest timer
+  
+  // Start rest timer
   const startRestTimer = (duration = defaultRestBetweenSets) => {
     setRestStartTime(Date.now());
     setRestTimerActive(true);
@@ -109,7 +110,8 @@ const ActiveWorkoutPage: React.FC = () => {
       description: `${duration} seconds rest timer started`,
     });
   };
-    // Stop rest timer
+  
+  // Stop rest timer
   const stopRestTimer = () => {
     setRestTimerActive(false);
     setRestStartTime(null);
@@ -206,13 +208,9 @@ const ActiveWorkoutPage: React.FC = () => {
             description: "Check network connectivity and try again",
           });
         }
-        
-        // Close the dialog
+          // Close the dialog
         setExerciseLogOpen(false);
-        
-        // Start the rest timer
-        startRestTimer(exercise.rest || defaultRestBetweenSets);
-        
+                
         // Check if all sets are complete
         if (currentSetsCompleted + 1 >= exercise.sets) {
           // Find next incomplete exercise
@@ -226,13 +224,19 @@ const ActiveWorkoutPage: React.FC = () => {
             // Set the next exercise as current
             setCurrentExerciseIndex(nextIncompleteIdx);
           } else {
+            // Start regular rest timer
+            startRestTimer(exercise.rest || defaultRestBetweenSets);
+            
             // All exercises complete          
             toast.success("Workout Complete", {
               description: "All exercises have been completed! You can finish your workout.",
             });
           }
+        } else {
+          // Start regular rest timer for the same exercise's next set
+          startRestTimer(exercise.rest || defaultRestBetweenSets);
         }
-      }
+        }
     } catch (error) {
       toast.error("Error", {
         description: "Failed to update exercise progress. Please try again.",
@@ -292,14 +296,16 @@ const ActiveWorkoutPage: React.FC = () => {
       description: `Added an extra set to ${activeWorkout.exercises[exerciseIndex].name}`,
     });
   };
-  
   // Update UI when timer is active
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
     
     if (restTimerActive) {
+      // Create a new interval that runs every 1000ms (1 second)
       interval = setInterval(() => {
-        // Force re-render to update timer display
+        // This empty callback forces React to re-render
+        // which will update the timer display since formatRestTime reads current time
+        forceUpdate({});
       }, 1000);
     }
     
@@ -307,6 +313,9 @@ const ActiveWorkoutPage: React.FC = () => {
       if (interval) clearInterval(interval);
     };
   }, [restTimerActive]);
+  
+  // Create a simple method to force component update
+  const [, forceUpdate] = useState({});
   
   if (!activeWorkout) {
     return <div className="flex justify-center items-center h-full">Loading workout...</div>;
