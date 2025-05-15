@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect } from 'react';
 import { 
   Dialog, 
   DialogContent, 
@@ -6,7 +6,6 @@ import {
   DialogTitle, 
   DialogFooter 
 } from '@/components/ui/dialog';
-// Select components not needed - using Command/Popover instead
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -22,10 +21,6 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useWorkoutLogStore } from '@/store/workoutLogStore';
-import { useExercisesStore } from '@/store/exercisesStore';
-import { Loader2 } from 'lucide-react';
-import { toast } from 'sonner';
-import { format } from 'date-fns';
 import { 
   Command,
   CommandEmpty,
@@ -39,16 +34,17 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from '@/lib/utils';
-import { Check } from 'lucide-react';
+import { Check, ChevronsUpDown } from 'lucide-react';
+import { WorkoutLogEntry } from '../../types/Workout_Log';
 
 const formSchema = z.object({
-  date: z.string().min(1, { message: 'Date is required' }),
-  muscleGroup: z.string().min(1, { message: 'Muscle group is required' }),
-  exercise: z.string().min(1, { message: 'Exercise is required' }),
-  reps: z.number().min(1, { message: 'At least 1 rep is required' }).max(1000),
-  weight: z.number().min(0).max(1000),
-  rating: z.number().min(1, { message: 'Rating is required' }).max(10),
-  restTime: z.number().min(0).max(600).nullable(),
+  date: z.string().min(1, "Date is required"),
+  muscleGroup: z.string().min(1, "Muscle group is required"),
+  exercise: z.string().min(1, "Exercise is required"),
+  reps: z.coerce.number().min(0, "Reps must be non-negative").default(0),
+  weight: z.coerce.number().min(0, "Weight must be non-negative").default(0),
+  rating: z.coerce.number().min(1, "Rating must be between 1-5").max(5, "Rating must be between 1-5").default(3),
+  restTime: z.coerce.number().min(0, "Rest time must be non-negative").optional().nullable(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -56,98 +52,140 @@ type FormValues = z.infer<typeof formSchema>;
 interface AddWorkoutLogModalProps {
   isOpen: boolean;
   onClose: () => void;
+  initialData?: Partial<FormValues & { id?: string }>;
 }
 
-export const AddWorkoutLogModal: React.FC<AddWorkoutLogModalProps> = ({ isOpen, onClose }) => {
-  const [exercisesOpen, setExercisesOpen] = useState(false);
-  const [muscleGroupsOpen, setMuscleGroupsOpen] = useState(false);
+export const AddWorkoutLogModal: React.FC<AddWorkoutLogModalProps> = ({
+  isOpen,
+  onClose,
+  initialData,
+}) => {
+  const addWorkoutLog = useWorkoutLogStore((state) => state.addWorkoutLog);
+  const editWorkoutLog = useWorkoutLogStore((state) => state.editWorkoutLog);
+  const workoutLogs = useWorkoutLogStore((state) => state.workoutLogs);
+
+  const [muscleGroupOpen, setMuscleGroupOpen] = React.useState(false);
+  const [exerciseOpen, setExerciseOpen] = React.useState(false);
   
-  const { 
-    addWorkoutLog, 
-    isLoading: isSaving 
-  } = useWorkoutLogStore();
-  
-  const { 
-    exercises, 
-    exerciseGroups,
-    fetchExercises, 
-    isLoading: isLoadingExercises,
-    isDataFetched,
-    getExercisesByMuscleGroup,
-    getAllUniqueExerciseNames
-  } = useExercisesStore();
-  
-  // Using toast directly from sonner
-  
+  const [muscleGroupInput, setMuscleGroupInput] = React.useState(initialData?.muscleGroup || "");
+  const [exerciseInput, setExerciseInput] = React.useState(initialData?.exercise || "");
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      date: format(new Date(), 'yyyy-MM-dd'),
-      muscleGroup: '',
-      exercise: '',
-      reps: 10,
-      weight: 0,
-      rating: 7,
-      restTime: 60,
+      date: initialData?.date || new Date().toISOString().split("T")[0],
+      muscleGroup: initialData?.muscleGroup || "",
+      exercise: initialData?.exercise || "",
+      reps: initialData?.reps ?? 0,
+      weight: initialData?.weight ?? 0,
+      rating: initialData?.rating ?? 3,
+      restTime: initialData?.restTime ?? null,
     },
   });
 
-  const muscleGroup = form.watch('muscleGroup');
-  const exercise = form.watch('exercise');
-  
-  // Load exercises data when the modal opens
   useEffect(() => {
-    if (isOpen && !isDataFetched) {
-      fetchExercises();
-    }
-  }, [isOpen, isDataFetched, fetchExercises]);
-  
-  // Get filtered list of muscle groups for the selected exercise
-  const filteredMuscleGroups = useMemo(() => {
-    if (exercise) {
-      return exercises
-        .filter(e => e.exercise.toLowerCase() === exercise.toLowerCase())
-        .map(e => e.muscleGroup)
-        .filter((v, i, a) => a.indexOf(v) === i); // Unique values
-    }
-    return exerciseGroups.map(g => g.muscleGroup);
-  }, [exercise, exercises, exerciseGroups]);
-  
-  // Get filtered list of exercises for the selected muscle group
-  const filteredExercises = useMemo(() => {
-    if (muscleGroup) {
-      return getExercisesByMuscleGroup(muscleGroup);
-    }
-    return getAllUniqueExerciseNames();
-  }, [muscleGroup, getExercisesByMuscleGroup, getAllUniqueExerciseNames]);
-  
-  const handleSubmit = async (data: FormValues) => {
-    try {
-      const result = await addWorkoutLog({
-        date: data.date,
-        muscleGroup: data.muscleGroup,
-        exercise: data.exercise,
-        reps: data.reps,
-        weight: data.weight,
-        rating: data.rating,
-        restTime: data.restTime
-      });
-      if (result) {
-        toast.success('Workout log has been added.');
-        form.reset({
-          date: format(new Date(), 'yyyy-MM-dd'),
-          muscleGroup: '',
-          exercise: '',
-          reps: 10,
-          weight: 0,
-          rating: 7,
-          restTime: 60
-        });
-        onClose();
+    const subscription = form.watch((values, { name, type }) => {
+      if (name === "muscleGroup" || (type === undefined && values.muscleGroup !== undefined)) {
+        setMuscleGroupInput(values.muscleGroup || "");
       }
+      if (name === "exercise" || (type === undefined && values.exercise !== undefined)) {
+        setExerciseInput(values.exercise || "");
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form]);
+
+  useEffect(() => {
+    if (isOpen) {
+      const defaultVals = {
+        date: initialData?.date || new Date().toISOString().split("T")[0],
+        muscleGroup: initialData?.muscleGroup || "",
+        exercise: initialData?.exercise || "",
+        reps: initialData?.reps ?? 0,
+        weight: initialData?.weight ?? 0,
+        rating: initialData?.rating ?? 3,
+        restTime: initialData?.restTime ?? null,
+      };
+      form.reset(defaultVals);
+      setMuscleGroupInput(defaultVals.muscleGroup);
+      setExerciseInput(defaultVals.exercise);
+    }
+  }, [isOpen, initialData, form]);
+
+  const muscleGroups = React.useMemo(() => {
+    const uniqueMuscleGroups = new Set(workoutLogs.map(log => log.muscleGroup));
+    return Array.from(uniqueMuscleGroups);
+  }, [workoutLogs]);
+
+  const exercises = React.useMemo(() => {
+    const uniqueExercises = new Set(workoutLogs.map(log => log.exercise));
+    return Array.from(uniqueExercises);
+  }, [workoutLogs]);
+
+  const filteredMuscleGroups = React.useMemo(() => {
+    if (!muscleGroupInput) return muscleGroups;
+    return muscleGroups.filter(mg => mg.toLowerCase().includes(muscleGroupInput.toLowerCase()));
+  }, [muscleGroupInput, muscleGroups]);
+
+  const currentSelectedMuscleGroup = form.getValues("muscleGroup");
+
+  const filteredExercises = React.useMemo(() => {
+    let exercisesForGroup = exercises;
+    if (currentSelectedMuscleGroup) {
+      const exercisesInGroup = new Set(
+        workoutLogs
+          .filter(log => log.muscleGroup === currentSelectedMuscleGroup)
+          .map(log => log.exercise)
+      );
+      if (exercisesInGroup.size > 0) {
+        exercisesForGroup = Array.from(exercisesInGroup);
+      }
+    }
+    if (!exerciseInput) return exercisesForGroup;
+    return exercisesForGroup.filter(ex => ex.toLowerCase().includes(exerciseInput.toLowerCase()));
+  }, [exerciseInput, exercises, workoutLogs, currentSelectedMuscleGroup]);
+
+  const onSubmit = async (data: FormValues) => {
+    const dataToSubmit: Omit<WorkoutLogEntry, 'id' | 'rowIndex'> = {
+      date: data.date,
+      muscleGroup: data.muscleGroup,
+      exercise: data.exercise,
+      reps: Number(data.reps),
+      weight: Number(data.weight),
+      rating: Number(data.rating),
+      restTime: data.restTime ? Number(data.restTime) : null,
+    };
+
+    try {
+      if (initialData?.id) {
+        const logToEdit = workoutLogs.find(log => log.id === initialData.id);
+        if (logToEdit) {
+            await editWorkoutLog({ 
+                ...dataToSubmit, 
+                id: initialData.id, 
+                rowIndex: logToEdit.rowIndex, 
+                isSynced: logToEdit.isSynced, 
+            });
+        } else {
+            console.error("Log to edit not found");
+        }
+      } else {
+        await addWorkoutLog(dataToSubmit);
+      }
+      form.reset({
+        date: new Date().toISOString().split("T")[0],
+        muscleGroup: "",
+        exercise: "",
+        reps: 0,
+        weight: 0,
+        rating: 3,
+        restTime: null,
+      });
+      setMuscleGroupInput("");
+      setExerciseInput("");
+      onClose();
     } catch (error) {
-      console.error('Failed to add workout log:', error);
-      toast.error('Failed to add workout log. Please try again.');
+      console.error("Failed to submit workout log:", error);
     }
   };
 
@@ -159,7 +197,7 @@ export const AddWorkoutLogModal: React.FC<AddWorkoutLogModalProps> = ({ isOpen, 
         </DialogHeader>
         
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6 pt-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 pt-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
@@ -181,43 +219,51 @@ export const AddWorkoutLogModal: React.FC<AddWorkoutLogModalProps> = ({ isOpen, 
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
                     <FormLabel>Muscle Group</FormLabel>
-                    <Popover open={muscleGroupsOpen} onOpenChange={setMuscleGroupsOpen}>
+                    <Popover open={muscleGroupOpen} onOpenChange={setMuscleGroupOpen}>
                       <PopoverTrigger asChild>
                         <FormControl>
                           <Button
                             variant="outline"
                             role="combobox"
-                            aria-expanded={muscleGroupsOpen}
+                            aria-expanded={muscleGroupOpen}
                             className={cn(
                               "w-full justify-between",
-                              !field.value && "text-muted-foreground"
+                              !field.value && !muscleGroupInput && "text-muted-foreground"
                             )}
                           >
-                            {isLoadingExercises ? (
-                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            ) : field.value 
-                              ? field.value
-                              : "Select muscle group"}
+                            {muscleGroupInput || field.value
+                              ? muscleGroupInput || field.value
+                              : "Select or type muscle group"}
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                           </Button>
                         </FormControl>
                       </PopoverTrigger>
                       <PopoverContent className="w-full p-0">
-                        <Command>
-                          <CommandInput placeholder="Search muscle group..." />
+                        <Command shouldFilter={false}>
+                          <CommandInput
+                            placeholder="Search muscle group..."
+                            value={muscleGroupInput}
+                            onValueChange={(search) => {
+                              setMuscleGroupInput(search);
+                              if (!search) {
+                                form.setValue("muscleGroup", "");
+                              }
+                            }}
+                          />
                           <CommandEmpty>No muscle group found.</CommandEmpty>
                           <CommandGroup className="max-h-[200px] overflow-y-auto">
                             {filteredMuscleGroups.map((item) => (
                               <CommandItem
                                 key={item}
                                 value={item}
-                                onSelect={(value) => {
-                                  form.setValue("muscleGroup", value);
-                                  // Clear exercise if not valid for this muscle group
-                                  const exercises = getExercisesByMuscleGroup(value);
-                                  if (!exercises.includes(form.getValues('exercise'))) {
-                                    form.setValue("exercise", '');
-                                  }
-                                  setMuscleGroupsOpen(false);
+                                onSelect={(currentValue) => {
+                                  const selectedValue = muscleGroups.find(mg => mg.toLowerCase() === currentValue) || currentValue;
+                                  form.setValue("muscleGroup", selectedValue);
+                                  setMuscleGroupInput(selectedValue);
+                                  form.trigger("muscleGroup");
+                                  setMuscleGroupOpen(false);
+                                  form.setValue("exercise", "");
+                                  setExerciseInput("");
                                 }}
                               >
                                 <Check
@@ -244,47 +290,57 @@ export const AddWorkoutLogModal: React.FC<AddWorkoutLogModalProps> = ({ isOpen, 
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
                     <FormLabel>Exercise</FormLabel>
-                    <Popover open={exercisesOpen} onOpenChange={setExercisesOpen}>
+                    <Popover open={exerciseOpen} onOpenChange={setExerciseOpen}>
                       <PopoverTrigger asChild>
                         <FormControl>
                           <Button
                             variant="outline"
                             role="combobox"
-                            aria-expanded={exercisesOpen}
+                            aria-expanded={exerciseOpen}
                             className={cn(
                               "w-full justify-between",
-                              !field.value && "text-muted-foreground"
+                              !field.value && !exerciseInput && "text-muted-foreground"
                             )}
                           >
-                            {isLoadingExercises ? (
-                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            ) : field.value 
-                              ? field.value
-                              : "Select exercise"}
+                            {exerciseInput || field.value 
+                              ? exerciseInput || field.value
+                              : "Select or type exercise"}
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                           </Button>
                         </FormControl>
                       </PopoverTrigger>
                       <PopoverContent className="w-full p-0">
-                        <Command>
-                          <CommandInput placeholder="Search exercise..." />
+                        <Command shouldFilter={false}>
+                          <CommandInput
+                            placeholder="Search exercise..."
+                            value={exerciseInput}
+                            onValueChange={(search) => {
+                              setExerciseInput(search);
+                              if (!search) {
+                                form.setValue("exercise", "");
+                              }
+                            }}
+                          />
                           <CommandEmpty>No exercise found.</CommandEmpty>
                           <CommandGroup className="max-h-[200px] overflow-y-auto">
                             {filteredExercises.map((item) => (
                               <CommandItem
                                 key={item}
                                 value={item}
-                                onSelect={(value) => {
-                                  form.setValue("exercise", value);
-                                  // Only update muscle group if it's not set
-                                  if (!form.getValues('muscleGroup')) {
-                                    const muscleGroups = exercises
-                                      .filter(e => e.exercise === value)
-                                      .map(e => e.muscleGroup);
-                                    if (muscleGroups.length > 0) {
-                                      form.setValue("muscleGroup", muscleGroups[0]);
+                                onSelect={(currentValue) => {
+                                  const selectedValue = filteredExercises.find(ex => ex.toLowerCase() === currentValue) || currentValue;
+                                  form.setValue("exercise", selectedValue);
+                                  setExerciseInput(selectedValue);
+                                  form.trigger("exercise");
+                                  setExerciseOpen(false);
+
+                                  if (!form.getValues("muscleGroup") && selectedValue) {
+                                    const logWithExercise = workoutLogs.find(log => log.exercise === selectedValue);
+                                    if (logWithExercise) {
+                                      form.setValue("muscleGroup", logWithExercise.muscleGroup);
+                                      setMuscleGroupInput(logWithExercise.muscleGroup);
                                     }
                                   }
-                                  setExercisesOpen(false);
                                 }}
                               >
                                 <Check
@@ -394,13 +450,8 @@ export const AddWorkoutLogModal: React.FC<AddWorkoutLogModalProps> = ({ isOpen, 
               <Button type="button" variant="outline" onClick={onClose}>
                 Cancel
               </Button>
-              <Button type="submit" disabled={isSaving}>
-                {isSaving ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Saving...
-                  </>
-                ) : 'Add Workout'}
+              <Button type="submit">
+                Add Workout
               </Button>
             </DialogFooter>
           </form>
