@@ -9,6 +9,8 @@ import { PWAInstallPrompt } from './components/PWAInstallPrompt';
 const DashboardPage = React.lazy(() => import('./views/DashboardPage'));
 const SettingsPage = React.lazy(() => import('./views/SettingsPage'));
 const ExerciseDBPage = React.lazy(() => import('./views/ExerciseDBPage'));
+const WorkoutTemplateBuilderPage = React.lazy(() => import('./views/WorkoutTemplateBuilderPage'));
+const ActiveWorkoutPage = React.lazy(() => import('./views/ActiveWorkoutPage'));
 
 // Basic loading spinner component (you can customize this)
 const PageLoader: React.FC = () => (
@@ -47,15 +49,17 @@ export const App: React.FC = () => {
       <PWAHandler />
       <PWAInstallPrompt />
       {isAuthenticated ? (
-        <Suspense fallback={<PageLoader />}> { /* Wrap routes in Suspense */}
-          {(() => {
-            switch (currentView) {
+        <Suspense fallback={<PageLoader />}> { /* Wrap routes in Suspense */}          {(() => {          switch (currentView) {
               case 'dashboard':
                 return <DashboardPage />;
               case 'workouts':
                 return <ExerciseDBPage />;
               case 'exercises':
                 return <ExerciseDBPage />;
+              case 'templates':
+                return <WorkoutTemplateBuilderPage />;
+              case 'workout':
+                return <ActiveWorkoutPage />;
               case 'stats':
                 return <DashboardPage />;
               case 'settings':

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { DashboardOverview } from '@/components/dashboard/DashboardOverview';
 import { RecentWorkouts } from '@/components/dashboard/RecentWorkouts';
+import { ActiveWorkoutCard } from '@/components/dashboard/ActiveWorkoutCard';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { SlideUp, StaggerContainer, StaggerItem } from '@/components/ui/animations';
 import { GradientCard } from '@/components/ui/glass-card';
@@ -9,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { useAppStore } from '@/store/appStore';
 import { useExercisesStore } from '@/store/exercisesStore';
 import { useWorkoutLogStore } from '@/store/workoutLogStore';
+import { useWorkoutTemplateStore } from '@/store/workoutTemplateStore';
 import { WorkoutLogTable } from '@/components/dashboard/WorkoutLogTable';
 import { WorkoutSummaryTable } from '@/components/dashboard/WorkoutSummaryTable';
 import { Card, CardContent } from '@/components/ui/card';
@@ -42,6 +44,7 @@ const ViewContent: React.FC = () => {
 const DashboardMainContent: React.FC = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const { workoutLogs } = useWorkoutLogStore();
+  const { activeWorkout } = useWorkoutTemplateStore();
 
   useEffect(() => {
     const handleOpenWorkoutModal = () => setIsAddModalOpen(true);
@@ -65,6 +68,15 @@ const DashboardMainContent: React.FC = () => {
           <DashboardOverview />
         </SlideUp>
       </StaggerItem>
+      
+      {/* Active Workout Card - only shows when there is an active workout */}
+      {activeWorkout && (
+        <StaggerItem>
+          <SlideUp delay={0.05}>
+            <ActiveWorkoutCard />
+          </SlideUp>
+        </StaggerItem>
+      )}
       
       <StaggerItem>
         <div className="grid gap-6 md:grid-cols-2">
