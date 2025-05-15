@@ -1,9 +1,10 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { Home, BarChart3, User, Settings, Dumbbell, CalendarClock, ChevronLeft, ChevronRight, LogOut } from 'lucide-react';
+import { Home, BarChart3, User, Settings, Dumbbell, CalendarClock, ChevronLeft, ChevronRight, LogOut, BookTemplate, PlayCircle } from 'lucide-react';
 import { useAppStore } from '@/store/appStore';
 import { ViewType } from '@/store/appStore';
+import { useWorkoutTemplateStore } from '@/store/workoutTemplateStore';
 
 interface SidebarNavProps extends React.HTMLAttributes<HTMLElement> {
   isCollapsed: boolean;
@@ -13,6 +14,7 @@ interface SidebarNavProps extends React.HTMLAttributes<HTMLElement> {
 const navItems = [
   { view: 'dashboard' as ViewType, label: 'Dashboard', icon: Home },
   { view: 'workouts' as ViewType, label: 'Workouts', icon: Dumbbell },
+  { view: 'templates' as ViewType, label: 'Templates', icon: BookTemplate },
   { view: 'schedule' as ViewType, label: 'Schedule', icon: CalendarClock },
   { view: 'stats' as ViewType, label: 'Statistics', icon: BarChart3 },
   { view: 'profile' as ViewType, label: 'Profile', icon: User },
@@ -21,6 +23,19 @@ const navItems = [
 
 export function SidebarNav({ className, isCollapsed, toggleSidebar }: SidebarNavProps) {
   const { setCurrentView, currentView, logout } = useAppStore();
+  const { activeWorkout } = useWorkoutTemplateStore();
+
+  // Create dynamic navigation items with conditional active workout
+  const dynamicNavItems = [...navItems];
+  
+  // Insert active workout item after dashboard if it exists
+  if (activeWorkout) {
+    dynamicNavItems.splice(1, 0, {
+      view: 'workout' as ViewType,
+      label: 'Active Workout',
+      icon: PlayCircle
+    });
+  }
 
   return (
     <div className={cn(
@@ -50,9 +65,8 @@ export function SidebarNav({ className, isCollapsed, toggleSidebar }: SidebarNav
           )}
           <span className="sr-only">{isCollapsed ? "Expand sidebar" : "Collapse sidebar"}</span>
         </Button>
-      </div>
-      <nav className="flex-1 overflow-y-auto py-4 sm:py-6 px-2 sm:px-4 space-y-1 sm:space-y-2">
-        {navItems.map((item) => (
+      </div>      <nav className="flex-1 overflow-y-auto py-4 sm:py-6 px-2 sm:px-4 space-y-1 sm:space-y-2">
+        {dynamicNavItems.map((item) => (
           <Button
             key={item.label}
             variant="ghost"

@@ -85,7 +85,7 @@ export type KnownSheetName =
   | 'Workout_Log'
   | 'Body_Weight'
   | 'Exercises'
-  | 'Workout_Templates'
+  | 'WorkoutTemplates'
   | 'Workout_Sessions';
 
 export async function createSpreadsheetRow<T extends GenericSheetRowData = GenericSheetRowData>(
