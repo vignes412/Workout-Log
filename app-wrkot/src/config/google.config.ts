@@ -7,7 +7,7 @@ export const googleConfig = {
   auth: {
     clientId: import.meta.env.VITE_GOOGLE_CLIENT_ID || '25723638150-fda1h3p3e1bm8s65m90a03vkvpscfnb9.apps.googleusercontent.com',
     clientSecret: import.meta.env.VITE_GOOGLE_CLIENT_SECRET || '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',
-    redirectUri:  "https://vignes412.github.io/PA/",
+    redirectUri: import.meta.env.VITE_GOOGLE_REDIRECT_URI || window.location.origin,
   },
   // Google Sheets API configuration
   sheets: {

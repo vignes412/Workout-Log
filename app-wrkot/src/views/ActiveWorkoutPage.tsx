@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { Dumbbell, Clock, CheckCircle, ArrowLeft, Save, Edit, Plus, Trash2, PlayCircle, Star } from "lucide-react";
 import { useRouter } from '@/lib/utils';
 
@@ -19,7 +19,6 @@ const ActiveWorkoutPage: React.FC = () => {
   const { activeWorkout, updateExerciseProgress, updateActiveWorkout, completeWorkout, addExerciseSet } = useWorkoutTemplateStore();
   const { addWorkoutLog } = useWorkoutLogStore();
   const router = useRouter();
-  const { toast } = useToast();
   
   // Set up state
   const [notes, setNotes] = useState("");
@@ -43,6 +42,7 @@ const ActiveWorkoutPage: React.FC = () => {
   const [currentWeight, setCurrentWeight] = useState<number>(0);
   const [currentReps, setCurrentReps] = useState<number>(0);
   const [currentRating, setCurrentRating] = useState<number>(3); // Default rating (1-5)
+  const [isSaving, setIsSaving] = useState(false);
   
   // Set up defaults
   const defaultRestBetweenSets = 60; // seconds
@@ -101,14 +101,11 @@ const ActiveWorkoutPage: React.FC = () => {
     
     return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
   };
-  
-  // Start rest timer
+    // Start rest timer
   const startRestTimer = (duration = defaultRestBetweenSets) => {
     setRestStartTime(Date.now());
     setRestTimerActive(true);
-    
-    toast({
-      title: "Rest Timer Started",
+    toast(`Rest Timer Started`, {
       description: `${duration} seconds rest timer started`,
     });
   };
@@ -117,12 +114,10 @@ const ActiveWorkoutPage: React.FC = () => {
     setRestTimerActive(false);
     setRestStartTime(null);
   };
-  
-  // Function to manually stop the rest timer (can be called from UI)
+    // Function to manually stop the rest timer (can be called from UI)
   const handleStopRestTimer = () => {
     stopRestTimer();
-    toast({
-      title: "Rest Timer Stopped",
+    toast("Rest Timer Stopped", {
       description: "Rest timer has been stopped",
     });
   };
@@ -166,77 +161,84 @@ const ActiveWorkoutPage: React.FC = () => {
   const handleLogSubmit = async () => {
     if (!activeWorkout || currentExerciseIndex === null || !currentLogExercise) return;
     
-    const exercise = activeWorkout.exercises[currentExerciseIndex];
-    const currentSetsCompleted = exercise.setsCompleted || 0;
+    setIsSaving(true);
     
-    // Update the exercise progress in the active workout
-    if (currentSetsCompleted < exercise.sets) {
-      updateExerciseProgress(currentExerciseIndex, currentSetsCompleted + 1);
+    try {
+      const exerciseIndex = currentLogExercise.index;
+      const exercise = activeWorkout.exercises[exerciseIndex];
+      const currentSetsCompleted = exercise.setsCompleted || 0;
       
-      // Save to workout log sheet
-      try {
-        await addWorkoutLog({
-          date: new Date().toISOString(),
-          muscleGroup: exercise.muscleGroup,
-          exercise: exercise.name,
-          reps: currentReps,
+      // Update the exercise progress in the active workout
+      if (currentSetsCompleted < exercise.sets) {
+        // First update the exercise with the new weight/reps
+        const updatedExercises = [...activeWorkout.exercises];
+        updatedExercises[exerciseIndex] = {
+          ...updatedExercises[exerciseIndex],
           weight: currentWeight,
-          rating: currentRating,
-          restTime: exercise.rest || defaultRestBetweenSets
-        });
+          reps: currentReps,
+          setsCompleted: currentSetsCompleted + 1,
+          percentComplete: ((currentSetsCompleted + 1) / exercise.sets) * 100
+        };
         
-        // Update the exercise with the new weight/reps if they were changed
-        if (currentWeight !== exercise.weight || currentReps !== exercise.reps) {
-          const updatedExercises = [...activeWorkout.exercises];
-          updatedExercises[currentExerciseIndex] = {
-            ...updatedExercises[currentExerciseIndex],
+        // Update the active workout with all changes at once
+        updateActiveWorkout({ exercises: updatedExercises });
+        
+        // Save to workout log sheet      
+        try {
+          await addWorkoutLog({
+            date: new Date().toISOString().split("T")[0],
+            muscleGroup: exercise.muscleGroup,
+            exercise: exercise.name,
+            reps: currentReps,
             weight: currentWeight,
-            reps: currentReps
-          };
-          updateActiveWorkout({ exercises: updatedExercises });
-        }
-        
-        toast({
-          title: "Set Completed",
-          description: `${exercise.name} set ${currentSetsCompleted + 1}/${exercise.sets} logged`,
-          variant: "success"
-        });
-      } catch (error) {
-        toast({
-          title: "Error",
-          description: "Failed to log workout set. Will try again when online.",
-          variant: "destructive"
-        });
-        console.error("Error logging workout set:", error);
-      }
-      
-      // Close the dialog
-      setExerciseLogOpen(false);
-      
-      // Start the rest timer
-      startRestTimer(exercise.rest || defaultRestBetweenSets);
-      
-      // Check if all sets are complete
-      if (currentSetsCompleted + 1 >= exercise.sets) {
-        // Find next incomplete exercise
-        const nextIncompleteIdx = activeWorkout.exercises.findIndex(
-          (ex, idx) => idx > currentExerciseIndex && (ex.setsCompleted || 0) < ex.sets
-        );
-        
-        if (nextIncompleteIdx !== -1) {
-          // Start longer rest between exercises
-          startRestTimer(defaultRestBetweenExercises);
-          // Set the next exercise as current
-          setCurrentExerciseIndex(nextIncompleteIdx);
-        } else {
-          // All exercises complete
-          toast({
-            title: "Workout Complete",
-            description: "All exercises have been completed! You can finish your workout.",
-            variant: "success"
+            rating: currentRating,
+            restTime: exercise.rest || defaultRestBetweenSets
+          });
+          
+          toast.success("Set Completed", {
+            description: `${exercise.name} set ${currentSetsCompleted + 1}/${exercise.sets} logged`,
+          });
+        } catch (error) {
+          toast.error("Error", {
+            description: "Failed to log workout set. Will try again when online.",
+          });
+          toast("Debug Info", {
+            description: "Check network connectivity and try again",
           });
         }
+        
+        // Close the dialog
+        setExerciseLogOpen(false);
+        
+        // Start the rest timer
+        startRestTimer(exercise.rest || defaultRestBetweenSets);
+        
+        // Check if all sets are complete
+        if (currentSetsCompleted + 1 >= exercise.sets) {
+          // Find next incomplete exercise
+          const nextIncompleteIdx = activeWorkout.exercises.findIndex(
+            (ex, idx) => idx > exerciseIndex && (ex.setsCompleted || 0) < ex.sets
+          );
+          
+          if (nextIncompleteIdx !== -1) {
+            // Start longer rest between exercises
+            startRestTimer(defaultRestBetweenExercises);
+            // Set the next exercise as current
+            setCurrentExerciseIndex(nextIncompleteIdx);
+          } else {
+            // All exercises complete          
+            toast.success("Workout Complete", {
+              description: "All exercises have been completed! You can finish your workout.",
+            });
+          }
+        }
       }
+    } catch (error) {
+      toast.error("Error", {
+        description: "Failed to update exercise progress. Please try again.",
+      });
+    } finally {
+      setIsSaving(false);
     }
   };
   
@@ -249,12 +251,9 @@ const ActiveWorkoutPage: React.FC = () => {
       ...updatedExercises[currentExerciseIndex],
       notes: exerciseNotes
     };
-    
-    updateActiveWorkout({ exercises: updatedExercises });
+      updateActiveWorkout({ exercises: updatedExercises });
     setNotesDialogOpen(false);
-    
-    toast({
-      title: "Notes Saved",
+    toast("Notes Saved", {
       description: "Exercise notes have been updated.",
     });
   };
@@ -262,11 +261,8 @@ const ActiveWorkoutPage: React.FC = () => {
   // Handle workout notes save
   const handleSaveWorkoutNotes = () => {
     if (!activeWorkout) return;
-    
-    updateActiveWorkout({ notes });
-    
-    toast({
-      title: "Notes Saved",
+      updateActiveWorkout({ notes });
+    toast("Notes Saved", {
       description: "Workout notes have been updated.",
     });
   };
@@ -274,34 +270,25 @@ const ActiveWorkoutPage: React.FC = () => {
   // Handle workout complete
   const handleCompleteWorkout = async () => {
     if (!activeWorkout) return;
-    
-    const result = await completeWorkout();
-    
+      const result = await completeWorkout();
     if (result.success) {
-      toast({
-        title: "Workout Completed",
+      toast.success("Workout Completed", {
         description: "Your workout has been saved.",
-        variant: "success"
       });
       
       router.push('/');
     } else {
-      toast({
-        title: "Error",
+      toast.error("Error", {
         description: result.error || "Failed to complete workout",
-        variant: "destructive"
       });
     }
   };
   
   // Handle add extra set
-  const handleAddExtraSet = (exerciseIndex: number) => {
-    if (!activeWorkout) return;
-    
+  const handleAddExtraSet = (exerciseIndex: number) => {    if (!activeWorkout) return;
     addExerciseSet(exerciseIndex);
     
-    toast({
-      title: "Set Added",
+    toast("Set Added", {
       description: `Added an extra set to ${activeWorkout.exercises[exerciseIndex].name}`,
     });
   };
@@ -571,11 +558,21 @@ const ActiveWorkoutPage: React.FC = () => {
           </div>
           
           <DialogFooter>
-            <Button variant="outline" onClick={() => setExerciseLogOpen(false)}>
+            <Button variant="outline" onClick={() => setExerciseLogOpen(false)} disabled={isSaving}>
               Cancel
             </Button>
-            <Button onClick={handleLogSubmit}>
-              Save
+            <Button onClick={handleLogSubmit} disabled={isSaving}>
+              {isSaving ? (
+                <>
+                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Saving...
+                </>
+              ) : (
+                "Save"
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>
