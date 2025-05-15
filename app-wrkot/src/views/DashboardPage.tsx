@@ -8,10 +8,12 @@ import { PlusCircle, LineChart, TrendingUp, Activity } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAppStore } from '@/store/appStore';
 import { useExercisesStore } from '@/store/exercisesStore';
+import { useWorkoutLogStore } from '@/store/workoutLogStore';
 import { WorkoutLogTable } from '@/components/dashboard/WorkoutLogTable';
 import { WorkoutSummaryTable } from '@/components/dashboard/WorkoutSummaryTable';
 import { Card, CardContent } from '@/components/ui/card';
-import AddWorkoutLogModal from '@/components/dashboard/AddWorkoutLogModal';
+import { AddWorkoutLogModal } from '@/components/dashboard/AddWorkoutLogModal';
+import { WorkoutCharts } from '@/components/charts';
 
 // This will render content based on currentView
 const ViewContent: React.FC = () => {
@@ -39,9 +41,9 @@ const ViewContent: React.FC = () => {
 // Original dashboard content moved to its own component
 const DashboardMainContent: React.FC = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const { workoutLogs } = useWorkoutLogStore();
 
   useEffect(() => {
-    // Listen for custom event from other components that want to open the add workout modal
     const handleOpenWorkoutModal = () => setIsAddModalOpen(true);
     window.addEventListener('open-add-workout-modal', handleOpenWorkoutModal);
     
@@ -50,8 +52,8 @@ const DashboardMainContent: React.FC = () => {
     };
   }, []);
 
-  return (    <StaggerContainer className="flex flex-col gap-6 md:gap-8">
-      {/* Modal shared across both workout buttons */}
+  return (    
+    <StaggerContainer className="flex flex-col gap-6 md:gap-8">
       <AddWorkoutLogModal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} />
 
       <StaggerItem>
@@ -131,10 +133,14 @@ const DashboardMainContent: React.FC = () => {
           </SlideUp>
         </div>
       </StaggerItem>
-        <StaggerItem>
+
+      <StaggerItem>
+        <WorkoutCharts workoutLogs={workoutLogs} />
+      </StaggerItem>
+
+      <StaggerItem>
         <h3 className="text-2xl font-semibold mb-4 mt-2">Workout Summary</h3>
         <div className="w-full max-w-full overflow-hidden stats-container">
-          {/* Adding mobile-optimized container */}
           <div className="mobile-optimized rounded-lg">
             <WorkoutSummaryTable />
           </div>
@@ -149,7 +155,6 @@ const WorkoutsContent: React.FC = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   useEffect(() => {
-    // Listen for custom event from other components that want to open the add workout modal
     const handleOpenWorkoutModal = () => setIsAddModalOpen(true);
     window.addEventListener('open-add-workout-modal', handleOpenWorkoutModal);
     
@@ -182,17 +187,16 @@ const ScheduleContent: React.FC = () => (
 );
 
 // Stats view
-const StatsContent: React.FC = () => (
-  <div className="space-y-6">
-    <h2 className="text-3xl font-bold tracking-tight mb-2 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Statistics</h2>
-    <p className="text-muted-foreground">View detailed analytics of your progress</p>
-    <Card>
-      <CardContent className="p-6">
-        <p>Detailed statistics view coming soon...</p>
-      </CardContent>
-    </Card>
-  </div>
-);
+const StatsContent: React.FC = () => {
+  const { workoutLogs } = useWorkoutLogStore();
+  return (
+    <div className="space-y-6">
+      <h2 className="text-3xl font-bold tracking-tight mb-2 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Statistics</h2>
+      <p className="text-muted-foreground">View detailed analytics of your progress</p>
+      <WorkoutCharts workoutLogs={workoutLogs} />
+    </div>
+  );
+};
 
 // Profile view
 const ProfileContent: React.FC = () => (
