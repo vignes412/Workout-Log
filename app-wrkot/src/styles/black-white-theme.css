@@ -1,79 +1,102 @@
 /* Enhanced Black & White Theme */
 :root {
   /* Base colors */
-  --background: 255, 255, 255; /* white */
-  --foreground: 0, 0, 0;       /* black */
+  --background: 0 0% 98%;    /* slightly off-white */
+  --foreground: 0 0% 12%;    /* soft black */
 
   /* Muted colors */
-  --muted: 240, 240, 240;      /* light gray */
-  --muted-foreground: 80, 80, 80; /* dark gray */
+  --muted: 0 0% 96%;         /* very light gray */
+  --muted-foreground: 0 0% 45%; /* medium gray */
 
   /* UI elements */
-  --card: 245, 245, 245;       /* light gray */
-  --card-foreground: 0, 0, 0;  /* black */
+  --card: 0 0% 100%;         /* white */
+  --card-foreground: 0 0% 12%; /* soft black */
 
-  --border: 220, 220, 220;     /* gray border */
-  --input: 230, 230, 230;      /* input background */
+  --border: 0 0% 88%;        /* light gray border */
+  --input: 0 0% 96%;         /* input background */
 
-  --primary: 0, 0, 0;          /* black */
-  --primary-foreground: 255, 255, 255; /* white */
+  --primary: 0 0% 12%;       /* soft black */
+  --primary-foreground: 0 0% 98%; /* slightly off-white */
 
-  --secondary: 200, 200, 200;  /* gray */
-  --secondary-foreground: 0, 0, 0; /* black */
+  --secondary: 0 0% 92%;     /* very light gray */
+  --secondary-foreground: 0 0% 12%; /* soft black */
 
-  --accent: 180, 180, 180;     /* medium gray */
-  --accent-foreground: 0, 0, 0; /* black */
+  --accent: 0 0% 92%;        /* very light gray */
+  --accent-foreground: 0 0% 12%; /* soft black */
+  
+  --ring: 0 0% 80%;          /* medium gray */
 
-  --radius: 8px;               /* Border radius */
-  --shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  /* Shadows */
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+  /* Minimal UI indicators */
+  --success: 145 40% 42%;    /* muted green */
+  --success-foreground: 0 0% 98%;
+  
+  --warning: 38 40% 50%;     /* muted amber */
+  --warning-foreground: 0 0% 12%;
+  
+  --error: 0 40% 50%;        /* muted red */
+  --error-foreground: 0 0% 98%;
+  
+  --info: 215 40% 50%;       /* muted blue */
+  --info-foreground: 0 0% 98%;
+
+  /* Border radius */
+  --radius: 8px;
 
   /* Typography */
-  --font-family: 'Roboto', sans-serif;
-  --font-size-base: 16px;
-  --font-size-large: 20px;
-  --font-size-small: 14px;
-
-  /* Spacing */
-  --spacing-xs: 4px;
-  --spacing-sm: 8px;
-  --spacing-md: 16px;
-  --spacing-lg: 24px;
-  --spacing-xl: 32px;
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  
+  /* Transitions */
+  --transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
+  --transition-duration: 200ms;
+  --transition-ease: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Dark theme */
 .dark {
   /* Base colors - Dark theme */
-  --background: 0 0% 0%;      /* black */
-  --foreground: 0 0% 100%;    /* white */
+  --background: 0 0% 8%;      /* soft black background */
+  --foreground: 0 0% 92%;     /* slightly off-white */
   
   /* Gray shades for dark theme */
-  --muted: 0 0% 20%;          /* dark gray */
+  --muted: 0 0% 16%;          /* dark gray */
   --muted-foreground: 0 0% 70%;  /* light gray */
   
   /* UI elements - Dark theme */
-  --card: 0 0% 10%;           /* very dark gray */
-  --card-foreground: 0 0% 100%;  /* white text */
+  --card: 0 0% 12%;           /* soft black card */
+  --card-foreground: 0 0% 92%;  /* slightly off-white text */
   
-  --border: 0 0% 30%;         /* dark gray border */
-  --input: 0 0% 40%;          /* input border */
+  --border: 0 0% 24%;         /* dark gray border */
+  --input: 0 0% 16%;          /* input background */
   
-  --primary: 0 0% 100%;       /* white primary */
-  --primary-foreground: 0 0% 0%;  /* black text on primary */
+  --primary: 0 0% 92%;        /* slightly off-white primary */
+  --primary-foreground: 0 0% 12%;  /* soft black text on primary */
   
   --secondary: 0 0% 20%;      /* dark gray secondary */
-  --secondary-foreground: 0 0% 100%;  /* white text on secondary */
+  --secondary-foreground: 0 0% 92%;  /* slightly off-white text on secondary */
   
-  --accent: 0 0% 30%;         /* medium dark gray accent */
-  --accent-foreground: 0 0% 100%;  /* white text on accent */
+  --accent: 0 0% 22%;         /* slightly lighter dark gray accent */
+  --accent-foreground: 0 0% 92%;  /* slightly off-white text on accent */
   
-  --destructive: 0 0% 100%;   /* white destructive */
-  --destructive-foreground: 0 0% 0%;  /* black text on destructive */
+  --ring: 0 0% 30%;           /* medium gray ring */
   
-  --ring: 0 0% 40%;           /* medium dark gray ring */
+  /* Minimal UI indicators - darker but still visible */
+  --success: 145 30% 38%;     /* darker muted green */
+  --success-foreground: 0 0% 92%;
   
-  /* Shadow is slightly lighter in dark mode for visibility */
-  --shadow: 0 2px 8px rgb(255 255 255 / 10%);
+  --warning: 38 30% 45%;      /* darker muted amber */
+  --warning-foreground: 0 0% 12%;
+  
+  --error: 0 30% 45%;         /* darker muted red */
+  --error-foreground: 0 0% 92%;
+  
+  --info: 215 30% 45%;        /* darker muted blue */
+  --info-foreground: 0 0% 92%;
+  
+  /* Shadow for dark mode */
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
 
 /* Apply transition for theme toggling */
@@ -84,14 +107,10 @@
 }
 
 /* Base typography */
-html {
-  font-family: var(--font-family);
-}
-
 body {
-  font-size: var(--font-size-body);
-  line-height: var(--line-height-body);
-  font-weight: var(--font-weight-regular);
+  font-family: var(--font-family);
+  color: hsl(var(--foreground));
+  background-color: hsl(var(--background));
 }
 
 /* We keep a very minimal amount of color for UI indicators to maintain usability */

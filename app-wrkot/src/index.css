@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import './styles/modern-theme.css';
+@import './styles/black-white-theme.css';
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
@@ -49,13 +49,13 @@
   /* Animation for FAB */
   @keyframes pulse-soft {
     0% {
-      box-shadow: 0 0 0 0 rgba(var(--primary-rgb), 0.4);
+      box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.2);
     }
     70% {
-      box-shadow: 0 0 0 6px rgba(var(--primary-rgb), 0);
+      box-shadow: 0 0 0 6px rgba(0, 0, 0, 0);
     }
     100% {
-      box-shadow: 0 0 0 0 rgba(var(--primary-rgb), 0);
+      box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
     }
   }
   .animate-pulse-soft {
@@ -64,14 +64,14 @@
   
   /* Apply smooth transitions for theme changes */
   *, *::before, *::after {
-    transition-property: background-color, border-color, color, fill, stroke, opacity, transform, box-shadow;
-    transition-duration: 200ms;
-    transition-timing-function: ease-out;
+    transition-property: var(--transition-property);
+    transition-duration: var(--transition-duration);
+    transition-timing-function: var(--transition-ease);
   }
 
   /* Heading styles */
   h1, h2, h3, h4, h5, h6 {
-    @apply font-sans font-semibold leading-tight;
+    @apply font-sans font-medium leading-tight text-foreground;
   }
   
   h1 { @apply text-2xl sm:text-3xl; }
@@ -85,28 +85,28 @@
 @layer components {
   /* Updated card styles */
   .card {
-    background-color: rgb(var(--card));
-    color: rgb(var(--card-foreground));
+    background-color: hsl(var(--card));
+    color: hsl(var(--card-foreground));
     border-radius: var(--radius);
+    border: 1px solid hsl(var(--border));
     box-shadow: var(--shadow);
-    padding: var(--spacing-md);
-    font-family: var(--font-family);
+    padding: 1.25rem;
     transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
   }
 
   .card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
   }
 
   /* Updated button styles */
   .btn {
-    background-color: rgb(var(--primary));
-    color: rgb(var(--primary-foreground));
+    background-color: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
     border-radius: var(--radius);
-    padding: var(--spacing-sm) var(--spacing-md);
-    font-size: var(--font-size-base);
-    font-family: var(--font-family);
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
     box-shadow: var(--shadow);
     transition: all 0.2s ease-out;
     display: inline-flex;
@@ -117,20 +117,19 @@
   }
 
   .btn:hover {
-    background-color: rgb(var(--secondary));
-    color: rgb(var(--secondary-foreground));
+    background-color: hsl(var(--primary)/90%);
     transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
   }
   
   .btn:active {
     transform: translateY(0px);
-    box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
   }
 
   .btn:disabled {
-    background-color: rgb(var(--muted));
-    color: rgb(var(--muted-foreground));
+    background-color: hsl(var(--muted));
+    color: hsl(var(--muted-foreground));
     cursor: not-allowed;
     opacity: 0.6;
     transform: none;
@@ -139,44 +138,44 @@
 
   /* Updated input styles */
   .form-input {
-    background-color: rgb(var(--input));
-    color: rgb(var(--foreground));
-    border: 1px solid rgb(var(--border));
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    border: 1px solid hsl(var(--border));
     border-radius: var(--radius);
-    padding: var(--spacing-sm);
-    font-size: var(--font-size-base);
-    font-family: var(--font-family);
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
     width: 100%;
     transition: border-color 0.2s ease-out, box-shadow 0.2s ease-out;
   }
 
   .form-input:focus {
-    border-color: rgb(var(--primary));
-    box-shadow: 0 0 0 3px rgba(var(--primary-rgb, var(--primary)/0.2));
+    border-color: hsl(var(--primary));
+    box-shadow: 0 0 0 2px hsl(var(--ring)/30%);
     outline: none;
   }
 
   /* Progress indicators */
   .progress-circular {
-    @apply w-[var(--size-progress-circular)] h-[var(--size-progress-circular)];
-    border-width: var(--thickness-progress-circular);
+    @apply w-10 h-10;
+    border-width: 2px;
   }
 
   .progress-linear {
-    @apply h-[var(--height-progress-linear)] w-full;
+    @apply h-1 w-full;
   }
 
   /* Layout utilities */
   .container {
-    @apply max-w-[var(--container-max-width,1280px)] mx-auto px-4 sm:px-6 lg:px-8;
+    @apply max-w-6xl mx-auto px-4 sm:px-6 lg:px-8;
   }
+  
   .section {
     @apply mb-6 sm:mb-8 p-4 sm:p-6;
   }
 
   /* Page-specific layouts */
   .login-page {
-    @apply min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted/30 p-4;
+    @apply min-h-screen flex items-center justify-center bg-background p-4;
   }
 
   .login-card {
@@ -184,10 +183,11 @@
   }
 
   .shadow-top {
-    box-shadow: 0 -4px 12px -1px rgba(0, 0, 0, 0.06), 0 -2px 4px -2px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
   }
+  
   .dark .shadow-top {
-    box-shadow: 0 -4px 12px -1px rgba(0, 0, 0, 0.2), 0 -2px 4px -2px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
   }
 
   /* Responsive grid */
@@ -198,19 +198,19 @@
   /* Responsive adjustments */
   @media (max-width: 639px) { /* sm breakpoint */
     .grid-layout {
-      @apply grid-cols-1;
+      grid-template-columns: repeat(1, minmax(0, 1fr));
     }
   }
-
+  
   @media (min-width: 640px) and (max-width: 1023px) { /* md breakpoint */
     .grid-layout {
-      @apply grid-cols-2;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
-
+  
   @media (min-width: 1024px) { /* lg breakpoint */
     .grid-layout {
-      @apply grid-cols-3 xl:grid-cols-4; /* Added xl for larger screens */
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
   }
 }

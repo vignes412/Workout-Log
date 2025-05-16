@@ -1,30 +1,31 @@
 :root {
-  --chart-1: 221 83% 53%;
-  --chart-2: 0 84% 60%;
-  --chart-3: 160 84% 39%;
-  --chart-4: 270 76% 64%;
-  --chart-5: 24 94% 55%;
+  /* Black & white monochromatic chart colors */
+  --chart-1: 0 0% 25%;    /* dark gray */
+  --chart-2: 0 0% 45%;    /* medium gray */
+  --chart-3: 0 0% 65%;    /* lighter gray */
+  --chart-4: 0 0% 35%;    /* medium-dark gray */
+  --chart-5: 0 0% 55%;    /* medium-light gray */
 }
 
 .chart-card {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   background-color: hsl(var(--card));
-  border-width: 1px;
-  border-color: hsl(var(--border));
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border: 1px solid hsl(var(--border));
+  box-shadow: var(--shadow);
   border-radius: var(--radius);
   overflow: hidden;
+  padding: 1.5rem;
 }
 
 .chart-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
 }
 
 .recharts-tooltip-wrapper .recharts-default-tooltip {
-  background-color: hsl(var(--popover)) !important;
-  border-color: hsl(var(--border)) !important;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.15), 0 4px 6px -2px rgba(0, 0, 0, 0.08) !important;
+  background-color: hsl(var(--card)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  box-shadow: var(--shadow) !important;
   border-radius: var(--radius);
   padding: 12px !important;
   transition: all 0.2s ease !important;
@@ -34,7 +35,7 @@
 
 .recharts-tooltip-wrapper:hover .recharts-default-tooltip {
   transform: translateY(-2px);
-  box-shadow: 0 12px 20px -3px rgba(0, 0, 0, 0.18), 0 5px 8px -2px rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1) !important;
 }
 
 .recharts-tooltip-label {
@@ -60,12 +61,12 @@
 
 .recharts-cartesian-axis-tick-value {
   font-size: 12px;
-  fill: hsl(var(--foreground));
+  fill: hsl(var(--muted-foreground));
 }
 
 /* Ensure all axis ticks use theme colors */
 .recharts-cartesian-axis-tick {
-  fill: hsl(var(--foreground));
+  fill: hsl(var(--muted-foreground));
 }
 
 .recharts-legend-wrapper {
@@ -77,8 +78,8 @@
 }
 
 .recharts-cartesian-grid line {
-  opacity: 0.25;
-  stroke: hsl(var(--border)) !important;
+  opacity: 0.15;
+  stroke: hsl(var(--muted-foreground)) !important;
   stroke-width: 1;
 }
 
@@ -87,24 +88,24 @@
   stroke: hsl(var(--primary)) !important;
   fill: hsl(var(--card)) !important;
   stroke-width: 2;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
   transition: all 0.2s ease;
 }
 
 .recharts-active-dot:hover {
-  r: 8;
-  stroke: hsl(var(--primary)) !important;
+  r: 7;
+  stroke-width: 2.5;
 }
 
 .recharts-area {
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.05));
 }
 
 .recharts-area-curve {
   transition: opacity 0.3s;
 }
 
-/* Ensure line and curve visibility in dark mode */
+/* Ensure line and curve visibility */
 .recharts-line {
   stroke-width: 2px;
 }
@@ -115,9 +116,9 @@
 
 .recharts-radar {
   opacity: 0.85;
-  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.15));
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.05));
   transition: opacity 0.3s ease;
-  stroke-width: 2px; /* Thicker lines for better visibility in dark mode */
+  stroke-width: 2px;
   stroke-linejoin: round;
 }
 
@@ -127,35 +128,35 @@
 
 .recharts-polar-angle-axis-tick-value {
   font-size: 12px;
-  fill: hsl(var(--foreground));
+  fill: hsl(var(--muted-foreground));
 }
 
 /* Fix polar grid lines to match theme */
 .recharts-polar-grid-concentric-circle {
-  stroke: hsl(var(--foreground)) !important;
-  opacity: 0.3;
+  stroke: hsl(var(--border)) !important;
+  opacity: 0.4;
   stroke-width: 1px;
 }
 
 .recharts-polar-grid-concentric-polygon {
-  stroke: hsl(var(--foreground)) !important;
-  opacity: 0.3;
+  stroke: hsl(var(--border)) !important;
+  opacity: 0.4;
   stroke-width: 1px;
 }
 
 .recharts-polar-grid-angle {
-  stroke: hsl(var(--foreground)) !important;
-  opacity: 0.3;
+  stroke: hsl(var(--border)) !important;
+  opacity: 0.4;
   stroke-width: 1px;
 }
 
 .recharts-bar {
-  filter: drop-shadow(0 2px 2px rgba(0,0,0,0.08));
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.05));
   transition: all 0.25s ease;
 }
 
 .recharts-bar:hover {
-  filter: drop-shadow(0 3px 5px rgba(0,0,0,0.15));
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
 /* Individual bar hover effect */
@@ -166,8 +167,8 @@
 }
 
 .recharts-bar-rectangle:hover {
-  opacity: 0.85;
-  filter: brightness(1.05);
+  opacity: 0.9;
+  filter: brightness(1.03);
 }
 
 /* Fix for bar rectangle visibility */
@@ -178,7 +179,7 @@
 
 .recharts-reference-line {
   stroke-dasharray: 3 3;
-  opacity: 0.7;
+  opacity: 0.5;
   stroke: hsl(var(--primary)) !important;
 }
 
@@ -198,135 +199,119 @@
 /* Fix for legend text colors */
 /* Make sure all text is visible by default */
 .recharts-text {
-  fill: hsl(var(--foreground));
-}
-/* Legend text styles */
-.recharts-legend-item-text {
-  color: hsl(var(--foreground)) !important;
   fill: hsl(var(--foreground)) !important;
 }
 
-.recharts-default-legend .recharts-legend-item {
+.recharts-legend-item-text {
   color: hsl(var(--foreground)) !important;
-  background-color: transparent !important;
 }
 
-/* Legend icon color matching */
+.recharts-default-legend .recharts-legend-item {
+  margin-right: 12px !important;
+  padding: 0 !important;
+}
+
 .recharts-legend-icon {
-  stroke: currentColor;
-  stroke-width: 2px;
-  opacity: 0.9;
+  border-radius: 2px;
+  margin-right: 4px !important;
 }
 
-/* Fix for axis labels - should be slightly muted */
 .recharts-text.recharts-cartesian-axis-tick-value tspan {
-  fill: hsl(var(--foreground));
+  fill: hsl(var(--muted-foreground)) !important;
 }
 
-/* Fix for axis title colors */
 .recharts-text.recharts-label {
-  fill: hsl(var(--foreground));
+  fill: hsl(var(--foreground)) !important;
 }
 
-/* Fix for axis domain line */
 .recharts-cartesian-axis-line {
-  stroke: hsl(var(--foreground));
-  stroke-width: 1px;
+  stroke: hsl(var(--border)) !important;
+  opacity: 0.5;
 }
 
-/* Fix for polar chart text - radar charts */
 .recharts-polar-angle-axis-tick text,
-.recharts-polar-radius-axis-tick text {
-  fill: hsl(var(--foreground));
+.recharts-radial-bar-chart text {
+  fill: hsl(var(--muted-foreground)) !important;
 }
 
-/* Fix for tooltip item name text */
 .recharts-tooltip-item-name {
   color: hsl(var(--foreground)) !important;
   font-weight: 500 !important;
 }
 
-/* Fix for tooltip item value text */
 .recharts-tooltip-item-value {
   color: hsl(var(--foreground)) !important;
   font-weight: 600 !important;
 }
 
-/* Fix for tooltip item type text */
 .recharts-tooltip-item-type {
-  color: hsl(var(--foreground)) !important;
+  color: hsl(var(--muted-foreground)) !important;
   font-size: 11px !important;
 }
 
-/* Chart container styling for consistent height */
 .chart-container {
-  aspect-ratio: 16/9;
-  min-height: 280px;
-  max-height: 320px;
   width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
-/* Fix for dot elements */
 .recharts-dot {
-  fill: hsl(var(--card));
-  stroke: hsl(var(--foreground));
-  stroke-width: 2;
+  fill: hsl(var(--primary)) !important;
+  stroke: hsl(var(--card)) !important;
+  stroke-width: 1px;
 }
 
-/* Animation for chart elements */
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
 }
 
 .recharts-layer {
-  animation: fadeIn 0.4s ease-in-out;
+  animation: fadeIn 0.5s ease-out;
 }
 
-/* Fix for SVG and canvas background */
 .recharts-surface {
-  background: transparent;
+  overflow: visible;
 }
 
-/* Fix for SVG text elements inheriting black color */
 .recharts-text tspan {
-  fill: inherit;
+  fill: inherit !important;
 }
 
-/* Preserving visibility when inactive */
 .recharts-layer.recharts-line-chart .recharts-line.inactive,
 .recharts-layer.recharts-area-chart .recharts-area.inactive {
-  opacity: 0.4;
+  opacity: 0.3;
 }
 
-/* Fix for scatter plot dots */
 .recharts-scatter-symbol {
   fill: hsl(var(--primary)) !important;
   stroke: hsl(var(--card)) !important;
   stroke-width: 1px;
+  transition: all 0.2s ease;
 }
 
-/* Fix for all chart circles and points */
 circle.recharts-dot,
-.recharts-scatter-dot {
-  fill: hsl(var(--card)) !important;
-  stroke: hsl(var(--primary)) !important;
+circle.recharts-scatter-dot {
+  fill: hsl(var(--primary)) !important;
+  stroke: hsl(var(--card)) !important;
+  stroke-width: 1px;
+  transition: all 0.2s ease;
 }
 
-/* Force visibility for any elements that might appear black */
 .recharts-layer path[fill="black"],
-.recharts-layer rect[fill="black"],
-.recharts-layer circle[fill="black"] {
+.recharts-layer path[fill="#000"] {
   fill: hsl(var(--foreground)) !important;
 }
 
 .recharts-layer path[stroke="black"],
-.recharts-layer line[stroke="black"] {
+.recharts-layer path[stroke="#000"] {
   stroke: hsl(var(--foreground)) !important;
 }
 
-/* Fix for sector charts like pie charts */
 .recharts-sector {
-  stroke: hsl(var(--card)) !important;
-  stroke-width: 1px;
+  fill: hsl(var(--primary)) !important;
+  opacity: 0.8;
 }

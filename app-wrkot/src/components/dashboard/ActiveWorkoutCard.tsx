@@ -79,14 +79,14 @@ export const ActiveWorkoutCard: React.FC = () => {
   const overallProgress = calculateOverallProgress();
   
   return (
-    <Card className="border border-primary/20 shadow-sm hover:shadow-md transition-shadow">
-      <CardHeader className="bg-primary/5 pb-2">
+    <Card className="border border-border shadow-sm hover:shadow-md transition-all">
+      <CardHeader className="bg-secondary/50 pb-2">
         <div className="flex justify-between items-center">
           <CardTitle className="text-lg font-medium flex items-center">
             <Dumbbell className="h-5 w-5 mr-2 text-primary" />
             Active Workout
           </CardTitle>
-          <Badge variant="outline" className="bg-primary/10 text-primary">
+          <Badge variant="outline" className="border-primary text-primary">
             In Progress
           </Badge>
         </div>
@@ -95,7 +95,7 @@ export const ActiveWorkoutCard: React.FC = () => {
       <CardContent className="pt-4">
         <div className="flex flex-col space-y-4">
           <div>
-            <h3 className="font-semibold text-lg">{activeWorkout.templateName}</h3>
+            <h3 className="font-medium text-lg">{activeWorkout.templateName}</h3>
             <div className="text-muted-foreground text-sm">{activeWorkout.description}</div>
           </div>
           
@@ -113,18 +113,18 @@ export const ActiveWorkoutCard: React.FC = () => {
           </div>
           
           {nextExercise ? (
-            <div className="bg-muted/50 p-3 rounded-md">
+            <div className="bg-muted p-3 rounded-md border border-border">
               <div className="text-sm font-medium mb-1">Next Exercise:</div>
               <div className="flex justify-between items-center">
                 <div>
-                  <div className="font-semibold">{nextExercise.name}</div>
+                  <div className="font-medium">{nextExercise.name}</div>
                   <div className="text-xs text-muted-foreground">{nextExercise.sets} sets × {nextExercise.reps} reps</div>
                 </div>
-                <Badge>{nextExercise.muscleGroup}</Badge>
+                <Badge variant="outline">{nextExercise.muscleGroup}</Badge>
               </div>
             </div>
           ) : (
-            <div className="bg-primary/10 p-3 rounded-md">
+            <div className="bg-secondary p-3 rounded-md border border-border">
               <div className="text-center text-sm font-medium">
                 All exercises completed! You can finish your workout.
               </div>
@@ -155,7 +155,7 @@ export const ActiveWorkoutCard: React.FC = () => {
           
           <Button 
             variant="ghost" 
-            className="flex-1 text-destructive hover:text-destructive"
+            className="flex-1 text-error hover:text-error"
             onClick={handleCancelWorkout}
           >
             <X className="h-4 w-4 mr-2" />

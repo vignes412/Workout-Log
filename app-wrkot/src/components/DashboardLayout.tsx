@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Menu, Bell, LogOut, Plus, RefreshCw } from 'lucide-react'; // Added RefreshCw
 import { ThemeToggle } from './ThemeToggle';
+import { ThemeCustomizationPanel } from './ThemeCustomizationPanel';
 import { useAppStore } from '@/store/appStore';
 import { useExercisesStore } from '@/store/exercisesStore'; // Added useExercisesStore
 import { FloatingActionButton } from '@/components/ui/floating-action-button';
@@ -125,7 +126,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps): React.React
                 "overflow-hidden transition-all duration-base ease-in-out flex items-center",
                 isSidebarCollapsed ? "max-w-0 opacity-0" : "max-w-[220px] opacity-100"
              )}>
-               <h1 className="text-xl font-semibold tracking-tight whitespace-nowrap bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+               <h1 className="text-xl font-semibold tracking-tight whitespace-nowrap text-foreground">
                  Workout Log
                </h1>
              </div>
@@ -133,6 +134,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps): React.React
           
           <div className="ml-auto flex items-center gap-2 sm:gap-3">
             <ThemeToggle variant="ghost" />
+            <ThemeCustomizationPanel />
 
             <Button
               variant="ghost"
@@ -155,7 +157,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps): React.React
             <div className="hidden sm:flex border-l h-6 mx-1.5 border-border/50"></div>
             
             <div className="hidden sm:flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-primary to-accent text-white shadow-sm">
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm">
                 <span className="text-xs font-medium">JD</span>
               </div>
               <div>
@@ -168,7 +170,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps): React.React
               variant="ghost" 
               size="icon"
               onClick={logout}
-              className="rounded-full hover:bg-destructive/10 hover:text-destructive transition-button duration-base"
+              className="rounded-full hover:bg-error/10 hover:text-error transition-button duration-base"
             >
               <LogOut className="h-4 w-4" />
               <span className="sr-only">Logout</span>

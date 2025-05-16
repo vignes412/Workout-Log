@@ -25,21 +25,17 @@ export const StatCard = ({
   className,
 }: StatCardProps) => {
   return (
-    <Card 
-      variant="glass"
-      hover="lift"
-      className={cn("overflow-hidden", className)}
-    >
+    <Card className={cn("overflow-hidden", className)}>
       <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
         <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground line-clamp-1">{title}</CardTitle>
         {icon && (
-          <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-gradient-to-br from-primary/80 to-accent/80 text-white shadow-sm">
+          <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm">
             <div className="h-4 w-4 sm:h-5 sm:w-5">{icon}</div>
           </div>
         )}
       </CardHeader>
       <CardContent>
-        <div className="text-xl sm:text-2xl font-bold tracking-tight bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">{value}</div>
+        <div className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">{value}</div>
         {description && (
           <p className="text-xs text-muted-foreground mt-1.5 line-clamp-1">{description}</p>
         )}
@@ -50,7 +46,9 @@ export const StatCard = ({
             variant={trend.isPositive ? "success" : "destructive"} 
             className={cn(
               "text-xs font-medium gap-1 shadow-sm animate-fade-in py-1", 
-              trend.isPositive ? "bg-success/20 text-success hover:bg-success/30" : "bg-destructive/20 text-destructive hover:bg-destructive/30"
+              trend.isPositive 
+                ? "bg-background text-success border border-success/30" 
+                : "bg-background text-error border border-error/30"
             )}
           >
             {trend.isPositive ? (

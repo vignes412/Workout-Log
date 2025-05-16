@@ -16,6 +16,7 @@ import { Toaster } from 'sonner';
 // Import App component
 import { App } from './App';
 import { ThemeProvider } from './contexts/ThemeProvider';
+import { ThemeCustomizationProvider } from './contexts/ThemeCustomizationContext';
 
 // Declare updateSW on window for TypeScript
 declare global {
@@ -76,8 +77,10 @@ if (import.meta.env.PROD) {
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
-      <Toaster position="top-center" richColors />
-      <App />
+      <ThemeCustomizationProvider>
+        <Toaster position="top-center" richColors />
+        <App />
+      </ThemeCustomizationProvider>
     </ThemeProvider>
   </React.StrictMode>
 );
